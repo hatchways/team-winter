@@ -4,10 +4,10 @@ from flask_jwt_extended import (create_access_token, create_refresh_token, jwt_r
 
 parser = reqparse.RequestParser()
 parser.add_argument('email', help = 'This field cannot be blank', required = True)
-parser.add_argument('fname', help = 'This field cannot be blank', required = True)
-parser.add_argument('lname', help = 'This field cannot be blank', required = True)
 parser.add_argument('password', help = 'This field cannot be blank', required = True)
-parse.add_argument('confirm_pass', help = 'This field cannot be blank', required = True)
+parser.add_argument('fname')
+parser.add_argument('lname')
+parser.add_argument('confirm_pass')
 
 class UserRegister(Resource):
     def post(self):
@@ -16,14 +16,14 @@ class UserRegister(Resource):
         if UserModel.find_by_email(data['email']):
             return {'message': 'Email {} already exists'. format(data['email'])}, 400
 
-        if len(data['password'] < 6):
+        if len(data['password']) < 6:
              return {'message': 'Password should be at least 6 characters long'}, 400
 
         if data['password'] != data['confirm_pass']:
             return {'message': 'Passwords do not match'}, 400
 
         new_user = UserModel(
-            username = data['email'],
+            email = data['email'],
             fname = data['fname'],
             lname = data['lname'],
             password = UserModel.generate_hash(data['password'])
