@@ -1,5 +1,0 @@
-import os
-
-TEAM_NAME = os.environ['TEAM_NAME']
-
-SQLALCHEMY_TRACK_MODIFICATIONS = False
