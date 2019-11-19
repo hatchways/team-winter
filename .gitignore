@@ -4,6 +4,7 @@
 node_modules/
 
 # production
+client/build
 /build/
 /client/build/
 
