@@ -4,6 +4,7 @@
 node_modules/
 
 # production
+client/build
 /build/
 
 # misc
@@ -31,4 +32,4 @@ instance/
 
 
 #TODO add .env to your gitignore
-
+.env
