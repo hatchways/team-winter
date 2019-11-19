@@ -1,16 +1,17 @@
-How to set up PostgreSQL to run with our app:
+# How to set up PostgreSQL to run with our app:
+```
+Go to .env file and edit DATABASE_URL variable in the following format:
+'postgresql://username:pw@localhost/db_name'
+where username will be postgres, and pw will be your password to your localhost
+and db_name is the name of your database.
 
-# Go to .env file and edit DATABASE_URL variable in the following format:
-# 'postgresql://username:pw@localhost/db_name'
-# where username will be postgres, and pw will be your password to your localhost
-# and db_name is the name of your database.
+In our case: 'postgresql://postgres:1234@localhost/team-winter'
 
-# In our case: 'postgresql://postgres:1234@localhost/team-winter'
+Next, create database 'team-winter' in your localhost 
+You can do so in the following commands:
 
-# Next, create database 'team-winter' in your localhost 
-# You can do so in the following commands:
 $ psql
-or  
+# or  
 $ sudo -u postgres psql -p 5432 -h 127.0.0.1
 $ postgresql > create database team-winter;
 
@@ -23,13 +24,14 @@ $ postgresql > \l
 ..
  team-winter   | rs    | UTF8     | C       | C     |
 ..
+```
 
+# How to run the server:
 
-How to run the server:
-
--Change directory to the /server directory
--pipenv install: to install the dependencies
--pipenv shell: to load .env environment variables and virtual environment 
--python manage.py db init: to set up migration folder for setting up database
--python manage.py db upgrade: to apply the latest migration to your database
--flask run: to run the server
+- Change directory to the /server directory
+- **pipenv install**: to install the dependencies
+- **pipenv shell**: to load .env environment variables and virtual environment 
+- **python manage.py db init**: to set up migration folder *Only if you don't have migration folder* 
+- **python manage.py db migrate**: to prepare the migration steps
+- **python manage.py db upgrade**: to apply the latest migration to your database
+- **flask run**: to run the server
