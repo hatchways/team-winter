@@ -1,11 +1,11 @@
 import React, { useState }  from "react";
 
-import { makeStyles, withStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import { ValidatorForm, TextValidator } from 'react-material-ui-form-validator';
-import { Typography } from "@material-ui/core";
-import { Grid } from '@material-ui/core';
-import Button from '@material-ui/core/Button';
-import Container from '@material-ui/core/Container';
+import { Typography , Grid} from "@material-ui/core";
+
+import SubmitButton from '../features/SubmitButton';
+import UserInputContainer from '../features/UserInputContainer';
 
 const useStyles = makeStyles(theme => ({
   textField: {
@@ -30,29 +30,6 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const SubmitButton = withStyles(theme => ({
-  root: {
-    color: theme.palette.getContrastText('#ff0000'),
-    background: "linear-gradient(45deg, #2AA897 10%, #4FBE75 90%)",
-    '&:hover': {
-      backgroundColor: "#ff0000",
-    },
-    width: 150,
-    height: 50,
-    fontSize: 15,
-  },
-}))(Button);
-
-const LoginContainer = withStyles(theme => ({
-  root: {
-    backgroundColor: "white",
-    width: 500,
-    height:400,
-    borderRadius: 10,
-    marginTop: 200,
-  }
-}))(Container);
-
 const Login = () => {
   const classes = useStyles();
   const [email, handleEmail] = useState("");
@@ -64,7 +41,7 @@ const Login = () => {
   }
 
   return (
-    <LoginContainer maxWidth="sm">
+    <UserInputContainer maxWidth="sm">
     <Typography className={classes.loginText}>Login</Typography>
       <ValidatorForm
         onSubmit={handleSubmit}
@@ -104,7 +81,7 @@ const Login = () => {
           </SubmitButton>
         </Grid>
       </ValidatorForm>
-    </LoginContainer>
+    </UserInputContainer>
   )
 }
 export default Login;
