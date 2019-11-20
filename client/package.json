@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@material-ui/core": "^4.0.0-rc.0",
+    "@material-ui/system": "^4.5.2",
     "material-ui": "^0.20.2",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
