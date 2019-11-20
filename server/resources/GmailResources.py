@@ -48,7 +48,9 @@ def get_stored_credentials(user_id):
     Returns:
       Stored oauth2client.client.OAuth2Credentials if found, None otherwise.
     """
-    credentials_json = GmailCredentials.filter_by(id=user_id)
+    credentials_json = GmailCredentials.filter_by(id=user_id).first()
+    if credentials_json is None:
+        return None
     return Credentials.new_from_json(credentials_json)
 
 
