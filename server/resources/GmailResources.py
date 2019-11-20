@@ -1,6 +1,6 @@
 from apiclient.discovery import build
 from oauth2client.client import FlowExchangeError
-from oauth2client.client import AccessTokenCredentials
+from oauth2client.client import Credentials
 from oauth2client.client import flow_from_clientsecrets
 from flask_restful import Resource, reqparse
 from flask_jwt_extended import jwt_required, get_jwt_identity
@@ -58,7 +58,7 @@ def get_stored_credentials(user_id):
       Stored oauth2client.client.OAuth2Credentials if found, None otherwise.
     """
     credentials_json = GmailCredentials.filter_by(id=user_id)
-    return AccessTokenCredentials.from_json(credentials_json)
+    return Credentials.new_from_json(credentials_json)
 
 
 def store_credentials(user_id, credentials, user_email):
@@ -71,7 +71,12 @@ def store_credentials(user_id, credentials, user_email):
       user_id: User's ID.
       credentials: OAuth 2.0 credentials to store.
     """
-
+    new_credentials = GmailCredentials(
+        user_email=user_email,
+        gmail_user_id=user_id,
+        gmail_credentials=credentials.to_json()
+    )
+    GmailCredentials.save_to_db()
 
 
 def exchange_code(authorization_code):
