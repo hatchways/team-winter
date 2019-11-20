@@ -24,16 +24,7 @@ SCOPES = [
 
 
 class GetCredentialsException(Exception):
-    """Error raised when an error occurred while retrieving credentials.
-
-    Attributes:
-      authorization_url: Authorization URL to redirect the user to in order to
-                         request offline access.
-
-    def __init__(self, authorization_url):
-        #Construct a GetCredentialsException
-        self.authorization_url = authorization_url
-    """
+    """Error raised when an error occurred while retrieving credentials."""
 
 
 class CodeExchangeException(GetCredentialsException):
@@ -70,6 +61,7 @@ def store_credentials(user_id, credentials, user_email):
     Args:
       user_id: User's ID.
       credentials: OAuth 2.0 credentials to store.
+      user_email: User's email address
     """
     new_credentials = GmailCredentials(
         user_email=user_email,
@@ -127,7 +119,6 @@ def get_authorization_url(state):
     """Retrieve the authorization URL.
 
     Args:
-      email_address: User's e-mail address.
       state: State for the authorization URL.
     Returns:
       Authorization URL to redirect the user to.
