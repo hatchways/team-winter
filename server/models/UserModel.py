@@ -6,13 +6,17 @@ class UserModel(db.Model):
 
     id = db.Column(db.Integer, primary_key = True)
     email = db.Column(db.String(120), unique = True, nullable = False)
-    fName = db.Column(db.String(120))
-    lName = db.Column(db.String(120))
+    first_name = db.Column(db.String(120))
+    last_name = db.Column(db.String(120))
     password = db.Column(db.String(120), nullable = False)
     
     def save_to_db(self):
         db.session.add(self)
         db.session.commit()
+
+    @classmethod
+    def find_by_id(cls, id):
+        return cls.query.filter_by(id = id).first()    
 
     @classmethod
     def find_by_email(cls, email):
