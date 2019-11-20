@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link} from "react-router-dom"
 import { makeStyles } from '@material-ui/core/styles';
 import Toolbar from '@material-ui/core/Toolbar';
 import AppBar from '@material-ui/core/AppBar';
@@ -24,16 +25,31 @@ const useStyles = makeStyles(() => ({
   },
   button: {
     flexGrow: 25,
-    color: "black",
     border: "solid #4FBE75 thin",
     borderRadius: "10",
     backgroundColor: "white",
   },
-  
+  buttonText: {
+    color: "black",
+    textDecoration: "none"
+  }
 }));
 
 const NavBar = () => {
   const classes = useStyles();
+
+  const path = window.location.pathname;
+  let link = null;
+  let text = null;
+
+  if ( path === '/signup' ) {
+    link = <Link className={classes.buttonText} to="/login">Login</Link>
+  }
+  
+  if ( path === '/login' ) {
+    link = <Link className={classes.buttonText} to="/signup">Create</Link>
+    text = "Don't have an account?"
+  }
 
   return (
     <div>
@@ -46,11 +62,11 @@ const NavBar = () => {
             sender
           </Typography>
           <Typography className={classes.noAccount}>
-            Don't have an account?
+            {text}
           </Typography>
           <Button
             className={classes.button}>
-            Create
+            {link}
           </Button>
         </Toolbar>
       </AppBar>
@@ -59,3 +75,4 @@ const NavBar = () => {
 }
 
 export default NavBar;
+
