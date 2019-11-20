@@ -6,16 +6,11 @@ from flask_restful import Api
 from api.ping_handler import ping_handler
 from api.home_handler import home_handler
 
-from config import DATABASE_URL, JWT_SECRET_KEY, SECRET_KEY
+app = Flask(__name__, instance_relative_config=True)
+app.config.from_object('config')
+app.config.from_pyfile('config.py')
 
-app = Flask(__name__)
 api = Api(app)
-
-app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL 
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['JWT_SECRET_KEY'] = JWT_SECRET_KEY
-app.config['SECRET_KEY'] = SECRET_KEY
-
 db = SQLAlchemy(app) 
 jwt = JWTManager(app)
 

@@ -6,8 +6,8 @@ class UserModel(db.Model):
 
     id = db.Column(db.Integer, primary_key = True)
     email = db.Column(db.String(120), unique = True, nullable = False)
-    fname = db.Column(db.String(120), nullable = False)
-    lname = db.Column(db.String(120), nullable = False)
+    fName = db.Column(db.String(120))
+    lName = db.Column(db.String(120))
     password = db.Column(db.String(120), nullable = False)
     
     def save_to_db(self):
