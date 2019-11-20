@@ -3,6 +3,9 @@ from flask_jwt_extended import JWTManager
 from flask_sqlalchemy import SQLAlchemy
 from flask_restful import Api
 
+from api.home_handler import home_handler
+from api.ping_handler import ping_handler
+
 
 app = Flask(__name__, instance_relative_config=True)
 api = Api(app)

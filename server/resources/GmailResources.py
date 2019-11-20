@@ -7,11 +7,8 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 import logging
 import httplib2
 
-from model import GmailCredentials
-from model import UserModel
-
-get_auth_url_parser = reqparse.RequestParser()
-get_auth_url_parser.add_argument('email', required=True)
+from models import GmailCredentials
+from models import UserModel
 
 authorize_parser = reqparse.RequestParser()
 authorize_parser.add_argument('code', required=True)
@@ -121,7 +118,7 @@ def get_user_info(credentials):
         raise NoUserIdException()
 
 
-def get_authorization_url(email_address, state):
+def get_authorization_url(state):
     """Retrieve the authorization URL.
 
     Args:
@@ -133,17 +130,15 @@ def get_authorization_url(email_address, state):
     flow = flow_from_clientsecrets(CLIENTSECRETS_LOCATION, ' '.join(SCOPES))
     flow.params['access_type'] = 'offline'
     flow.params['approval_prompt'] = 'force'
-    flow.params['user_id'] = email_address
     flow.params['state'] = state
     return flow.step1_get_authorize_url(REDIRECT_URI)
 
 
 class GetAuthURL(Resource):
     def get(self):
-        data = get_auth_url_parser.parse_args()
         # will handle state later, need to get this working for now
         state=None
-        auth_url = get_authorization_url(data['email'], state)
+        auth_url = get_authorization_url(state)
         return {'auth_url': auth_url}, 200
 
 
