@@ -1,4 +1,6 @@
-import os
+import os, datetime
 
 TEAM_NAME = os.environ['TEAM_NAME']
-DATABASE_URL = os.environ['DATABASE_URL']
+
+SQLALCHEMY_TRACK_MODIFICATIONS = False
+JWT_ACCESS_TOKEN_EXPIRES = datetime.timedelta(30)

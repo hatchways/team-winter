@@ -5,7 +5,8 @@ Go to .env file and edit DATABASE_URL variable in the following format:
 where username will be postgres, and pw will be your password to your localhost
 and db_name is the name of your database.
 
-In our case: 'postgresql://postgres:1234@localhost/team-winter'
+# For sensitivity reasons, our password is blurred out
+In our case: 'postgresql://postgres:xxxx@localhost/team-winter'
 
 Next, create database 'team-winter' in your localhost 
 You can do so in the following commands:
