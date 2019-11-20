@@ -1,4 +1,4 @@
-import React, { useState }  from "react";
+import React, { useState, Fragment }  from "react";
 
 import { makeStyles } from '@material-ui/core/styles';
 import { ValidatorForm, TextValidator } from 'react-material-ui-form-validator';
@@ -6,6 +6,8 @@ import { Typography , Grid} from "@material-ui/core";
 
 import SubmitButton from '../features/SubmitButton';
 import UserInputContainer from '../features/UserInputContainer';
+import NavBar from '../features/NavBar'
+import { validatePassword } from '../utils';
 
 const useStyles = makeStyles(theme => ({
   textField: {
@@ -37,51 +39,53 @@ const Login = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    alert('submitted!');
   }
 
   return (
-    <UserInputContainer maxWidth="sm">
-    <Typography className={classes.loginText}>Login</Typography>
-      <ValidatorForm
-        onSubmit={handleSubmit}
-      >
-        <TextValidator
-          className={classes.textField}
-          label="Email"
-          onChange={e => handleEmail(e.target.value)}
-          value={email}
-          validators={['required', 'isEmail']}
-          errorMessages={['this field is required', 'email is not valid']}
-          InputProps={{
-            disableUnderline: true
-         }}
-
-        />
-        <br />
-        <TextValidator
-          className={classes.textField}
-          label="Password"
-          onChange={e => handlePassword(e.target.value)}
-          type="password"
-          value={password}
-          validators={['required']}
-          errorMessages={['this field is required']}
-          InputProps={{
-            disableUnderline: true
-         }}
-        />
-        <Grid align="center">
-          <SubmitButton 
-            type="submit"
-            variant="contained"
-            color="primary"
-            className={classes.button}>
-            Submit
-          </SubmitButton>
-        </Grid>
-      </ValidatorForm>
-    </UserInputContainer>
+    <Fragment>
+      <NavBar />
+      <UserInputContainer maxWidth="sm">
+        <Typography className={classes.loginText}>Login</Typography>
+        <ValidatorForm
+          onSubmit={handleSubmit}
+        >
+          <TextValidator
+            className={classes.textField}
+            label="Email"
+            onChange={e => handleEmail(e.target.value)}
+            value={email}
+            validators={['required', 'isEmail']}
+            errorMessages={['this field is required', 'email is not valid']}
+            InputProps={{
+              disableUnderline: true
+            }}
+          />
+          <br />
+          <TextValidator
+            className={classes.textField}
+            label="Password (min. 6 characters)"
+            onChange={e => handlePassword(e.target.value)}
+            type="password"
+            value={password}
+            validators={['required']}
+            errorMessages={['this field is required']}
+            InputProps={{
+              disableUnderline: true
+            }}
+          />
+          <Grid align="center">
+            <SubmitButton 
+              disabled={!validatePassword(password)}
+              type="submit"
+              variant="contained"
+              color="primary"
+              className={classes.button}>
+              Submit
+            </SubmitButton>
+          </Grid>
+        </ValidatorForm>
+      </UserInputContainer>
+    </Fragment>
   )
 }
 export default Login;
