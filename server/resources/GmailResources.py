@@ -7,15 +7,15 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 import logging
 import httplib2
 import pickle
+import uuid
 
-from models.GmailCredentials import GmailCredentials
 from models.UserModel import UserModel
 
 authorize_parser = reqparse.RequestParser()
 authorize_parser.add_argument('code', required=True)
 
 CLIENTSECRETS_LOCATION = 'instance/client_secrets.json'
-REDIRECT_URI = 'http://localhost:5000/'
+REDIRECT_URI = 'http://localhost:3000/gmail/authorize'
 SCOPES = [
     'https://www.googleapis.com/auth/gmail.readonly',
     'https://www.googleapis.com/auth/userinfo.email',
@@ -49,19 +49,19 @@ def get_stored_credentials(user_id):
     Returns:
       Stored oauth2client.client.OAuth2Credentials if found, None otherwise.
     """
-    query_result = GmailCredentials.filter_by(id=user_id).first()
-    if query_result is None:
+    user = UserModel.find_by_id(user_id)
+    if user.gmail_credentials is None:
         return None
-    credentials = OAuth2Credentials.from_json(query_result.gmail_credentials)
+    credentials = OAuth2Credentials.from_json(user.gmail_credentials)
     if credentials.access_token_expired():
         credentials.refresh(httplib2.Http())
         # update db with refreshed token
-        query_result.gmail_credentials = credentials.to_json()
-        query_result.save_to_db()
+        user.gmail_credentials = credentials.to_json()
+        user.save_to_db()
     return credentials
 
 
-def store_credentials(user_id, credentials, user_email):
+def store_credentials(user_id, credentials):
     """Store OAuth 2.0 credentials in the application's database.
 
     This function stores the provided OAuth 2.0 credentials using the user ID as
@@ -72,12 +72,11 @@ def store_credentials(user_id, credentials, user_email):
       credentials: OAuth 2.0 credentials to store.
       user_email: User's email address
     """
-    new_credentials = GmailCredentials(
-        user_email=user_email,
-        user_gmail_id=user_id,
-        user_gmail_credentials=credentials.to_json()
-    )
-    new_credentials.save_to_db()
+    user = UserModel.find_by_id(user_id)
+    user_info = get_user_info(credentials)
+    user.gmail_credentials = credentials.to_json()
+    user.gmail_address = user_info.get('email')
+    user.save_to_db()
 
 
 def exchange_code(authorization_code):
@@ -140,9 +139,13 @@ def get_authorization_url(state):
 
 
 class GetAuthURL(Resource):
+    @jwt_required
     def get(self):
-        # will handle state later, need to get this working for now
-        state=None
+        state = uuid.uuid4()
+        user_id = get_jwt_identity()
+        user = UserModel.find_by_id(user_id)
+        user.gmail_auth_state = state
+        user.save_to_db()
         auth_url = get_authorization_url(state)
         return {'auth_url': auth_url}, 200
 
@@ -151,9 +154,19 @@ class Authorize(Resource):
     @jwt_required
     def get(self):
         data = authorize_parser.parse_args()
-        credentials = exchange_code(data['code'])
-        user_info = get_user_info(credentials)
-        user_id = user_info.get('id')
-        user_email = get_jwt_identity()
-        store_credentials(user_id, credentials, user_email)
-        return {'success': True}, 200
+        code = data['code']
+        state = data['state']
+        user_id = get_jwt_identity()
+        stored_state = UserModel.find_by_id(user_id).gmail_auth_state
+        if state == stored_state:
+            credentials = exchange_code(code)
+            store_credentials(user_id, credentials)
+            return {'success': True}, 200
+        return {'error': 'state parameters did not match'}, 401
+
+class GetGmailAddress(Resource):
+    @jwt_required
+    def get(self):
+        user_id = get_jwt_identity()
+        user_gmail = UserModel.find_by_id(user_id).gmail_address
+        return {'gmail_address': user_gmail}, 200

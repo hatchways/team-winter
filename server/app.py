@@ -24,6 +24,7 @@ api.add_resource(UserResources.UserRegister, '/register')
 api.add_resource(UserResources.UserLogin, '/login')
 api.add_resource(GmailResources.GetAuthURL, '/gmail/get_auth_url')
 api.add_resource(GmailResources.Authorize, '/gmail/authorize')
+api.add_resource(GmailResources.GetGmailAddress, '/gmail/get_address')
 
 app.register_blueprint(home_handler)
 app.register_blueprint(ping_handler)
