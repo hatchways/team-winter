@@ -60,7 +60,6 @@ const Login = () => {
               disableUnderline: true
             }}
           />
-          <br />
           <TextValidator
             className={classes.textField}
             label="Password (min. 6 characters)"
