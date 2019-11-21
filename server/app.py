@@ -19,7 +19,6 @@ from resources import UserResources
 
 api.add_resource(UserResources.UserRegister, '/register')
 api.add_resource(UserResources.UserLogin, '/login')
-api.add_resource(UserResources.UserTest, '/test')
 
 app.register_blueprint(home_handler)
 app.register_blueprint(ping_handler)
