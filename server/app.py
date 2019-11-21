@@ -14,7 +14,7 @@ api = Api(app)
 db = SQLAlchemy(app) 
 jwt = JWTManager(app)
 
-from models import UserModel
+from models import UserModel, ProspectModel, TagModel
 from resources import UserResources
 
 api.add_resource(UserResources.UserRegister, '/register')

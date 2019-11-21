@@ -9,6 +9,9 @@ class UserModel(db.Model):
     first_name = db.Column(db.String(120))
     last_name = db.Column(db.String(120))
     password = db.Column(db.String(120), nullable = False)
+    prospects = db.relationship(
+        'ProspectModel', backref='owner', lazy = 'select'
+    )
     
     def save_to_db(self):
         db.session.add(self)
