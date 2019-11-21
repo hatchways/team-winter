@@ -4,8 +4,25 @@ export const theme = createMuiTheme({
   typography: {
     fontFamily: '"Roboto"'
   },
-  primary: "#f04040",
-  secondary: "#1f1f1f",
+  primary: "#2AA897",
+  secondary: "#4FBE75",
   error: "#d8000c",
-  bgcolor: "#f6f6f6"
+  bgcolor: "#white",
+  overrides: {
+    MuiFormControl: {
+      marginNormal: {
+        marginTop: "0px",
+        marginBottom: "45px",
+      }
+    },
+    MuiFormHelperText: {
+      contained: {
+        margin: "4px"
+      },
+    }
+  }
 });
+
+
+
+
