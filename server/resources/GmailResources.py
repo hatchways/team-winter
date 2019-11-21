@@ -1,20 +1,21 @@
 from apiclient.discovery import build
 from oauth2client.client import FlowExchangeError
-from oauth2client.client import Credentials
+from oauth2client.client import OAuth2Credentials
 from oauth2client.client import flow_from_clientsecrets
 from flask_restful import Resource, reqparse
 from flask_jwt_extended import jwt_required, get_jwt_identity
 import logging
 import httplib2
+import pickle
 
-from models import GmailCredentials
-from models import UserModel
+from models.GmailCredentials import GmailCredentials
+from models.UserModel import UserModel
 
 authorize_parser = reqparse.RequestParser()
 authorize_parser.add_argument('code', required=True)
 
 CLIENTSECRETS_LOCATION = 'instance/client_secrets.json'
-REDIRECT_URI = 'http://localhost:5000/gmail/authorize'
+REDIRECT_URI = 'http://localhost:5000/'
 SCOPES = [
     'https://www.googleapis.com/auth/gmail.readonly',
     'https://www.googleapis.com/auth/userinfo.email',
@@ -48,10 +49,16 @@ def get_stored_credentials(user_id):
     Returns:
       Stored oauth2client.client.OAuth2Credentials if found, None otherwise.
     """
-    credentials_json = GmailCredentials.filter_by(id=user_id).first()
-    if credentials_json is None:
+    query_result = GmailCredentials.filter_by(id=user_id).first()
+    if query_result is None:
         return None
-    return Credentials.new_from_json(credentials_json)
+    credentials = OAuth2Credentials.from_json(query_result.gmail_credentials)
+    if credentials.access_token_expired():
+        credentials.refresh(httplib2.Http())
+        # update db with refreshed token
+        query_result.gmail_credentials = credentials.to_json()
+        query_result.save_to_db()
+    return credentials
 
 
 def store_credentials(user_id, credentials, user_email):
@@ -67,10 +74,10 @@ def store_credentials(user_id, credentials, user_email):
     """
     new_credentials = GmailCredentials(
         user_email=user_email,
-        gmail_user_id=user_id,
-        gmail_credentials=credentials.to_json()
+        user_gmail_id=user_id,
+        user_gmail_credentials=credentials.to_json()
     )
-    GmailCredentials.save_to_db()
+    new_credentials.save_to_db()
 
 
 def exchange_code(authorization_code):
