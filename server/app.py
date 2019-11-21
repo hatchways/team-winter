@@ -4,7 +4,6 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_restful import Api
 
 from api.home_handler import home_handler
-from api.ping_handler import ping_handler
 
 
 app = Flask(__name__, instance_relative_config=True)
@@ -27,4 +26,3 @@ api.add_resource(GmailResources.Authorize, '/gmail/authorize')
 api.add_resource(GmailResources.GetGmailAddress, '/gmail/get_address')
 
 app.register_blueprint(home_handler)
-app.register_blueprint(ping_handler)
