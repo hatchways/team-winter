@@ -1,46 +1,39 @@
-import React, { useEffect, useState, Fragment }  from "react";
+import React, { useState, Fragment }  from "react";
 
 import { makeStyles } from '@material-ui/core/styles';
-import { ValidatorForm, TextValidator } from 'react-material-ui-form-validator';
+import { ValidatorForm } from 'react-material-ui-form-validator';
 import { Typography , Grid} from "@material-ui/core";
 
+import TextField from '@material-ui/core/TextField';
 import SubmitButton from '../features/SubmitButton';
 import UserInputContainer from '../features/UserInputContainer';
 import NavBar from '../features/NavBar'
-import { validatePassword } from '../utils';
 
 const useStyles = makeStyles(theme => ({
   signUpText: {
-    fontSize: 24,
+    fontSize: 35,
     color: "black",
     textAlign: "center",
-    padding: 15,
+    padding: 30,
   },
-  textField: {
+  nameField: {
+    width: "46%",
+    height: 35,
+    marginLeft: 10,
+  },
+  otherField: {
     marginLeft: theme.spacing(1),
     marginRight: theme.spacing(1),
-    boxShadow: "0px 0px 2px 0px rgb(175, 173, 179)",
-    borderRadius: 5,
-    width: "44%",
-    margin: 12,
-    textIndent: 10,
-    padding: 5,
-    height: 45,
-  },
-  email: {
-    marginLeft: theme.spacing(1),
-    marginRight: theme.spacing(1),
-    boxShadow: "0px 0px 2px 0px rgb(175, 173, 179)",
-    borderRadius: 5,
     width: "95%",
-    margin: 12,
-    textIndent: 10,
-    padding: 5,
-    height: 45,
+    height: 35,
   },
   button: {
-    margin: 20,
+    margin: 10,
   },
+  root: {
+    height: 520,
+    marginTop: 150,
+  }
 }));
 
 const Login = () => {
@@ -51,91 +44,76 @@ const Login = () => {
   const [password, handlePassword] = useState("");
   const [repeatPassword, handleRepeatPassword] = useState("");
 
-  useEffect(() => {
-    ValidatorForm.addValidationRule('isPasswordMatch', (value) => {
-      if (value !== password) {
-        return false;
-      }
-      return true;
-    });
-
-    return function cleanup() {
-      ValidatorForm.removeValidationRule('isPasswordMatch');
-    };
-  });
-
   const handleSubmit = (e) => {
     e.preventDefault();
+    alert('hey')
   }
 
   return (
     <Fragment>
       <NavBar />
-      <UserInputContainer maxWidth="sm">
-        <Typography className={classes.signUpText}>Create your free account today!</Typography>
+      <UserInputContainer classes={{
+        root: classes.root
+      }} maxWidth="sm">
+        <Typography className={classes.signUpText}>Sign up</Typography>
         <ValidatorForm
           onSubmit={handleSubmit}
+          className={classes.form}
         > 
-          <TextValidator
-            className={classes.textField}
+          <TextField
+            error={firstName.length > 0 ? false : true }
             label="First name"
-            onChange={e => handleFirstName(e.target.value)}
             value={firstName}
-            validators={['required']}
-            errorMessages={['this field is required']}
-            InputProps={{
-              disableUnderline: true
-            }}
+            onChange={e => handleFirstName(e.target.value)}
+            helperText="*required"
+            className={classes.nameField}
+            margin="normal"
+            variant="outlined"
           />
-            <TextValidator
-              className={classes.textField}
-              label="Last name"
-              onChange={e => handleLastName(e.target.value)}
-              value={lastName}
-              validators={['required']}
-              errorMessages={['this field is required']}
-              InputProps={{
-                disableUnderline: true
-              }}
-            />
-          <TextValidator
-            className={classes.email}
+          <TextField
+            error={lastName.length > 0 ? false : true }
+            label="Last name"
+            value={lastName}
+            onChange={e => handleLastName(e.target.value)}
+            helperText="*required"
+            className={classes.nameField}
+            margin="normal"
+            variant="outlined"
+          />
+          <TextField
+            error={email.length > 0 ? false : true }
+            type="email"
             label="Email"
-            onChange={e => handleEmail(e.target.value)}
             value={email}
-            validators={['required', 'isEmail']}
-            errorMessages={['this field is required', 'email is not valid']}
-            InputProps={{
-              disableUnderline: true
-            }}
+            onChange={e => handleEmail(e.target.value)}
+            helperText="*required"
+            className={classes.otherField}
+            margin="normal"
+            variant="outlined"
           />
-          <TextValidator
-            className={classes.textField}
-            label="Password (min. 6 chars)"
-            onChange={e => handlePassword(e.target.value)}
+        <TextField
+            error={password.length >= 6 ? false : true }
             type="password"
+            label="Password"
             value={password}
-            validators={['required']}
-            errorMessages={['this field is required']}
-            InputProps={{
-              disableUnderline: true
-            }}
+            onChange={e => handlePassword(e.target.value)}
+            helperText="*min. 6 characters"
+            className={classes.otherField}
+            margin="normal"
+            variant="outlined"
           />
-          <TextValidator
-            className={classes.textField}
-            label="Repeat password"
-            onChange={e => handleRepeatPassword(e.target.value)}
+          <TextField
+            error={password === repeatPassword && repeatPassword.length > 0 ? false : true }
             type="password"
+            label="Repeat password"
             value={repeatPassword}
-            validators={['required', 'isPasswordMatch']}
-            errorMessages={['this field is required', 'password mismatch']}
-            InputProps={{
-              disableUnderline: true
-            }}
+            onChange={e => handleRepeatPassword(e.target.value)}
+            className={classes.otherField}
+            margin="normal"
+            variant="outlined"
           />
           <Grid align="center">
             <SubmitButton 
-              disabled={!validatePassword(password) || !validatePassword(repeatPassword)}
               type="submit"
               variant="contained"
               color="primary"
