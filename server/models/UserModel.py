@@ -1,6 +1,5 @@
 from app import db
 from passlib.hash import pbkdf2_sha256 as sha256
-from sqlalchemy.dialects.postgresql import JSON
 
 class UserModel(db.Model):
     __tablename__ = 'users'
