@@ -1,5 +1,6 @@
 from flask_restful import Resource, reqparse
 from models.UserModel import UserModel
+
 import datetime
 from flask_jwt_extended import (create_access_token, jwt_required, get_jwt_identity, get_raw_jwt)
 
@@ -55,3 +56,4 @@ class UserLogin(Resource):
             }, 202
         else:
             return {'message': 'Wrong credentials'}, 400
+

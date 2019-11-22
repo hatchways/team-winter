@@ -12,6 +12,9 @@ class UserModel(db.Model):
     gmail_credentials = db.Column(db.Json(), nullable = True)
     gmail_address = db.Column(db.String(120), nullable = True)
     gmail_auth_state = db.Column(db.String(120), nullable = True)
+    prospects = db.relationship(
+        'ProspectModel', backref='owner', lazy = 'select'
+    )
     
     def save_to_db(self):
         db.session.add(self)
