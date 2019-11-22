@@ -15,7 +15,10 @@ class UserModel(db.Model):
     prospects = db.relationship(
         'ProspectModel', backref='owner', lazy = 'select'
     )
-    
+    campaigns = db.relationship(
+        'CampaignModel', backref='owner', lazy = 'select'
+    )
+
     def save_to_db(self):
         db.session.add(self)
         db.session.commit()
