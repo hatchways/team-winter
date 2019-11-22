@@ -45,13 +45,13 @@ const Login = () => {
       password,
     };
 
-    fetch("http://localhost:3005/login", {
+    fetch("http://localhost:5000/login", {
       method: "POST",
       headers: {
         'Content-Type': 'application/json',
         Accept: 'application/json',
       },
-      body: JSON.stringify({data})
+      body: JSON.stringify(data)
     })
       
     .then(res => res.json())
@@ -63,6 +63,7 @@ const Login = () => {
         alert(data.message)
       }
     })
+    .catch(error => alert(error.message));
   }
   
   return (

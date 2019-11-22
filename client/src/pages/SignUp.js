@@ -60,13 +60,13 @@ const Register = () => {
       last_name: lastName,
     };
 
-    fetch("http://localhost:3001/register", {
+    fetch("http://localhost:5000/register", {
       method: "POST",
       headers: {
         'Content-Type': 'application/json',
         Accept: 'application/json',
       },
-      body: JSON.stringify({data})
+      body: JSON.stringify(data)
     })
       
     .then(res => res.json())
