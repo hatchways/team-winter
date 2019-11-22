@@ -52,8 +52,32 @@ const Register = () => {
   }
 
   const handleRegister = () => {
-    // to-do: POST request to /register
-    alert('registered!')
+    const data = {
+      email,
+      password,
+      confirm_pass: repeatPassword,
+      first_name: firstName,
+      last_name: lastName,
+    };
+
+    fetch("http://localhost:3001/register", {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+      },
+      body: JSON.stringify({data})
+    })
+      
+    .then(res => res.json())
+      .then(data => {
+      if (!data.access_token) {
+        alert(data.message);
+      } else {
+        localStorage.setItem("token", data.access_token)
+        alert(data.message)
+      }
+    })
   }
 
   return (
@@ -135,6 +159,3 @@ const Register = () => {
   )
 }
 export default Register;
-
-
-

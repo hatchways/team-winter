@@ -40,8 +40,29 @@ const Login = () => {
   }
 
   const handlelogin = () => {
-    // to-do: POST request to /login
-    alert('Logged in!')
+    const data = {
+      email,
+      password,
+    };
+
+    fetch("http://localhost:3005/login", {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+      },
+      body: JSON.stringify({data})
+    })
+      
+    .then(res => res.json())
+      .then(data => {
+      if (!data.access_token) {
+        alert(data.message);
+      } else {
+        localStorage.setItem("token", data.access_token)
+        alert(data.message)
+      }
+    })
   }
   
   return (
@@ -90,6 +111,3 @@ const Login = () => {
   )
 }
 export default Login;
-
-
-
