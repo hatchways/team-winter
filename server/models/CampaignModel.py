@@ -11,12 +11,16 @@ class CampaignModel(db.Model):
 
     id = db.Column(db.Integer, primary_key = True)
     name = db.Column(db.String(120))
-    creation_date = Column(DateTime, default=datetime.datetime.utcnow)
+    creation_date = db.Column(db.DateTime, default=datetime.datetime.utcnow)
     owner_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     prospects = db.relationship(
         'ProspectModel', secondary=campaigns_prospects, backref='campaigns', lazy='select'
     )
-    
+
+    def save_to_db(self):
+        db.session.add(self)
+        db.session.commit()
+
     @classmethod
     def find_by_id(cls, id):
         return cls.query.filter_by(id = id).first()

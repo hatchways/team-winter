@@ -17,6 +17,7 @@ api = Api(app)
 db = SQLAlchemy(app) 
 jwt = JWTManager(app)
 
+from models import UserModel, ProspectModel, TagModel, CampaignModel
 from resources import UserResources, GmailResources, CampaignResources
 
 api.add_resource(UserResources.UserRegister, '/register')
