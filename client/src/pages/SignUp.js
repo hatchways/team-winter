@@ -36,17 +36,24 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const Login = () => {
+const Register = () => {
   const classes = useStyles();
   const [firstName, handleFirstName] = useState("");
   const [lastName, handleLastName] = useState("");
   const [email, handleEmail] = useState("");
   const [password, handlePassword] = useState("");
   const [repeatPassword, handleRepeatPassword] = useState("");
+  const [submit, didSubmit] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    alert('hey')
+
+    handleRegister();
+  }
+
+  const handleRegister = () => {
+    // to-do: POST request to /register
+    alert('registered!')
   }
 
   return (
@@ -61,7 +68,7 @@ const Login = () => {
           className={classes.form}
         > 
           <TextField
-            error={firstName.length > 0 ? false : true }
+            error={!submit ? false : firstName.length > 0 ? false : true }
             label="First name"
             value={firstName}
             onChange={e => handleFirstName(e.target.value)}
@@ -71,7 +78,7 @@ const Login = () => {
             variant="outlined"
           />
           <TextField
-            error={lastName.length > 0 ? false : true }
+            error={!submit ? false : lastName.length > 0 ? false : true }
             label="Last name"
             value={lastName}
             onChange={e => handleLastName(e.target.value)}
@@ -81,7 +88,7 @@ const Login = () => {
             variant="outlined"
           />
           <TextField
-            error={email.length > 0 ? false : true }
+            error={!submit ? false : email.length > 0 ? false : true }
             type="email"
             label="Email"
             value={email}
@@ -92,7 +99,7 @@ const Login = () => {
             variant="outlined"
           />
         <TextField
-            error={password.length >= 6 ? false : true }
+            error={!submit ? false : password.length >= 6 ? false : true }
             type="password"
             label="Password"
             value={password}
@@ -103,7 +110,7 @@ const Login = () => {
             variant="outlined"
           />
           <TextField
-            error={password === repeatPassword && repeatPassword.length > 0 ? false : true }
+            error={!submit ? false : password === repeatPassword && repeatPassword.length > 0 ? false : true }
             type="password"
             label="Repeat password"
             value={repeatPassword}
@@ -114,6 +121,7 @@ const Login = () => {
           />
           <Grid align="center">
             <SubmitButton 
+              onClick={() => didSubmit(true)}
               type="submit"
               variant="contained"
               color="primary"
@@ -126,7 +134,7 @@ const Login = () => {
     </Fragment>
   )
 }
-export default Login;
+export default Register;
 
 
 
