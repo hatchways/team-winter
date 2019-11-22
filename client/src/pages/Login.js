@@ -31,11 +31,19 @@ const Login = () => {
   const classes = useStyles();
   const [email, handleEmail] = useState("");
   const [password, handlePassword] = useState("");
+  const [submit, didSubmit] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    handlelogin();
   }
 
+  const handlelogin = () => {
+    // to-do: POST request to /login
+    alert('Logged in!')
+  }
+  
   return (
     <Fragment>
       <NavBar />
@@ -45,7 +53,7 @@ const Login = () => {
           onSubmit={handleSubmit}
         >
           <TextField
-            error={email.length > 0 ? false : true }
+            error={!submit ? false : email.length > 0 ? false : true}
             type="email"
             label="Email"
             value={email}
@@ -56,7 +64,7 @@ const Login = () => {
             variant="outlined"
           />
           <TextField
-            error={password.length >= 6 ? false : true }
+            error={!submit ? false : password.length >= 6 ? false : true }
             type="password"
             label="Password"
             value={password}
@@ -68,6 +76,7 @@ const Login = () => {
           />
           <Grid align="center">
             <SubmitButton 
+              onClick={() => didSubmit(true)}
               type="submit"
               variant="contained"
               color="primary"
