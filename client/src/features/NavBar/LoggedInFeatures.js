@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useState, useEffect } from 'react';
 import { withStyles, makeStyles } from '@material-ui/core/styles';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
@@ -14,13 +14,17 @@ const useStyles = makeStyles(() => ({
     marginLeft: "5px",
     fontSize: "smaller",
   },
-  toggleMenu: {
+  toggleButton: {
     padding: "0",
     minWidth: "30px",
     fontSize: "0.5rem",
+    marginRight: "30px",
   },
+  toggleMenu: {
+    margin: "30px 0px 0px 12px",
+    overflow: 1,
+  }
 }));
-
 
 const ItemTabs = withStyles({
   indicator: {
@@ -57,9 +61,17 @@ const ItemTab = withStyles(theme => ({
 
 const CustomizedTabs = () => {
   const classes = useStyles();
-  const [value, setValue] = React.useState(0);
-  const [toggle, handleToggle] = React.useState(null);
+  const [value, setValue] = useState(0);
+  const [toggle, handleToggle] = useState(null);
 
+  const path = window.location.pathname.toLowerCase();
+
+  useEffect(() => {
+    if ( path === '/prospects' ) {
+      setValue(1);
+    } 
+  }, [path]);
+  
   const handleClick = event => {
     handleToggle(event.currentTarget);
   };
@@ -86,18 +98,17 @@ const CustomizedTabs = () => {
     <Typography  className={classes.username} >
       Hatchways
     </Typography>
-    <Button className={classes.toggleMenu} onClick={handleClick}>
-      <i class="fas fa-sort-down fa-lg" style={{color: "grey"}}></i>
+    <Button className={classes.toggleButton} onClick={handleClick}>
+      <i className="fas fa-sort-down fa-lg" style={{color: "grey"}}></i>
     </Button>
     <Menu
-      id="simple-menu"
+      className={classes.toggleMenu}
       anchorEl={toggle}
       keepMounted
       open={Boolean(toggle)}
       onClose={handleClose}
     >
       <MenuItem onClick={handleClose}>Profile</MenuItem>
-      <MenuItem onClick={handleClose}>My account</MenuItem>
       <MenuItem onClick={handleClose}>Logout</MenuItem>
     </Menu>
     </Fragment>
