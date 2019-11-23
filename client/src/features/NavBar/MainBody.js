@@ -6,6 +6,7 @@ import Typography from '@material-ui/core/Typography';
 
 import LoginFeatures from './LoginFeatures';
 import SignUpFeatures from './SignUpFeatures';
+import LoggedInFeatures from './LoggedInFeatures';
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -29,10 +30,10 @@ const NavBar = () => {
   
   if ( path === '/login' ) {
     features = <LoginFeatures />
-  } 
-  
-  if ( path === '/signup' ) {
+  } else if ( path === '/signup' ) {
     features = <SignUpFeatures />
+  } else {
+    features = <LoggedInFeatures />
   }
 
   return (
