@@ -1,4 +1,5 @@
 import React, { useState, Fragment }  from "react";
+import { Redirect } from "react-router-dom";
 import { makeStyles } from '@material-ui/core/styles';
 import { ValidatorForm } from 'react-material-ui-form-validator';
 import { Typography , Grid} from "@material-ui/core";
@@ -31,6 +32,11 @@ const Login = () => {
   const [email, handleEmail] = useState("");
   const [password, handlePassword] = useState("");
   const [submit, didSubmit] = useState(false);
+  const [login, handleLogin] = useState(false);
+
+  if (login) {
+    return <Redirect to="/prospects" />
+  }
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -59,6 +65,7 @@ const Login = () => {
         alert(data.message);
       } else {
         localStorage.setItem("mailsender_token", data.access_token);
+        handleLogin(true);
       }
     })
     .catch(err => {
