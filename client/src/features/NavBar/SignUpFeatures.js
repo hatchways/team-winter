@@ -2,7 +2,7 @@ import React, { Fragment } from 'react';
 import { Link} from "react-router-dom"
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
-import ActionButton from '../ActionButton';
+import OutlinedButton from '../OutlinedButton';
 
 const useStyles = makeStyles(() => ({
   navText: {
@@ -24,7 +24,7 @@ const SignUpFeatures = () => {
       <Typography className={classes.navText}>
         Already have an account?
       </Typography>
-      <ActionButton> <Link className={classes.buttonText} to="/login">Log in</Link> </ActionButton>
+      <OutlinedButton> <Link className={classes.buttonText} to="/login">Log in</Link> </OutlinedButton>
     </Fragment>
   );
 }

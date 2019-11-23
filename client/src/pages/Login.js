@@ -5,7 +5,7 @@ import { ValidatorForm } from 'react-material-ui-form-validator';
 import { Typography , Grid} from "@material-ui/core";
 import TextField from '@material-ui/core/TextField';
 
-import SubmitButton from '../features/SubmitButton';
+import CustomizedButton from '../features/CustomizedButton';
 import UserInputContainer from '../features/UserInputContainer';
 import NavBar from '../features/NavBar/MainBody'
  
@@ -104,14 +104,14 @@ const Login = () => {
             variant="outlined"
           />
           <Grid align="center">
-            <SubmitButton 
+            <CustomizedButton 
               onClick={() => didSubmit(true)}
               type="submit"
               variant="contained"
               color="primary"
               className={classes.button}>
               Submit
-            </SubmitButton>
+            </CustomizedButton>
           </Grid>
         </ValidatorForm>
       </UserInputContainer>

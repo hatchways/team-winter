@@ -1,7 +1,7 @@
 import Button from '@material-ui/core/Button';
 import { withStyles } from '@material-ui/core/styles';
 
-const ActionButton = withStyles(() => ({
+const OutlinedButton = withStyles(() => ({
   root: {
     border: "solid #4FBE75 thin",
     backgroundColor: "white",
@@ -9,4 +9,4 @@ const ActionButton = withStyles(() => ({
   },
 }))(Button);
 
-export default ActionButton;
+export default OutlinedButton;
