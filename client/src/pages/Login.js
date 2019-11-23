@@ -1,15 +1,14 @@
 import React, { useState, Fragment }  from "react";
-
 import { makeStyles } from '@material-ui/core/styles';
 import { ValidatorForm } from 'react-material-ui-form-validator';
 import { Typography , Grid} from "@material-ui/core";
-
 import TextField from '@material-ui/core/TextField';
+
 import SubmitButton from '../features/SubmitButton';
 import UserInputContainer from '../features/UserInputContainer';
-import NavBar from '../features/NavBar'
+import NavBar from '../features/NavBar/MainBody'
  
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles( () => ({
   textField: {
     borderRadius: 5,
     width: "95%",
@@ -59,11 +58,12 @@ const Login = () => {
       if (!data.access_token) {
         alert(data.message);
       } else {
-        localStorage.setItem("token", data.access_token)
-        alert(data.message)
+        localStorage.setItem("mailsender_token", data.access_token);
       }
     })
-    .catch(error => alert(error.message));
+    .catch(err => {
+      console.log(err.message);
+    });
   }
   
   return (
