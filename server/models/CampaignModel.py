@@ -17,6 +17,10 @@ class CampaignModel(db.Model):
         'ProspectModel', secondary=campaigns_prospects, backref='campaigns', lazy='select'
     )
 
+    def add_prospect(self, prospect):
+        self.prospects.append(prospect)
+        db.session.commit()
+
     def save_to_db(self):
         db.session.add(self)
         db.session.commit()

@@ -28,6 +28,6 @@ api.add_resource(GmailResources.Authorize, '/gmail/authorize')
 api.add_resource(GmailResources.GetGmailAddress, '/gmail/get_address')
 api.add_resource(CampaignResources.NewCampaign, '/campaign/new')
 api.add_resource(CampaignResources.CampaignProspects, '/campaign/<int:id>/prospects')
-
+api.add_resource(CampaignResources.AddProspectsToCampaign, '/prospects/campaign')
 
 app.register_blueprint(home_handler)
