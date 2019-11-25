@@ -122,17 +122,20 @@ function ProspectsUpload(props) {
   }
 
   const uploadProspects = async () => {
-    console.log('prospectss:')
-    console.log(prospects);
+    console.log('prospects  :')
+    console.log(JSON.stringify(prospects));
     console.log('name column: ' + nameColumn);
     console.log('email column: ' + emailColumn);
-
+    console.log(getJWT());
 
     try {
       const response = await fetch(UPLOAD_URL, {
         method: 'POST', 
-        body: prospects,
+        body: JSON.stringify({
+          'prospects': prospects
+        }),
         headers: {
+          'Content-Type': 'application/json', 
           'Authorization': `Bearer ${getJWT()}`
         }
       });

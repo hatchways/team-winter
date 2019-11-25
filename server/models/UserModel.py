@@ -9,7 +9,7 @@ class UserModel(db.Model):
     first_name = db.Column(db.String(120))
     last_name = db.Column(db.String(120))
     password = db.Column(db.String(120), nullable = False)
-    gmail_credentials = db.Column(db.Json(), nullable = True)
+    gmail_credentials = db.Column(db.JSON(), nullable = True)
     gmail_address = db.Column(db.String(120), nullable = True)
     gmail_auth_state = db.Column(db.String(120), nullable = True)
     prospects = db.relationship(

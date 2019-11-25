@@ -1,5 +1,7 @@
 from app import db 
 
+from . import TagModel
+
 prospects_tags = db.Table('prospects_tags',
     db.Column('prospect_id', db.Integer, db.ForeignKey('prospects.id')),
     db.Column('tag_id', db.Integer, db.ForeignKey('tags.id'))
