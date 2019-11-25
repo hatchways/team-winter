@@ -1,5 +1,6 @@
 import React, { Fragment, useState, useEffect } from 'react';
 import { withStyles, makeStyles } from '@material-ui/core/styles';
+import { Link} from "react-router-dom";
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Button from '@material-ui/core/Button';
@@ -12,7 +13,8 @@ const useStyles = makeStyles(() => ({
   username: {
     color: "black",
     marginLeft: "5px",
-    fontSize: "smaller",
+    fontSize: "14px",
+    fontWeight: 500,
   },
   toggleButton: {
     padding: "0",
@@ -21,8 +23,12 @@ const useStyles = makeStyles(() => ({
     marginRight: "30px",
   },
   toggleMenu: {
-    margin: "30px 0px 0px 12px",
+    margin: "30px 0px 0px 8px",
     overflow: 1,
+  },
+  LogOutText: {
+    color: "black",
+    textDecoration: "none",
   }
 }));
 
@@ -42,6 +48,7 @@ const ItemTabs = withStyles({
 const ItemTab = withStyles(theme => ({
   root: {
     textTransform: 'none',
+    fontSize: "14px",
     minWidth: 72,
     marginRight: theme.spacing(4),
     color: "black",
@@ -80,6 +87,10 @@ const CustomizedTabs = () => {
     handleToggle(null);
   };
 
+  const handleLogOut = () => {
+    localStorage.removeItem("mailsender_token")
+  }
+
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -109,7 +120,7 @@ const CustomizedTabs = () => {
       onClose={handleClose}
     >
       <MenuItem onClick={handleClose}>Profile</MenuItem>
-      <MenuItem onClick={handleClose}>Logout</MenuItem>
+      <MenuItem onClick={handleLogOut}><Link className={classes.LogOutText} to="/login">Logout</Link></MenuItem>
     </Menu>
     </Fragment>
   );
