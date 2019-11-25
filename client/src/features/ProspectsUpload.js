@@ -79,7 +79,11 @@ class ColumnSelector extends Component {
   
   handleChange(event, column) {
     this.setState(prevState => {
-      let newValues = [...prevState.values];
+      let newValues = [...prevState.values].map( (val) => {
+        if(val === event.target.value) return 'None';
+        return val;
+      });
+      console.log(newValues); 
       newValues[column] = event.target.value;
       this.props.onChange(newValues);
       return {
@@ -146,7 +150,7 @@ function ProspectsUpload(props) {
         method: 'POST', 
         body: JSON.stringify({
           'prospects': prospectsToUpload  
-        }),
+        }), 
         headers: {
           'Content-Type': 'application/json', 
           'Authorization': `Bearer ${getJWT()}`
