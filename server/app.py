@@ -2,11 +2,14 @@ from flask import Flask
 from flask_jwt_extended import JWTManager
 from flask_sqlalchemy import SQLAlchemy
 from flask_restful import Api
+from flask_cors import CORS
+
 
 from api.home_handler import home_handler
 
 
 app = Flask(__name__, instance_relative_config=True)
+CORS(app)
 api = Api(app)
 
 app.config.from_object('config.default')
@@ -17,8 +20,10 @@ api = Api(app)
 db = SQLAlchemy(app) 
 jwt = JWTManager(app)
 
+
 from models import UserModel, ProspectModel, TagModel, CampaignModel
 from resources import UserResources, GmailResources, CampaignResources
+
 
 api.add_resource(UserResources.UserRegister, '/register')
 api.add_resource(UserResources.UserLogin, '/login')
