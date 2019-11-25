@@ -9,6 +9,7 @@ import Typography from '@material-ui/core/Typography';
 const useStyles = makeStyles(() => ({
   root: {
     backgroundColor: "white",
+    zIndex: 100
   },
   mail: {
     flexGrow: 1,
@@ -53,7 +54,7 @@ const NavBar = () => {
 
   return (
     <div>
-      <AppBar className={classes.root} position="static">
+      <AppBar className={classes.root} position="fixed">
         <Toolbar>
           <Typography variant="h6" className={classes.mail}>
             mail
