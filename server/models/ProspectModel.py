@@ -23,5 +23,9 @@ class ProspectModel(db.Model):
 
     @classmethod
     def find_by_id(cls, id):
-        return cls.query.filter_by(id = id).first()
+        return cls.query.get(id)
+
+    @classmethod 
+    def get_list_by_ids(cls, ids):
+        return cls.query.filter(ProspectModel.id.in_(ids)).all()
    

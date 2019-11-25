@@ -1,8 +1,9 @@
 from flask_restful import Resource, reqparse
 from models.CampaignModel import CampaignModel
 from models.ProspectModel import ProspectModel
+from utils.ValidationDecorator import validate_args
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from flask import json
+
 
 parser = reqparse.RequestParser()
 parser.add_argument('name')
@@ -11,6 +12,7 @@ parser.add_argument('campaign_id')
 
 class NewCampaign(Resource):
     @jwt_required
+    @validate_args("name")
     def post(self):
         data = parser.parse_args()
 
@@ -44,15 +46,15 @@ class CampaignProspects(Resource):
         
 class AddProspectsToCampaign(Resource):
     @jwt_required
+    @validate_args("prospect_ids", "campaign_id")
     def post(self):
         data = parser.parse_args()
         campaign = CampaignModel.find_by_id(data['campaign_id'])
         if not campaign:
             return {'message': 'No campaign was selected.'}, 400 
         try:
-            for prospect_id in data['prospect_ids']:
-                prospect = ProspectModel.find_by_id(prospect_id)
-                campaign.add_prospect(prospect)
+            prospects = ProspectModel.get_list_by_ids(data['prospect_ids'])
+            campaign.add_prospects(prospects)
             return {
                 'message': 'Prospects successfully added to campaign {}'.format(campaign.name)  
                 }, 200

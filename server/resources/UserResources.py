@@ -1,5 +1,6 @@
 from flask_restful import Resource, reqparse
 from models.UserModel import UserModel
+from utils.ValidationDecorator import validate_args
 from flask_jwt_extended import (create_access_token, jwt_required, get_jwt_identity)
 
 parser = reqparse.RequestParser()
@@ -10,6 +11,7 @@ parser.add_argument('last_name')
 parser.add_argument('confirm_pass')
 
 class UserRegister(Resource):
+    @validate_args("email", "password", "first_name", "last_name", "confirm_pass")
     def post(self):
         data = parser.parse_args()
 
@@ -39,6 +41,7 @@ class UserRegister(Resource):
             return {'message': 'Something went wrong'}, 500
 
 class UserLogin(Resource):
+    @validate_args("email", "password")
     def post(self):
         data = parser.parse_args()
         current_user = UserModel.find_by_email(data['email'])

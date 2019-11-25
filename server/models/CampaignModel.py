@@ -17,8 +17,8 @@ class CampaignModel(db.Model):
         'ProspectModel', secondary=campaigns_prospects, backref='campaigns', lazy='select'
     )
 
-    def add_prospect(self, prospect):
-        self.prospects.append(prospect)
+    def add_prospects(self, prospects):
+        self.prospects.extend(prospects)
         db.session.commit()
 
     def save_to_db(self):
@@ -27,7 +27,9 @@ class CampaignModel(db.Model):
 
     @classmethod
     def find_by_id(cls, id):
-        return cls.query.filter_by(id = id).first()
+        return cls.query.get(id)
+
+    
     
 
 
