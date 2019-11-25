@@ -13,6 +13,9 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
+import Snackbar from '@material-ui/core/Snackbar';
+import IconButton from '@material-ui/core/IconButton';
+import CloseIcon from '@material-ui/icons/Close';
 import Papa from 'papaparse';
 import { getJWT } from '../utils';
 
@@ -116,14 +119,24 @@ function ProspectsUpload(props) {
   const [prospects, setProspects] = useState([]);
   const [nameColumn, setNameColumn] = useState(0);
   const [emailColumn, setEmailColumn] = useState(1);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   const handleModalClose = () => {
     setModalOpen(false);
   }
 
+  const formatProspects = (prospects, nameColumn, emailColumn) => {
+    let data = {};
+    for(let prospect of prospects) {
+      data[prospect[emailColumn]] = prospect[nameColumn];
+    }
+    return data;
+  }
+
   const uploadProspects = async () => {
     console.log('prospects  :')
-    console.log(JSON.stringify(prospects));
+    const prospectsToUpload = formatProspects(prospects, nameColumn, emailColumn);
+    console.log(JSON.stringify(prospectsToUpload));
     console.log('name column: ' + nameColumn);
     console.log('email column: ' + emailColumn);
     console.log(getJWT());
@@ -132,16 +145,18 @@ function ProspectsUpload(props) {
       const response = await fetch(UPLOAD_URL, {
         method: 'POST', 
         body: JSON.stringify({
-          'prospects': prospects
+          'prospects': prospectsToUpload  
         }),
         headers: {
           'Content-Type': 'application/json', 
           'Authorization': `Bearer ${getJWT()}`
         }
-      });
-      const json = await response.json();
-      console.log('Uploaded Prospects');
-      handleModalClose();
+      }); 
+      if(response.ok) {
+        console.log('Uploaded Prospects');
+        handleModalClose();
+        setSnackbarOpen(true);
+      }
     } catch (error) {
       console.error('Error:', error);
     }
@@ -152,6 +167,14 @@ function ProspectsUpload(props) {
     setNameColumn(data.indexOf('Name'));
     setEmailColumn(data.indexOf('Email'));
   }
+
+  const handleSnackbarClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setSnackbarOpen(false);
+  };
 
   const tableRow = (data) => {
     return (
@@ -228,6 +251,29 @@ function ProspectsUpload(props) {
           </div>
         </Paper>
       </Modal>
+      <Snackbar
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'left',
+        }}
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleSnackbarClose}
+        ContentProps={{
+          'aria-describedby': 'message-id',
+        }}
+        message={<span id="message-id">Prospects uploaded</span>}
+        action={[
+          <IconButton
+            key="close"
+            aria-label="close"
+            color="inherit" 
+            onClick={handleSnackbarClose}
+          >
+            <CloseIcon />
+          </IconButton>,
+        ]}
+      />
     </div>
   );
 }
