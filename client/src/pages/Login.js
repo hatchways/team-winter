@@ -31,11 +31,41 @@ const Login = () => {
   const classes = useStyles();
   const [email, handleEmail] = useState("");
   const [password, handlePassword] = useState("");
+  const [submit, didSubmit] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    handlelogin();
   }
 
+  const handlelogin = () => {
+    const data = {
+      email,
+      password,
+    };
+
+    fetch("http://localhost:5000/login", {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+      },
+      body: JSON.stringify(data)
+    })
+      
+    .then(res => res.json())
+      .then(data => {
+      if (!data.access_token) {
+        alert(data.message);
+      } else {
+        localStorage.setItem("token", data.access_token)
+        alert(data.message)
+      }
+    })
+    .catch(error => alert(error.message));
+  }
+  
   return (
     <Fragment>
       <NavBar />
@@ -45,7 +75,7 @@ const Login = () => {
           onSubmit={handleSubmit}
         >
           <TextField
-            error={email.length > 0 ? false : true }
+            error={!submit ? false : email.length > 0 ? false : true}
             type="email"
             label="Email"
             value={email}
@@ -56,7 +86,7 @@ const Login = () => {
             variant="outlined"
           />
           <TextField
-            error={password.length >= 6 ? false : true }
+            error={!submit ? false : password.length >= 6 ? false : true }
             type="password"
             label="Password"
             value={password}
@@ -68,6 +98,7 @@ const Login = () => {
           />
           <Grid align="center">
             <SubmitButton 
+              onClick={() => didSubmit(true)}
               type="submit"
               variant="contained"
               color="primary"
@@ -81,6 +112,3 @@ const Login = () => {
   )
 }
 export default Login;
-
-
-
