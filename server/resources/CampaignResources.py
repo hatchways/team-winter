@@ -10,23 +10,7 @@ parser.add_argument('name')
 parser.add_argument('prospect_ids', action='append')
 parser.add_argument('campaign_id')
 
-class NewCampaign(Resource):
-    @jwt_required
-    @validate_args("name")
-    def post(self):
-        data = parser.parse_args()
 
-        new_campaign = CampaignModel(
-            name = data['name'],
-            owner_id = get_jwt_identity()
-        )
-        try:    
-            new_campaign.save_to_db()
-            return {
-                'message': 'Campaign {} was created'.format( data['name'])
-            }, 201
-        except:
-            return {'message': 'Something went wrong'}, 500
 
 class CampaignProspects(Resource):
     @jwt_required
@@ -43,13 +27,12 @@ class CampaignProspects(Resource):
             'Campaign': current_campaign.name,
             'Prospects': prospects
             }, 200 
-        
-class AddProspectsToCampaign(Resource):
+
     @jwt_required
-    @validate_args("prospect_ids", "campaign_id")
-    def post(self):
+    @validate_args("prospect_ids")
+    def post(self, id):
         data = parser.parse_args()
-        campaign = CampaignModel.find_by_id(data['campaign_id'])
+        campaign = CampaignModel.find_by_id(id)
         if not campaign:
             return {'message': 'No campaign was selected.'}, 400 
         try:
@@ -60,5 +43,8 @@ class AddProspectsToCampaign(Resource):
                 }, 200
         except:
             return {'message': 'Something went wrong'}, 500
+
+
+
 
 
