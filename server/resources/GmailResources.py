@@ -6,13 +6,12 @@ from flask_restful import Resource, reqparse
 from flask_jwt_extended import jwt_required, get_jwt_identity
 import logging
 import httplib2
-import pickle
 import uuid
 
 from models.UserModel import UserModel
 
 authorize_parser = reqparse.RequestParser()
-authorize_parser.add_argument('code', required=True)
+authorize_parser.add_argument('code', location='json', required=True)
 
 CLIENTSECRETS_LOCATION = 'instance/client_secrets.json'
 REDIRECT_URI = 'http://localhost:3000/gmail/authorize'
@@ -152,16 +151,14 @@ class GetAuthURL(Resource):
 
 class Authorize(Resource):
     @jwt_required
-    def get(self):
+    def post(self):
         data = authorize_parser.parse_args()
-        code = data['code']
-        state = data['state']
         user_id = get_jwt_identity()
-        stored_state = UserModel.find_by_id(user_id).gmail_auth_state
-        if state == stored_state:
-            credentials = exchange_code(code)
+        user = UserModel.find_by_id(user_id)
+        if data['state'] == user.gmail_auth_state:
+            credentials = exchange_code(data['code'])
             store_credentials(user_id, credentials)
-            return {'success': True}, 200
+            return {'gmail_address': user.gmail_address}, 200
         return {'error': 'state parameters did not match'}, 401
 
 class GetGmailAddress(Resource):

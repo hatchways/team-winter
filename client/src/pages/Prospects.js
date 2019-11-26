@@ -2,6 +2,7 @@ import React, { Fragment } from "react";
 
 import NavBar from "../features/NavBar";
 import GmailDialog from "../features/GmailDialog";
+import GmailAuthorizationHandler from "../features/GmailAuthorizationHandler";
 
 
 function Prospects(props) {
@@ -11,6 +12,7 @@ function Prospects(props) {
     <Fragment>
       <NavBar />
       <GmailDialog open={true} />
+      <GmailAuthorizationHandler />
     </Fragment>
   )
 

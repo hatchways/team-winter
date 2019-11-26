@@ -37,6 +37,7 @@
   },
   "devDependencies": {
     "papaparse": "^5.1.0",
+    "query-string": "^6.9.0",
     "react-dropzone": "^10.2.1"
   }
 }
