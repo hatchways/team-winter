@@ -9,7 +9,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Avatar from '@material-ui/core/Avatar';
 import Typography from '@material-ui/core/Typography';
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   username: {
     color: "black",
     marginLeft: "5px",
@@ -29,6 +29,8 @@ const useStyles = makeStyles(() => ({
   LogOutText: {
     color: "black",
     textDecoration: "none",
+    width: 90,
+    padding: 15,
   }
 }));
 
@@ -37,10 +39,10 @@ const ItemTabs = withStyles({
     display: 'flex',
     justifyContent: 'center',
     backgroundColor: '#2AA897',
-    marginBlockEnd: "46px",
+    marginBlockEnd: "66px",
     '& > div': {
-      maxWidth: 60,
-      width: '50%',
+      maxWidth: 50,
+      width: '30%',
     },
   },
 })(Tabs);
@@ -74,9 +76,15 @@ const CustomizedTabs = () => {
   const path = window.location.pathname.toLowerCase();
 
   useEffect(() => {
-    if ( path === '/prospects' ) {
+    if ( path === '/campaigns' ) {
+      setValue(0);
+    } else if ( path === '/prospects') {
       setValue(1);
-    } 
+    } else if ( path === '/templates') {
+      setValue(2);
+    } else if ( path === '/reporting') {
+      setValue(3);
+    }
   }, [path]);
   
   const handleClick = event => {
@@ -99,10 +107,10 @@ const CustomizedTabs = () => {
     <Fragment>
     <div>
       <ItemTabs value={value} onChange={handleChange}>
-        <ItemTab label="Campaigns" />
-        <ItemTab label="Prospects" />
-        <ItemTab label="Templates" />
-        <ItemTab label="Reporting" />
+        <Link className={classes.LogOutText} to="/campaigns"> <ItemTab className={classes.littletabs} label="Campaigns" /> </Link>
+        <Link className={classes.LogOutText} to="/prospects"> <ItemTab label="Prospects" /> </Link>
+        <Link className={classes.LogOutText} to="/templates"> <ItemTab label="Templates" /> </Link>
+        <Link className={classes.LogOutText} to="/reporting"> <ItemTab label="Reporting" /> </Link>
       </ItemTabs>
     </div>
     <Avatar src="https://ph-files.imgix.net/84451835-127d-469b-87f0-049c838b69a3?auto=format" />
