@@ -3,7 +3,7 @@ const validatePassword = password => {
 }
 
 const getJWT = () => {
-  return localStorage.getItem('token')
+  return localStorage.getItem('mailsender_token')
 }
 
 export {
