@@ -20,4 +20,12 @@ class ProspectModel(db.Model):
     def save_to_db(self):
         db.session.add(self)
         db.session.commit()
+
+    @classmethod
+    def find_by_id(cls, id):
+        return cls.query.get(id)
+
+    @classmethod 
+    def get_list_by_ids(cls, ids):
+        return cls.query.filter(ProspectModel.id.in_(ids)).all()
    
