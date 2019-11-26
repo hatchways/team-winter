@@ -37,7 +37,7 @@ const Login = () => {
   if (login) {
     return <Redirect to="/prospects" />
   }
-
+  
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -46,7 +46,7 @@ const Login = () => {
 
   const handlelogin = () => {
     const data = {
-      email,
+      "email": email.toLowerCase(),
       password,
     };
 
