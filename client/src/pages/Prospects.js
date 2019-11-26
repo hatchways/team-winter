@@ -7,37 +7,48 @@ import CustomizedButton from '../features/CustomizedButton';
 import OutlinedButton from '../features/OutlinedButton';
 import NavBar from '../features/NavBar/MainBody';
 import UserInputContainer from '../features/UserInputContainer';
+import DataTable from '../features/DataTable';
 
 const useStyles = makeStyles((theme) => ({
   importButton: {
     backgroundColor: "#EDECF2",
-    width: "150px",
-    height: "50px"
+    width: 150,
+    height: 50,
   },
   newProspectButton: {
     width: 210,
-    fontSize: "14px",
+    fontSize: 14,
   },
   seperationLine: {
-    height: "26px",
+    height: 26,
     borderLeft: "#EDECF2 0.08rem solid",
     margin: "3px 15px",
   },
   arrow: {
-    marginBottom: "6px",
+    marginBottom: 6,
   },
   icon: {
     margin: "16px 17px 0px 14px",
   },
   featuresContainer:{
-    padding: "40px 60px",
+    padding: "40px 60px 0px",
   },
   prospectList: {
+    overflow: "auto",
     width: "100%",
-    height: "500px",
-    marginTop: "0px",
-    [theme.breakpoints.up("xl")]: {
-      backgroundColor: "green[500]",
+    height: 600,
+    marginTop: 0,
+    [theme.breakpoints.down("lg")]: {
+      paddingLeft: 12,
+      paddingRight: 15,
+    },
+    [theme.breakpoints.down("md")]: {
+      paddingLeft: 0,
+      paddingRight: 0,
+    },
+    [theme.breakpoints.down("sm")]: {
+      paddingLeft: 0,
+      paddingRight: 0,
     }
   }
 }));
@@ -74,8 +85,10 @@ const Prospects = () => {
           </Box>
         </Box>
       </div>
+      <Box className="tagsContainer" display="flex" justifyContent="center">
+      </Box>
       <UserInputContainer className={classes.prospectList}>
-
+        <DataTable></DataTable>
       </UserInputContainer>
     </Fragment>
   )
