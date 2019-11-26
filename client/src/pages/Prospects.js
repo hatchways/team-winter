@@ -1,14 +1,14 @@
 import React, { Fragment } from 'react';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
-import Grid from '@material-ui/core/Grid';
+import Box from '@material-ui/core/Box';
 
 import CustomizedButton from '../features/CustomizedButton';
 import OutlinedButton from '../features/OutlinedButton';
 import NavBar from '../features/NavBar/MainBody';
 import UserInputContainer from '../features/UserInputContainer';
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   importButton: {
     backgroundColor: "#EDECF2",
     width: "150px",
@@ -26,25 +26,19 @@ const useStyles = makeStyles(() => ({
   arrow: {
     marginBottom: "6px",
   },
-  container: {
-    padding: "40px",
+  icon: {
+    margin: "16px 17px 0px 14px",
   },
-  bolt: {
-    margin: "14px 0px 0px 940px",
-  },
-  mail: {
-    margin: "14px 0px 0px 40px",
-  },
-  importContainer: {
-    marginLeft: "30px",
-  },
-  newProspectContainer: {
-    marginLeft: "10px",
+  featuresContainer:{
+    padding: "40px 60px",
   },
   prospectList: {
     width: "100%",
     height: "500px",
-    marginTop: "50px",
+    marginTop: "0px",
+    [theme.breakpoints.up("xl")]: {
+      backgroundColor: "green[500]",
+    }
   }
 }));
 
@@ -55,20 +49,20 @@ const Prospects = () => {
     <Fragment>
       <NavBar />
       <div>
-        <Grid className={classes.container} container spacing={1}>
-          <Grid>
+        <Box className={classes.featuresContainer} display="flex">
+          <Box flexGrow={1}>
             <Typography variant="h5"> Prospects </Typography>
-          </Grid>
-          <Grid className={classes.bolt}>
-            <i class="fas fa-bolt" style={{color: "grey"}}></i>
-          </Grid>
-          <Grid className={classes.mail}>
-            <i class="fas fa-envelope" style={{color: "grey"}}></i>
-          </Grid>
-          <Grid className={classes.importContainer}>
+          </Box>
+          <Box className={classes.icon}>
+            <i className="fas fa-bolt" style={{color: "grey"}}></i>
+          </Box>
+          <Box className={classes.icon}>
+            <i className="fas fa-envelope" style={{color: "grey"}}></i>
+          </Box>
+          <Box pl={2}>
             <OutlinedButton className={classes.importButton}> Imports </OutlinedButton>
-          </Grid>
-          <Grid className={classes.newProspectContainer}>
+          </Box>
+          <Box pl={1}>
             <CustomizedButton 
               className={classes.newProspectButton}>
               Add New Prospect
@@ -77,8 +71,8 @@ const Prospects = () => {
                 <i className="fas fa-sort-down fa-sm" style={{color: "white"}}></i>
               </div>
             </CustomizedButton>
-          </Grid>
-        </Grid>
+          </Box>
+        </Box>
       </div>
       <UserInputContainer className={classes.prospectList}>
 
