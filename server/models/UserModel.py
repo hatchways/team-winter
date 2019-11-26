@@ -15,14 +15,17 @@ class UserModel(db.Model):
     prospects = db.relationship(
         'ProspectModel', backref='owner', lazy = 'select'
     )
-    
+    campaigns = db.relationship(
+        'CampaignModel', backref='owner', lazy = 'select'
+    )
+
     def save_to_db(self):
         db.session.add(self)
         db.session.commit()
 
     @classmethod
     def find_by_id(cls, id):
-        return cls.query.filter_by(id = id).first()    
+        return cls.query.get(id)  
 
     @classmethod
     def find_by_email(cls, email):
