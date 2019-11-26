@@ -53,7 +53,9 @@ const Register = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    handleRegister();
+    if (firstName.length > 0 && lastName.length > 0) {
+      handleRegister();
+    }
   }
 
   const handleRegister = () => {
