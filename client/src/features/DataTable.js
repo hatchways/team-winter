@@ -21,6 +21,7 @@ const createData = (email, status, owner, campaigns, lastContacted, emails) => {
 }
 
 // To-Do: Replace sample data using passed down data on props
+
 const rows = [
   createData('abc1', 'open', 'Alex', '1', '2019-01-01', '1'),
   createData('abc2', 'working', 'Elena', '1', '2019-09-21', '1'),
