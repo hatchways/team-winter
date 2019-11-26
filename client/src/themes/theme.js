@@ -4,9 +4,6 @@ export const theme = createMuiTheme({
   typography: {
     fontFamily: '"Roboto"'
   },
-  primary: "#2AA897",
-  secondary: "#4FBE75",
-  error: "#d8000c",
   bgcolor: "#white",
   overrides: {
     MuiFormControl: {
@@ -19,6 +16,16 @@ export const theme = createMuiTheme({
       contained: {
         margin: "4px"
       },
+    },
+    MuiTableHead: {
+      root: {
+        background: "linear-gradient(45deg, #4FBE75 10%, #2AA897 80%)",
+      }
+    },
+    MuiPaper: {
+      elevation1: {
+        boxShadow: 0,
+      }
     }
   }
 });
