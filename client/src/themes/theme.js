@@ -26,6 +26,16 @@ export const theme = createMuiTheme({
       elevation1: {
         boxShadow: 0,
       }
+    },
+    MuiTabs: {
+      flexContainer: {
+        paddingRight: 100,
+      }
+    },
+    MuiAvatar: {
+      root: {
+        padding: 10,
+      }
     }
   }
 });
