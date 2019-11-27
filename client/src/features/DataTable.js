@@ -7,35 +7,12 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Checkbox from '@material-ui/core/Checkbox';
-
-const HeaderRow = ({ onSelectAllClick, numSelected, rowCount, header }) => {
-  return (
-    <TableHead>
-      <TableRow>
-        <TableCell padding="checkbox">
-          <Checkbox
-            indeterminate={numSelected > 0 && numSelected < rowCount}
-            checked={numSelected === rowCount}
-            onChange={onSelectAllClick}
-          />
-        </TableCell>
-          {header.map((headCell, index) => (
-          <TableCell
-            key={index}
-            align={"center"}
-          >
-            {headCell}
-          </TableCell>
-        ))}
-      </TableRow>
-    </TableHead>
-  );
-}
+import CloudIcon from '@material-ui/icons/Cloud';
 
 const useStyles = makeStyles(theme => ({
   root: {
     width: '100%',
-    marginTop: theme.spacing(3),
+    marginTop: theme.spacing(1),
   },
   paper: {
     width: '100%',
@@ -60,13 +37,50 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const DataTable = ({header, data}) => {
+const HeaderRow = ({ onSelectAllClick, numSelected, rowCount, data }) => {
+  const header = Object.keys(data[0]);
+
+  return (
+    <TableHead>
+      <TableRow>
+          {header.map((headCell, index) => {
+            if (headCell === 'check') {
+              return <TableCell padding="checkbox" key={index}>
+              <Checkbox
+                indeterminate={numSelected > 0 && numSelected < rowCount}
+                checked={numSelected === rowCount}
+                onChange={onSelectAllClick}
+              />
+            </TableCell>
+            } else if (headCell === 'cloudIcon') {
+              return <TableCell
+                key={index}
+                align={"center"}
+              >
+                <CloudIcon className="fas fa-cloud" style={{color: "grey"}} />
+              </TableCell>
+            }else {
+              return <TableCell
+                key={index}
+                align={"center"}
+              >
+                {headCell}
+              </TableCell>
+            }
+          })}
+      </TableRow>
+    </TableHead>
+  );
+}
+
+
+const DataTable = ({data}) => {
   const classes = useStyles();
   const [selected, setSelected] = React.useState([]);
 
   const handleSelectAllClick = event => {
     if (event.target.checked) {
-      const newSelecteds = data.map(n => n.email);
+      const newSelecteds = data.map(n => n.Email);
       setSelected(newSelecteds);
       return;
     }
@@ -108,35 +122,34 @@ const DataTable = ({header, data}) => {
             numSelected={selected.length}
             onSelectAllClick={handleSelectAllClick}
             rowCount={Object.keys(data).length}
-            header={header}
+            data={data}
           />
           <TableBody>
           {data.map((row, index) => {
-            const isItemSelected = isSelected(row.email)
+            const isItemSelected = isSelected(row.Email)
             const labelId = `table-checkbox-${index}`;
             return (
               <TableRow
                 hover
-                onClick={(event) => {handleClick(event, row.email)}}
+                onClick={event => handleClick(event, row.Email)}
                 role="checkbox"
                 aria-checked={isItemSelected}
                 tabIndex={-1}
-                key={row.email}
+                key={row.Email}
                 selected={isItemSelected}
                 > 
-                <TableCell padding="checkbox">
-                  <Checkbox
-                    checked={isItemSelected}
-                    inputProps={{ 'aria-labelledby': labelId }}
-                  />
-                </TableCell>
-                {Object.entries(row).map((each, index )=> {
-                  if (each[0] === "email") {
-                    return <TableCell key={index} component="th" id={labelId}  scope="row" padding="none"> {each[1]} </TableCell>
-                  } else if (each[0] === "cloud") {
-                    return <TableCell key={index} align="center">{header[1]}</TableCell>
+                {Object.entries(row).map((eachCell, idx )=> {
+                  if (eachCell[0] === 'check') {
+                    return <TableCell padding="checkbox">
+                    <Checkbox
+                      checked={isItemSelected}
+                      inputProps={{ 'aria-labelledby': labelId }}
+                    />
+                  </TableCell>
+                  } else if (eachCell[0] === "Email") {
+                    return <TableCell key={idx} component="th" id={labelId} scope="row" p={1}> {eachCell[1]}</TableCell>
                   } else {
-                    return <TableCell key={index} align="center">{each[1]}</TableCell>
+                    return <TableCell key={idx} id={labelId} align="center">{eachCell[1]}</TableCell>
                   }
                 })}
               </TableRow>
