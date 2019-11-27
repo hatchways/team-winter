@@ -36,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
     margin: "16px 17px 0px 14px",
   },
   featuresContainer:{
-    padding: "100px 60px 0px",
+    padding: "100px 60px 30px",
   },
   prospectList: {
     overflow: "auto",
@@ -63,11 +63,13 @@ const Prospects = () => {
 
   const prepareData = () => {
     const results = [];
+
+    //replace data with real data
     const data = SampleData();
     const cloudIcon = <CloudIcon className="fas fa-cloud" style={{color: "grey"}} />
     data.map(each => {
       const obj = {
-        'checkbox': 'checkbox',
+        'check': 'check',
         'Email': each.email,
         cloudIcon,
         'Status': 'working',
@@ -76,13 +78,12 @@ const Prospects = () => {
         'Last Contacted': each.lastContacted,
         'Emails...': each.emails
       }
-      results.push(obj)
+      return results.push(obj)
     })
     return results;
   }
   
   const dataToRender = prepareData();
-  console.log(dataToRender)
 
   return (
     <Fragment>
@@ -114,7 +115,6 @@ const Prospects = () => {
         </Box>
       </div>
       <Box className="classes.tagsContainer" display="flex" justifyContent="center">
-
       </Box>
       <UserInputContainer className={classes.prospectList}>
         <DataTable data={dataToRender}></DataTable>
