@@ -26,7 +26,7 @@ function GmailDialog(props) {
 
   const classes = useStyles();
 
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(props.open);
   const [image, setImage] = useState(imageDisabled);
   const [googleAuthURL, setGoogleAuthURL] = useState('');
 
@@ -104,7 +104,7 @@ function GmailDialog(props) {
           Connect a gmail account access all of MailSender's features.
         </DialogContentText>
         <div className={classes.imageContainer}>
-          <a onClick={(e) => image === imageDisabled ? e.preventDefault() : null} href={googleAuthURL}>
+          <a onClick={(e) => !googleAuthURL ? e.preventDefault() : null} href={googleAuthURL}>
             <img src={image} alt="sign in with Google" />
           </a>
         </div>
