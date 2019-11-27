@@ -8,6 +8,7 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import Avatar from '@material-ui/core/Avatar';
 import Typography from '@material-ui/core/Typography';
+import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 
 const useStyles = makeStyles((theme) => ({
   username: {
@@ -118,7 +119,7 @@ const CustomizedTabs = () => {
       Hatchways
     </Typography>
     <Button className={classes.toggleButton} onClick={handleClick}>
-      <i className="fas fa-sort-down fa-lg" style={{color: "grey"}}></i>
+    <ArrowDropDownIcon fontSize="smaller" style={{color: "grey"}} pt={3} />
     </Button>
     <Menu
       className={classes.toggleMenu}
