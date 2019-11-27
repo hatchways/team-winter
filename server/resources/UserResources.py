@@ -1,21 +1,17 @@
-from flask_restful import Resource, reqparse
+from flask_restful import Resource
+from utils.RequestParserGenerator import RequestParserGenerator
 from models.UserModel import UserModel
 from models.CampaignModel import CampaignModel
-from utils.ValidationDecorator import validate_args
 from flask_jwt_extended import (create_access_token, jwt_required, get_jwt_identity)
 
-parser = reqparse.RequestParser()
-parser.add_argument('email')
-parser.add_argument('password')
-parser.add_argument('first_name')
-parser.add_argument('last_name')
-parser.add_argument('confirm_pass')
-parser.add_argument('name')
+reqParserGen = RequestParserGenerator()
+registerParser = reqParserGen.getParser("email", "password", "first_name", "last_name", "confirm_pass")
+loginParser = reqParserGen.getParser("email", "password")
+campaignParser = reqParserGen.getParser("name")
 
 class UserRegister(Resource):
-    @validate_args("email", "password", "first_name", "last_name", "confirm_pass")
     def post(self):
-        data = parser.parse_args()
+        data = registerParser.parse_args()
 
         if UserModel.find_by_email(data['email']):
             return {'message': 'Email {} already exists'. format(data['email'])}, 400
@@ -43,9 +39,8 @@ class UserRegister(Resource):
             return {'message': 'Something went wrong'}, 500
 
 class UserLogin(Resource):
-    @validate_args("email", "password")
     def post(self):
-        data = parser.parse_args()
+        data = loginParser.parse_args()
         current_user = UserModel.find_by_email(data['email'])
         if not current_user:
             return {'message': 'User {} doesn\'t exist'.format(data['email'])}, 400
@@ -70,9 +65,8 @@ class UserCampaigns(Resource):
             }, 200 
     
     @jwt_required
-    @validate_args("name")
     def post(self):
-        data = parser.parse_args()
+        data = campaignParser.parse_args()
 
         new_campaign = CampaignModel(
             name = data['name'],

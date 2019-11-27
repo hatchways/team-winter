@@ -1,19 +1,15 @@
-from flask_restful import Resource, reqparse
+from flask_restful import Resource
 from models.StepModel import StepModel
 from models.CampaignModel import CampaignModel
 from models.ProspectModel import ProspectModel
 from models.EmailTemplateModel import EmailTemplateModel
-from utils.ValidationDecorator import validate_args
+from utils.RequestParserGenerator import RequestParserGenerator
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
 
-parser = reqparse.RequestParser()
-parser.add_argument('name')
-parser.add_argument('prospect_ids', action='append')
-parser.add_argument('campaign_id')
-parser.add_argument('type')
-parser.add_argument('subject')
-parser.add_argument('body')
+reqParserGen = RequestParserGenerator()
+campaignProspectsParser = reqParserGen.getParser(["prospect_ids"])
+campaignStepsParser = reqParserGen.getParser("type", "subject", "body")
 
 
 class CampaignProspects(Resource):
@@ -37,9 +33,8 @@ class CampaignProspects(Resource):
             }, 200 
 
     @jwt_required
-    @validate_args("prospect_ids")
     def post(self, id):
-        data = parser.parse_args()
+        data = campaignProspectsParser.parse_args()
         campaign = CampaignModel.find_by_id(id)
         if not campaign:
             return {'message': 'No campaign was selected.'}, 400 
@@ -54,9 +49,8 @@ class CampaignProspects(Resource):
 
 class CreateStepToCampaign(Resource):
     @jwt_required 
-    @validate_args("type", "subject", "body")
     def post(self, id):
-        data = parser.parse_args()
+        data = campaignStepsParser.parse_args()
         campaign = CampaignModel.find_by_id(id)
         if not campaign:
             return {'message': 'Campaign {} doesn\'t exist'.format(id)}, 400
