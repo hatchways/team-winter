@@ -23,7 +23,7 @@ function GmailAuthorizationHandler(props) {
 
   const doAuthorization = async (code, state) => {
     const response = await fetch(AUTHORIZATION_URL, {
-      method: 'GET',
+      method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer: ${getJWT()}`
