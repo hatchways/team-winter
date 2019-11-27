@@ -18,7 +18,6 @@ class UploadProspects(Resource):
   def post(self):
     owner_id = get_jwt_identity()
     prospects = [add_owner_id(p, owner_id) for p in upload_parser.parse_args().prospects]
-    print(prospects)
     db.session.bulk_insert_mappings(ProspectModel, prospects)
     db.session.commit()
     return {'success': True}, 200
