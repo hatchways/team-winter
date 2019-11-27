@@ -114,7 +114,6 @@ const DataTable = ({header, data}) => {
           {data.map((row, index) => {
             const isItemSelected = isSelected(row.email)
             const labelId = `table-checkbox-${index}`;
-
             return (
               <TableRow
                 hover
