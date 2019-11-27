@@ -1,95 +1,153 @@
 import React from 'react';
-import { withStyles, makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
+import Checkbox from '@material-ui/core/Checkbox';
 
-const StyledTableCell = withStyles(theme => ({
-  head: {
-    color: theme.palette.common.white,
-  },
-  body: {
-    fontSize: 14,
-  },
-}))(TableCell);
-
-const createData = (email, status, owner, campaigns, lastContacted, emails) => {
-  return { email, status, owner, campaigns, lastContacted, emails};
+const HeaderRow = ({ onSelectAllClick, numSelected, rowCount, header }) => {
+  return (
+    <TableHead>
+      <TableRow>
+        <TableCell padding="checkbox">
+          <Checkbox
+            indeterminate={numSelected > 0 && numSelected < rowCount}
+            checked={numSelected === rowCount}
+            onChange={onSelectAllClick}
+          />
+        </TableCell>
+          {header.map((headCell, index) => (
+          <TableCell
+            key={index}
+            align={"center"}
+          >
+            {headCell}
+          </TableCell>
+        ))}
+      </TableRow>
+    </TableHead>
+  );
 }
 
-// To-Do: Replace sample data using passed down data on props
-
-const rows = [
-  createData('abc1', 'open', 'Alex', '1', '2019-01-01', '1'),
-  createData('abc2', 'working', 'Elena', '1', '2019-09-21', '1'),
-  createData('abc3', 'open', 'Kevin', '1', '2019-06-11', '1'),
-  createData('abc4', 'working', 'Janny', '1', '2019-04-04', '1'),
-  createData('abc5', 'working', 'Jayce', '1', '2019-06-07', '1'),
-  createData('abc6', 'open', 'Koa', '1', '2019-09-08', '1'),
-  createData('abc7', 'working', 'Dan', '1', '2019-11-19', '1'),
-  createData('abc8', 'working', 'Mike', '1', '2019-10-14', '1'),
-  createData('abc9', 'open', 'Shasta', '1', '2019-02-18', '1'),
-  createData('abc10', 'open', 'Tan', '1', '2019-06-12', '1'),
-  createData('abc11', 'working', 'Jeff', '1', '2019-09-21', '1'),
-  createData('abc12', 'working', 'Lauren', '1', '2019-10-25', '1'),
-  createData('abc13', 'open', 'Ben', '1', '2019-11-11', '1'),
-  createData('abc14', 'open', 'Sarah', '1', '2019-12-23', '1'),
-  createData('abc15', 'open', 'Phil', '1', '2019-12-29', '1'),
-  createData('abc16', 'open', 'Steph', '1', '2019-08-16', '1'),
-  createData('abc17', 'working', 'RJ', '1', '2019-05-14', '1'),
-  createData('abc18', 'open', 'Rich', '1', '2019-03-17', '1'),
-  createData('abc19', 'working', 'Adriana', '1', '2019-04-27', '1'),
-  createData('abc20', 'working', 'Pam', '1', '2019-05-30', '1'),
-];
-
-const cloudIcon = <i className="fas fa-cloud" style={{color: "grey"}}></i>
-
-const useStyles = makeStyles( () => ({
+const useStyles = makeStyles(theme => ({
   root: {
     width: '100%',
-    overflowX: 'auto',
+    marginTop: theme.spacing(3),
+  },
+  paper: {
+    width: '100%',
+    marginBottom: theme.spacing(2),
   },
   table: {
-    minWidth: "100%",
-    marginTop: 10,
+    minWidth: 750,
+  },
+  tableWrapper: {
+    overflowX: 'auto',
+  },
+  visuallyHidden: {
+    border: 0,
+    clip: 'rect(0 0 0 0)',
+    height: 1,
+    margin: -1,
+    overflow: 'hidden',
+    padding: 0,
+    position: 'absolute',
+    top: 20,
+    width: 1,
   },
 }));
 
-
-export default function CustomizedTables() {
+const DataTable = ({header, data}) => {
   const classes = useStyles();
+  const [selected, setSelected] = React.useState([]);
+
+  const handleSelectAllClick = event => {
+    if (event.target.checked) {
+      const newSelecteds = data.map(n => n.email);
+      setSelected(newSelecteds);
+      return;
+    }
+    setSelected([]);
+  };
+
+  const handleClick = (event, email) => {
+    const selectedIndex = selected.indexOf(email);
+    let newSelected = [];
+
+    if (selectedIndex === -1) {
+      newSelected = newSelected.concat(selected, email);
+    } else if (selectedIndex === 0) {
+      newSelected = newSelected.concat(selected.slice(1));
+    } else if (selectedIndex === selected.length - 1) {
+      newSelected = newSelected.concat(selected.slice(0, -1));
+    } else if (selectedIndex > 0) {
+      newSelected = newSelected.concat(
+        selected.slice(0, selectedIndex),
+        selected.slice(selectedIndex + 1),
+      );
+    }
+    setSelected(newSelected);
+  };
+
+  const isSelected = email => selected.indexOf(email) !== -1;
 
   return (
-    <Paper className={classes.root}>
-      <Table className={classes.table} aria-label="customized table">
-        <TableHead className={classes.tableHead}>
-          <TableRow>
-            <StyledTableCell>Email</StyledTableCell>
-            <StyledTableCell align="right"><i className="fas fa-cloud" style={{color: "white"}}></i></StyledTableCell>
-            <StyledTableCell align="right">Status</StyledTableCell>
-            <StyledTableCell align="right">Campaigns</StyledTableCell>
-            <StyledTableCell align="right">Last Contacted</StyledTableCell>
-            <StyledTableCell align="right">Emails...</StyledTableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {rows.map(row => (
-            <TableRow key={row.email}>
-              <StyledTableCell component="th" scope="row">
-                {row.email}
-              </StyledTableCell>
-              <StyledTableCell align="right">{cloudIcon}</StyledTableCell>
-              <StyledTableCell align="right">{row.status}</StyledTableCell>
-              <StyledTableCell align="right">{row.campaigns}</StyledTableCell>
-              <StyledTableCell align="right">{row.lastContacted}</StyledTableCell>
-              <StyledTableCell align="right">{row.emails}</StyledTableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </Paper>
+    <div className={classes.root}>
+      <Paper className={classes.paper}>
+        <div className={classes.tableWrapper}>
+          <Table
+            className={classes.table}
+            aria-labelledby="tableTitle"
+            aria-label="enhanced table"
+          >
+          <HeaderRow
+            classes={classes}
+            numSelected={selected.length}
+            onSelectAllClick={handleSelectAllClick}
+            rowCount={Object.keys(data).length}
+            header={header}
+          />
+          <TableBody>
+          {data.map((row, index) => {
+            const isItemSelected = isSelected(row.email)
+            const labelId = `enhanced-table-checkbox-${index}`;
+
+            return (
+              <TableRow
+                hover
+                onClick={(event) => {handleClick(event, row.email)}}
+                role="checkbox"
+                aria-checked={isItemSelected}
+                tabIndex={-1}
+                key={row.email}
+                selected={isItemSelected}
+                > 
+                <TableCell padding="checkbox">
+                  <Checkbox
+                    checked={isItemSelected}
+                    inputProps={{ 'aria-labelledby': labelId }}
+                  />
+                </TableCell>
+                {Object.entries(row).map((each, index )=> {
+                  if (each[0] === "email") {
+                    return <TableCell key={index} component="th" id={labelId}  scope="row" padding="none"> {each[1]} </TableCell>
+                  } else if (each[0] === "cloud") {
+                    return <TableCell key={index} align="center">{header[1]}</TableCell>
+                  } else {
+                    return <TableCell key={index} align="center">{each[1]}</TableCell>
+                  }
+                })}
+              </TableRow>
+            )})}
+            </TableBody>
+          </Table>
+        </div>
+      </Paper>
+    </div>
   );
 }
+
+export default DataTable;
