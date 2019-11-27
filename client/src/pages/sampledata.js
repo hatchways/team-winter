@@ -7,7 +7,6 @@ export const SampleData = () => {
   for (let i = 1; i <= 15; i += 1) {
     const data = {
       email: faker.internet.email(),
-      cloud: faker.random.arrayElement(["on","off"]),
       status: faker.random.arrayElement(["working","open"]),
       owner: faker.fake("{{name.lastName}}, {{name.firstName}}"),
       campaigns: faker.random.number({min:1, max:10}),
