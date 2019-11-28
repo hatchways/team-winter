@@ -22,7 +22,7 @@ jwt = JWTManager(app)
 
 
 from models import UserModel, ProspectModel, TagModel, CampaignModel, StepModel, EmailTemplateModel
-from resources import UserResources, GmailResources, CampaignResources
+from resources import UserResources, GmailResources, CampaignResources, ProspectsResources
 
 
 
