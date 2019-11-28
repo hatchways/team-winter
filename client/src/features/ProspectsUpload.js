@@ -130,10 +130,16 @@ function ProspectsUpload(props) {
   }
 
   const formatProspects = (prospects, nameColumn, emailColumn) => {
-    let data = {};
+    let data = [];
     for(let prospect of prospects) {
-      data[prospect[emailColumn]] = prospect[nameColumn];
+      data.push({
+        'email': prospect[emailColumn],
+        'name': prospect[nameColumn]
+      });
     }
+    console.log(JSON.stringify({
+      'prospects': data
+    }));
     return data;
   }
 
