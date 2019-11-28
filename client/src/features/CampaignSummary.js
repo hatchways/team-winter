@@ -138,7 +138,7 @@ const StepsDisplay = (props) => {
                 justify="space-evenly"
                 alignItems="center" >
             <Grid item >
-              <Typography className={classes.stepNumber} variant="h6">{idx}</Typography>
+              <Typography className={classes.stepNumber} variant="h6">{idx+1}</Typography>
             </Grid>
             <Grid item >
               <TemplateSelector id={step.templateId} />

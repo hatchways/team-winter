@@ -23,7 +23,7 @@ const Campaign = (props) => {
   const steps = [
     {
       'templateId': 1,
-      'templateName': 'One small step for man',
+      'templateName': 'A template name',
       'emailTemplate': '<p>One giant leap for mankind</p>',
       'sent': 123,
       'replied': 12
