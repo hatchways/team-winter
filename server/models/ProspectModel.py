@@ -24,6 +24,11 @@ class ProspectModel(db.Model):
         db.session.commit()
 
     @classmethod
+    def bulk_insert(cls, mappings):
+        db.session.bulk_insert_mappings(cls, mappings)
+        db.session.commit()
+
+    @classmethod
     def find_by_id(cls, id):
         return cls.query.get(id)
 
