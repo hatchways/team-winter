@@ -16,6 +16,9 @@ class CampaignModel(db.Model):
     prospects = db.relationship(
         'ProspectModel', secondary=campaigns_prospects, backref='campaigns', lazy='select'
     )
+    steps = db.relationship(
+        'StepModel', backref='campaign', lazy = 'select'
+    )
 
     def add_prospects(self, prospects):
         self.prospects.extend(prospects)

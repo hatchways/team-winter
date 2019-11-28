@@ -1,19 +1,21 @@
-from flask_restful import Resource, reqparse
+from flask_restful import Resource
+from utils.RequestParserGenerator import RequestParserGenerator
 from models.UserModel import UserModel
-from utils.ValidationDecorator import validate_args
+from models.CampaignModel import CampaignModel
 from flask_jwt_extended import (create_access_token, jwt_required, get_jwt_identity)
 
-parser = reqparse.RequestParser()
-parser.add_argument('email', help = 'This field cannot be blank', required = True)
-parser.add_argument('password', help = 'This field cannot be blank', required = True)
-parser.add_argument('first_name')
-parser.add_argument('last_name')
-parser.add_argument('confirm_pass')
+reqParserGen = RequestParserGenerator()
+registerParser = reqParserGen.getParser("email", "password", "first_name", "last_name", "confirm_pass")
+loginParser = reqParserGen.getParser("email", "password")
+campaignParser = reqParserGen.getParser("name")
 
 class UserRegister(Resource):
+<<<<<<< HEAD
     #@validate_args("email", "password", "first_name", "last_name", "confirm_pass")
+=======
+>>>>>>> origin
     def post(self):
-        data = parser.parse_args()
+        data = registerParser.parse_args()
 
         if UserModel.find_by_email(data['email']):
             return {'message': 'Email {} already exists'. format(data['email'])}, 400
@@ -41,9 +43,12 @@ class UserRegister(Resource):
             return {'message': 'Something went wrong'}, 500
 
 class UserLogin(Resource):
+<<<<<<< HEAD
     #@validate_args("email", "password")
+=======
+>>>>>>> origin
     def post(self):
-        data = parser.parse_args()
+        data = loginParser.parse_args()
         current_user = UserModel.find_by_email(data['email'])
         if not current_user:
             return {'message': 'User {} doesn\'t exist'.format(data['email'])}, 400
@@ -66,5 +71,21 @@ class UserCampaigns(Resource):
         return {
             'Campaigns': campaigns
             }, 200 
+    
+    @jwt_required
+    def post(self):
+        data = campaignParser.parse_args()
+
+        new_campaign = CampaignModel(
+            name = data['name'],
+            owner_id = get_jwt_identity()
+        )
+        try:    
+            new_campaign.save_to_db()
+            return {
+                'message': 'Campaign {} was created'.format( data['name'])
+            }, 201
+        except:
+            return {'message': 'Something went wrong'}, 500
 
 
