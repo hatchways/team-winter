@@ -3,7 +3,7 @@ from oauth2client.client import FlowExchangeError
 from oauth2client.client import OAuth2Credentials
 from oauth2client.client import flow_from_clientsecrets
 from flask_restful import Resource, reqparse
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask_jwt_extended import jwt_required, get_jwt_identity, get_raw_jwt
 import logging
 import httplib2
 import uuid
@@ -14,7 +14,7 @@ authorize_parser = reqparse.RequestParser()
 authorize_parser.add_argument('code', location='json', required=True)
 
 CLIENTSECRETS_LOCATION = 'instance/client_secrets.json'
-REDIRECT_URI = 'http://localhost:3000/gmail/authorize'
+REDIRECT_URI = 'http://localhost:3000/prospects'
 SCOPES = [
     'https://www.googleapis.com/auth/gmail.readonly',
     'https://www.googleapis.com/auth/userinfo.email',
@@ -130,11 +130,11 @@ def get_authorization_url(state):
     Returns:
       Authorization URL to redirect the user to.
     """
-    flow = flow_from_clientsecrets(CLIENTSECRETS_LOCATION, ' '.join(SCOPES))
+    flow = flow_from_clientsecrets(CLIENTSECRETS_LOCATION, SCOPES, redirect_uri=REDIRECT_URI)
     flow.params['access_type'] = 'offline'
     flow.params['approval_prompt'] = 'force'
     flow.params['state'] = state
-    return flow.step1_get_authorize_url(REDIRECT_URI)
+    return flow.step1_get_authorize_url()
 
 
 class GetAuthURL(Resource):
@@ -146,6 +146,7 @@ class GetAuthURL(Resource):
         user.gmail_auth_state = state
         user.save_to_db()
         auth_url = get_authorization_url(state)
+        print(auth_url)
         return {'auth_url': auth_url}, 200
 
 

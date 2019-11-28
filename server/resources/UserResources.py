@@ -11,7 +11,7 @@ parser.add_argument('last_name')
 parser.add_argument('confirm_pass')
 
 class UserRegister(Resource):
-    @validate_args("email", "password", "first_name", "last_name", "confirm_pass")
+    #@validate_args("email", "password", "first_name", "last_name", "confirm_pass")
     def post(self):
         data = parser.parse_args()
 
@@ -41,7 +41,7 @@ class UserRegister(Resource):
             return {'message': 'Something went wrong'}, 500
 
 class UserLogin(Resource):
-    @validate_args("email", "password")
+    #@validate_args("email", "password")
     def post(self):
         data = parser.parse_args()
         current_user = UserModel.find_by_email(data['email'])

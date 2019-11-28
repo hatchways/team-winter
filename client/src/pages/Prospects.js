@@ -2,12 +2,14 @@ import React, { Fragment } from 'react';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
+import queryString from 'query-string';
 
 import CustomizedButton from '../features/CustomizedButton';
 import OutlinedButton from '../features/OutlinedButton';
 import NavBar from '../features/NavBar/MainBody';
 import UserInputContainer from '../features/UserInputContainer';
 import DataTable from '../features/DataTable';
+import GmailDialog from '../features/GmailDialog';
 
 const useStyles = makeStyles((theme) => ({
   importButton: {
@@ -56,6 +58,12 @@ const useStyles = makeStyles((theme) => ({
 const Prospects = () => {
   const classes = useStyles();
 
+  const gmailDialogShouldOpen = () => {
+    const qs = queryString.parse(window.location.search);
+    if(qs['gmail_dialog']) return true;
+    return false;
+  }
+
   return (
     <Fragment>
       <NavBar />
@@ -90,6 +98,7 @@ const Prospects = () => {
       <UserInputContainer className={classes.prospectList}>
         <DataTable></DataTable>
       </UserInputContainer>
+      <GmailDialog open={gmailDialogShouldOpen()} />
     </Fragment>
   )
 }
