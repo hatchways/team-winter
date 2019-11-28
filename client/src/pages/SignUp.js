@@ -1,13 +1,13 @@
 import React, { useState, Fragment }  from "react";
-
+import { Redirect } from "react-router-dom";
 import { makeStyles } from '@material-ui/core/styles';
 import { ValidatorForm } from 'react-material-ui-form-validator';
 import { Typography , Grid} from "@material-ui/core";
 
 import TextField from '@material-ui/core/TextField';
-import SubmitButton from '../features/SubmitButton';
+import CustomizedButton from '../features/CustomizedButton';
 import UserInputContainer from '../features/UserInputContainer';
-import NavBar from '../features/NavBar'
+import NavBar from '../features/NavBar/MainBody'
 
 const useStyles = makeStyles(theme => ({
   signUpText: {
@@ -30,8 +30,8 @@ const useStyles = makeStyles(theme => ({
   button: {
     margin: 10,
   },
-  root: {
-    height: 520,
+  container: {
+    height: 530,
     marginTop: 150,
   }
 }));
@@ -44,16 +44,23 @@ const Register = () => {
   const [password, handlePassword] = useState("");
   const [repeatPassword, handleRepeatPassword] = useState("");
   const [submit, didSubmit] = useState(false);
+  const [signUp, handleSignUp] = useState(false);
+
+  if (signUp) {
+    return <Redirect to="/prospects" />
+  }
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    handleRegister();
+    if (firstName.length > 0 && lastName.length > 0) {
+      handleRegister();
+    }
   }
 
   const handleRegister = () => {
     const data = {
-      email,
+      "email": email.toLowerCase(),
       password,
       confirm_pass: repeatPassword,
       first_name: firstName,
@@ -74,17 +81,21 @@ const Register = () => {
       if (!data.access_token) {
         alert(data.message);
       } else {
-        localStorage.setItem("token", data.access_token)
-        alert(data.message)
+        localStorage.setItem("mailsender_token", data.access_token);
+        handleSignUp(true)
+        alert(data.message);
       }
     })
+    .catch(err => {
+      console.log(err.message);
+    });
   }
 
   return (
     <Fragment>
       <NavBar />
       <UserInputContainer classes={{
-        root: classes.root
+        root: classes.container
       }} maxWidth="sm">
         <Typography className={classes.signUpText}>Sign up</Typography>
         <ValidatorForm
@@ -144,14 +155,14 @@ const Register = () => {
             variant="outlined"
           />
           <Grid align="center">
-            <SubmitButton 
+            <CustomizedButton 
               onClick={() => didSubmit(true)}
               type="submit"
               variant="contained"
               color="primary"
               className={classes.button}>
               Submit
-            </SubmitButton>
+            </CustomizedButton>
           </Grid>
         </ValidatorForm>
       </UserInputContainer>

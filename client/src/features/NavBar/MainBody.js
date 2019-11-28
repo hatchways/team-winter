@@ -1,10 +1,12 @@
 import React from 'react';
-import { Link} from "react-router-dom"
 import { makeStyles } from '@material-ui/core/styles';
 import Toolbar from '@material-ui/core/Toolbar';
 import AppBar from '@material-ui/core/AppBar';
-import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
+
+import LoginFeatures from './LoginFeatures';
+import SignUpFeatures from './SignUpFeatures';
+import LoggedInFeatures from './LoggedInFeatures';
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -19,37 +21,20 @@ const useStyles = makeStyles(() => ({
     flexGrow: 500,
     color: "#4FBE75"
   },
-  noAccount: {
-    flexGrow: 10,
-    color: "grey",
-    fontSize: "12"
-  },
-  button: {
-    flexGrow: 25,
-    border: "solid #4FBE75 thin",
-    borderRadius: "10",
-    backgroundColor: "white",
-  },
-  buttonText: {
-    color: "black",
-    textDecoration: "none"
-  }
 }));
 
 const NavBar = () => {
   const classes = useStyles();
 
-  const path = window.location.pathname;
-  let link = null;
-  let text = null;
-
-  if ( path === '/signup' ) {
-    link = <Link className={classes.buttonText} to="/login">Login</Link>
-  }
+  const path = window.location.pathname.toLowerCase();
+  let features = null;
   
   if ( path === '/login' ) {
-    link = <Link className={classes.buttonText} to="/signup">Create</Link>
-    text = "Don't have an account?"
+    features = <LoginFeatures />
+  } else if ( path === '/signup' ) {
+    features = <SignUpFeatures />
+  } else {
+    features = <LoggedInFeatures />
   }
 
   return (
@@ -62,13 +47,7 @@ const NavBar = () => {
           <Typography variant="h6" className={classes.sender}>
             sender
           </Typography>
-          <Typography className={classes.noAccount}>
-            {text}
-          </Typography>
-          <Button
-            className={classes.button}>
-            {link}
-          </Button>
+          {features}
         </Toolbar>
       </AppBar>
     </div>

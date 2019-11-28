@@ -1,15 +1,15 @@
 import React, { useState, Fragment }  from "react";
-
+import { Redirect } from "react-router-dom";
 import { makeStyles } from '@material-ui/core/styles';
 import { ValidatorForm } from 'react-material-ui-form-validator';
 import { Typography , Grid} from "@material-ui/core";
-
 import TextField from '@material-ui/core/TextField';
-import SubmitButton from '../features/SubmitButton';
+
+import CustomizedButton from '../features/CustomizedButton';
 import UserInputContainer from '../features/UserInputContainer';
-import NavBar from '../features/NavBar'
+import NavBar from '../features/NavBar/MainBody'
  
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles( () => ({
   textField: {
     borderRadius: 5,
     width: "95%",
@@ -32,7 +32,12 @@ const Login = () => {
   const [email, handleEmail] = useState("");
   const [password, handlePassword] = useState("");
   const [submit, didSubmit] = useState(false);
+  const [login, handleLogin] = useState(false);
 
+  if (login) {
+    return <Redirect to="/prospects" />
+  }
+  
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -41,7 +46,7 @@ const Login = () => {
 
   const handlelogin = () => {
     const data = {
-      email,
+      "email": email.toLowerCase(),
       password,
     };
 
@@ -59,11 +64,13 @@ const Login = () => {
       if (!data.access_token) {
         alert(data.message);
       } else {
-        localStorage.setItem("token", data.access_token)
-        alert(data.message)
+        localStorage.setItem("mailsender_token", data.access_token);
+        handleLogin(true);
       }
     })
-    .catch(error => alert(error.message));
+    .catch(err => {
+      console.log(err.message);
+    });
   }
   
   return (
@@ -97,14 +104,14 @@ const Login = () => {
             variant="outlined"
           />
           <Grid align="center">
-            <SubmitButton 
+            <CustomizedButton 
               onClick={() => didSubmit(true)}
               type="submit"
               variant="contained"
               color="primary"
               className={classes.button}>
               Submit
-            </SubmitButton>
+            </CustomizedButton>
           </Grid>
         </ValidatorForm>
       </UserInputContainer>

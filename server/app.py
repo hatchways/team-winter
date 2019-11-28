@@ -20,8 +20,10 @@ api = Api(app)
 db = SQLAlchemy(app) 
 jwt = JWTManager(app)
 
-from resources import UserResources, GmailResources, CampaignResources, ProspectsResources
-from models import UserModel, ProspectModel, TagModel, CampaignModel
+
+from models import UserModel, ProspectModel, TagModel, CampaignModel, StepModel, EmailTemplateModel
+from resources import UserResources, GmailResources, CampaignResources
+
 
 
 api.add_resource(UserResources.UserRegister, '/register')
@@ -31,8 +33,7 @@ api.add_resource(GmailResources.GetAuthURL, '/gmail/get_auth_url')
 api.add_resource(GmailResources.Authorize, '/gmail/authorize')
 api.add_resource(GmailResources.GetGmailAddress, '/gmail/get_address')
 api.add_resource(ProspectsResources.UploadProspects, '/prospects/upload')
-api.add_resource(CampaignResources.NewCampaign, '/campaigns')
 api.add_resource(CampaignResources.CampaignProspects, '/campaign/<int:id>/prospects')
-api.add_resource(CampaignResources.AddProspectsToCampaign, '/prospects/campaign')
+api.add_resource(CampaignResources.CreateStepToCampaign, '/campaign/<int:id>/steps')
 
 app.register_blueprint(home_handler)
