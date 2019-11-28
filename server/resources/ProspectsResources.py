@@ -4,7 +4,6 @@ import json
 
 from flask_jwt_extended import (jwt_required, get_jwt_identity)
 
-from app import db
 
 upload_parser = reqparse.RequestParser()
 upload_parser.add_argument('prospects', type=list, location='json', required=True)
@@ -18,6 +17,5 @@ class UploadProspects(Resource):
   def post(self):
     owner_id = get_jwt_identity()
     prospects = [add_owner_id(p, owner_id) for p in upload_parser.parse_args().prospects]
-    db.session.bulk_insert_mappings(ProspectModel, prospects)
-    db.session.commit()
+    ProspectModel.bulk_insert(prospects)
     return {'success': True}, 200
