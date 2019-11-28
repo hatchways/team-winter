@@ -3,11 +3,16 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
 
+import CloudIcon from '@material-ui/icons/Cloud';
+import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
+import MailIcon from '@material-ui/icons/Mail';
+import FlashOnIcon from '@material-ui/icons/FlashOn';
 import CustomizedButton from '../features/CustomizedButton';
 import OutlinedButton from '../features/OutlinedButton';
 import NavBar from '../features/NavBar/MainBody';
 import UserInputContainer from '../features/UserInputContainer';
 import DataTable from '../features/DataTable';
+import { SampleData } from '../pages/sampledata';
 
 const useStyles = makeStyles((theme) => ({
   importButton: {
@@ -25,13 +30,13 @@ const useStyles = makeStyles((theme) => ({
     margin: "3px 15px",
   },
   arrow: {
-    marginBottom: 6,
+    marginTop: 6,
   },
   icon: {
     margin: "16px 17px 0px 14px",
   },
   featuresContainer:{
-    padding: "40px 60px 0px",
+    padding: "100px 60px 30px",
   },
   prospectList: {
     overflow: "auto",
@@ -56,6 +61,30 @@ const useStyles = makeStyles((theme) => ({
 const Prospects = () => {
   const classes = useStyles();
 
+  const prepareData = () => {
+    const results = [];
+
+    //replace data with real data
+    const data = SampleData();
+    const cloudIcon = <CloudIcon className="fas fa-cloud" style={{color: "grey"}} />
+    data.map(each => {
+      const obj = {
+        'check': 'check',
+        'Email': each.email,
+        cloudIcon,
+        'Status': 'working',
+        'Owner': each.owner,
+        'Campaigns': each.campaigns,
+        'Last Contacted': each.lastContacted,
+        'Emails...': each.emails
+      }
+      return results.push(obj)
+    })
+    return results;
+  }
+  
+  const dataToRender = prepareData();
+
   return (
     <Fragment>
       <NavBar />
@@ -65,10 +94,10 @@ const Prospects = () => {
             <Typography variant="h5"> Prospects </Typography>
           </Box>
           <Box className={classes.icon}>
-            <i className="fas fa-bolt" style={{color: "grey"}}></i>
+            <FlashOnIcon fontSize="small" style={{color: "grey"}} />
           </Box>
           <Box className={classes.icon}>
-            <i className="fas fa-envelope" style={{color: "grey"}}></i>
+            <MailIcon fontSize="2px" style={{color: "grey"}} />
           </Box>
           <Box pl={2}>
             <OutlinedButton className={classes.importButton}> Imports </OutlinedButton>
@@ -79,16 +108,16 @@ const Prospects = () => {
               Add New Prospect
               <div className={classes.seperationLine}></div>
               <div className={classes.arrow} >
-                <i className="fas fa-sort-down fa-sm" style={{color: "white"}}></i>
+                <ArrowDropDownIcon fontSize="smaller" style={{color: "white"}} pt={3} />
               </div>
             </CustomizedButton>
           </Box>
         </Box>
       </div>
-      <Box className="tagsContainer" display="flex" justifyContent="center">
+      <Box className="classes.tagsContainer" display="flex" justifyContent="center">
       </Box>
       <UserInputContainer className={classes.prospectList}>
-        <DataTable></DataTable>
+        <DataTable data={dataToRender}></DataTable>
       </UserInputContainer>
     </Fragment>
   )
