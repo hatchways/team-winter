@@ -1,5 +1,7 @@
 import React, { Fragment } from 'react';
 import Typography from '@material-ui/core/Typography';
+import MailIcon from '@material-ui/icons/Mail';
+import FlashOnIcon from '@material-ui/icons/FlashOn';
 import { makeStyles } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
 
@@ -7,6 +9,7 @@ import CustomizedButton from '../features/CustomizedButton';
 import NavBar from '../features/NavBar/MainBody';
 import UserInputContainer from '../features/UserInputContainer';
 import DataTable from '../features/DataTable';
+import { SampleData } from '../pages/sampledata2';
 
 const useStyles = makeStyles((theme) => ({
   createCampaignButton: {
@@ -17,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
     margin: "16px 17px 0px 14px",
   },
   featuresContainer:{
-    padding: "40px 60px 0px",
+    padding: "100px 60px 30px",
   },
   campaignList: {
     overflow: "auto",
@@ -42,6 +45,27 @@ const useStyles = makeStyles((theme) => ({
 const Campaigns = () => {
   const classes = useStyles();
 
+  const prepareData = () => {
+    const results = [];
+
+    //replace data with real data
+    const data = SampleData();
+    data.map(each => {
+      const obj = {
+        'Name': each.name,
+        'Created': 'working',
+        'Prospects': each.prospects,
+        'Replies': each.replies,
+        'Steps': each.steps,
+        'Due': each.due
+      }
+      return results.push(obj)
+    })
+    return results;
+  }
+
+  const dataToRender = prepareData();
+
   return (
     <Fragment>
       <NavBar />
@@ -51,10 +75,10 @@ const Campaigns = () => {
             <Typography variant="h5"> Campaigns </Typography>
           </Box>
           <Box className={classes.icon}>
-            <i className="fas fa-bolt" style={{color: "grey"}}></i>
+            <FlashOnIcon fontSize="small" style={{color: "grey"}} />
           </Box>
           <Box className={classes.icon}>
-            <i className="fas fa-envelope" style={{color: "grey"}}></i>
+            <MailIcon fontSize="2px" style={{color: "grey"}} />
           </Box>
           <Box>
             <CustomizedButton 
@@ -67,7 +91,7 @@ const Campaigns = () => {
       <Box className="tagsContainer" display="flex" justifyContent="center">
       </Box>
       <UserInputContainer className={classes.campaignList}>
-        <DataTable></DataTable>
+        <DataTable data={dataToRender}></DataTable>
       </UserInputContainer>
     </Fragment>
   )
