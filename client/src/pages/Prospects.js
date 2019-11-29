@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useState, useEffect } from 'react';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
@@ -12,7 +12,9 @@ import OutlinedButton from '../features/OutlinedButton';
 import NavBar from '../features/NavBar/MainBody';
 import UserInputContainer from '../features/UserInputContainer';
 import DataTable from '../features/DataTable';
-import { SampleData } from '../pages/sampledata';
+import CustomizedDialog from '../features/CustomizedDialog'
+import SampleData from '../pages/sampledata';
+
 
 const useStyles = makeStyles((theme) => ({
   importButton: {
@@ -60,20 +62,71 @@ const useStyles = makeStyles((theme) => ({
 
 const Prospects = () => {
   const classes = useStyles();
+  const [prospects, handlelistOfProspects] = useState([]);
+  const [dialog, handleDialog] = useState(null);
+  const [campaigns, handleCampaigns] = useState(null);
+  const [campaignId, setCampaignId] = useState('');
 
-  const prepareData = () => {
+  useEffect(() => {
+    getAllCampaigns();
+  }, [])
+
+  // Need to replace hard code user with JWT token 
+  const user = 1
+
+  const getAllCampaigns = () => {
+    fetch(`/campaigns/${user}`)
+    .then(res => res.json())
+      .then(data => {
+        handleCampaigns(data.Campaigns)
+    })
+    .catch(err => {
+      console.log(err.message);
+    });
+  }
+
+  const handleCloseDialogAndSaveProspects = () => {
+    handleDialog(false)
+    saveProspectsToCampaign()
+  } 
+
+  const saveProspectsToCampaign = () => {
+    const data = {
+      "prospect_ids": prospects,
+    };
+
+    fetch(`/campaign/${campaignId}/prospects`, {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+      },
+      body: JSON.stringify(data)
+    })
+    .then(res => res.json())
+      .then(data => {
+        console.log(data.message);
+    })
+    .catch(err => {
+      console.log(err.message);
+    });
+  }
+
+  const formatData = () => {
     const results = [];
 
     //replace data with real data
-    const data = SampleData();
+    //id, email, name, status, owner_id, tags
+    const data = SampleData;
     const cloudIcon = <CloudIcon className="fas fa-cloud" style={{color: "grey"}} />
     data.map(each => {
       const obj = {
+        'id': each.id,
         'check': 'check',
         'Email': each.email,
         cloudIcon,
         'Status': 'working',
-        'Owner': each.owner,
+        'Owner': each.name,
         'Campaigns': each.campaigns,
         'Last Contacted': each.lastContacted,
         'Emails...': each.emails
@@ -83,21 +136,45 @@ const Prospects = () => {
     return results;
   }
   
-  const dataToRender = prepareData();
+  const dataToRender = formatData();
+
+  const actionType = 'Add to Campaign'
+
+  const propsForDialog = {
+    actionType,
+    dialog,
+    campaigns,
+    setCampaignId,
+    campaignId,
+    handleCloseDialogAndSaveProspects
+  }
 
   return (
     <Fragment>
       <NavBar />
       <div>
-        <Box className={classes.featuresContainer} display="flex">
+        <Box
+          className={classes.featuresContainer}
+          display="flex">
           <Box flexGrow={1}>
             <Typography variant="h5"> Prospects </Typography>
           </Box>
+          <Box flexGrow={1}>
+          {prospects.length > 0 &&
+            <CustomizedButton
+              onClick={() => handleDialog(true)}>
+              {actionType}
+            </CustomizedButton>}
+          </Box>
+            {dialog === true &&
+              <CustomizedDialog
+              propsForDialog={propsForDialog}
+              />}
           <Box className={classes.icon}>
             <FlashOnIcon fontSize="small" style={{color: "grey"}} />
           </Box>
           <Box className={classes.icon}>
-            <MailIcon fontSize="2px" style={{color: "grey"}} />
+            <MailIcon fontSize="small" style={{color: "grey"}} />
           </Box>
           <Box pl={2}>
             <OutlinedButton className={classes.importButton}> Imports </OutlinedButton>
@@ -108,7 +185,7 @@ const Prospects = () => {
               Add New Prospect
               <div className={classes.seperationLine}></div>
               <div className={classes.arrow} >
-                <ArrowDropDownIcon fontSize="smaller" style={{color: "white"}} pt={3} />
+                <ArrowDropDownIcon fontSize="small" style={{color: "white"}} pt={3} />
               </div>
             </CustomizedButton>
           </Box>
@@ -117,7 +194,11 @@ const Prospects = () => {
       <Box className="classes.tagsContainer" display="flex" justifyContent="center">
       </Box>
       <UserInputContainer className={classes.prospectList}>
-        <DataTable data={dataToRender}></DataTable>
+        <DataTable
+          data={dataToRender}
+          func={handlelistOfProspects}
+          >
+        </DataTable>
       </UserInputContainer>
     </Fragment>
   )
