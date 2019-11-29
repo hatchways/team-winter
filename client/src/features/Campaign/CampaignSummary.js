@@ -1,14 +1,17 @@
 import React, { Fragment } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import Grid from '@material-ui/core/Grid';
-import Typography from '@material-ui/core/Typography';
-import Paper from '@material-ui/core/Paper';
-import Button from '@material-ui/core/Button';
-import Divider from '@material-ui/core/Divider';
-import Box from '@material-ui/core/Box';
+import { 
+  makeStyles,
+  Grid,
+  Typography,
+  Paper,
+  Divider,
+  Box,
+} from '@material-ui/core';
+
 import MailIcon from '@material-ui/icons/Mail';
 
-import CustomizedButton from './CustomizedButton';
+import CustomizedButton from '../CustomizedButton';
+
 
 
 const useStyles = makeStyles( () => ({
@@ -26,12 +29,19 @@ const useStyles = makeStyles( () => ({
     fontSize: '200%',
     color: '#4FBE75'
   },
+  stepPaper: {
+    marginTop: '1rem',
+    '&:hover, &:focus': {
+      backgroundColor: '#fcfcfc',
+      cursor: 'pointer'
+    }
+  },
   mailIcon: {
     fontSize: '200%',
     color: '#4FBE75'
   },
   stepNumber: {
-    margin: '20px'
+    margin: '20px 20px 20px 35px'
   },
   addProspectsButton: {
     float: 'right'
@@ -39,16 +49,22 @@ const useStyles = makeStyles( () => ({
   verticalDivider: {
     borderColor: '#EDECF2',
     height: '55px',
-    width: '2px'
+    width: '2px',
+  },
+  stepVerticalDivider: {
+    borderColor: '#EDECF2',
+    height: '55px',
+    width: '2px',
+    margin: '0 auto'
   }
 }));
 
-const VerticalDivider = () => {
+const VerticalDivider = (props) => {
 
   const classes = useStyles();
 
   return (
-    <Divider className={classes.verticalDivider} orientation="vertical" />
+    <Divider className={props.step ? classes.stepVerticalDivider : classes.verticalDivider} orientation="vertical" />
   )
 
 }
@@ -115,16 +131,6 @@ const CampaignDataDisplay = (props) => {
 
 }
 
-const TemplateSelector = (props) => {
-
-  const classes = useStyles();
-
-  return (
-    <MailIcon className={classes.mailIcon} />
-  )
-
-}
-
 const StepsDisplay = (props) => {
 
   const classes = useStyles();
@@ -132,26 +138,28 @@ const StepsDisplay = (props) => {
   return (
     props.steps.map( (step, idx) => {
       return (
-        <Paper key={idx} className={classes.mt1}>
+        <Paper key={idx} className={classes.stepPaper} onClick={() => props.openEditStepDialog(idx)} >
           <Grid item container
                 direction="row"
                 justify="space-evenly"
                 alignItems="center" >
-            <Grid item >
+            <Grid item sm={1}>
               <Typography className={classes.stepNumber} variant="h6">{idx+1}</Typography>
             </Grid>
-            <Grid item >
-              <TemplateSelector id={step.templateId} />
+            <Grid item sm={1}>
+              <MailIcon className={classes.mailIcon} />
             </Grid>
-            <Grid item >
+            <Grid item sm={5}>
               <Typography>{step.templateName}</Typography>
             </Grid>
-            <Grid item>
+            <Grid item sm={2}>
               <StatisticDisplay label="Sent"
                                 value={step.sent} />
             </Grid>
-            <VerticalDivider />
-            <Grid item>
+            <Grid item sm={1}>
+              <VerticalDivider step={true} />
+            </Grid>
+            <Grid item sm={2}>
               <StatisticDisplay label="Replied"
                                 value={step.replied} />
             </Grid>
@@ -160,7 +168,6 @@ const StepsDisplay = (props) => {
       )
     })
   )
-
 }
 
 const StatisticDisplay = (props) => {
@@ -178,8 +185,6 @@ const StatisticDisplay = (props) => {
 
 const CampaignSummary = (props) => {
 
-  const classes = useStyles();
-
   return (
     <Fragment>
       <Grid container
@@ -194,9 +199,9 @@ const CampaignSummary = (props) => {
                              contacted={props.contacted}
                              replied={props.replied} />
         {/* Steps */}
-        <StepsDisplay steps={props.steps} />
+        <StepsDisplay steps={props.steps}
+                      openEditStepDialog={props.openEditStepDialog} />
       </Grid>
-      <Button className={classes.mt1} variant="outlined">Add Step</Button>
     </Fragment>
   )
 }
