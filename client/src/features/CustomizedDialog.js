@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
@@ -49,8 +49,7 @@ const DialogActions = withStyles(theme => ({
   },
 }))(MuiDialogActions);
 
-const CustomizedDialog = ({ handleDialog, dialog }) => {
-  console.log("dialog page - dialog state", dialog)
+const CustomizedDialog = ({ handleDialog, dialog, campaigns, setCampaignId , callSave}) => {
 
   return (
     <div>
@@ -59,9 +58,12 @@ const CustomizedDialog = ({ handleDialog, dialog }) => {
           Select campaign
         </DialogTitle>
         <DialogContent dividers>
+          {campaigns.map(campaign => (
+            <div onClick={() => setCampaignId(campaign.id)} > {campaign.name} </div>
+          ))}
         </DialogContent>
         <DialogActions>
-          <Button autoFocus onClick={() => handleDialog(false)} color="primary">
+          <Button autoFocus onClick={() => callSave()} color="primary">
             Add
           </Button>
         </DialogActions>
