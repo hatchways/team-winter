@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useState, useEffect } from 'react';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
@@ -64,12 +64,59 @@ const Prospects = () => {
   const classes = useStyles();
   const [prospects, handleProspects] = useState([]);
   const [dialog, handleDialog] = useState(null);
-  console.log(Date.now())
+  const [campaigns, handleCampaigns] = useState(null);
+  const [campaignId, setCampaignId] = useState(null);
 
-  const addToCampaignButton = prospects.length > 0 ? <CustomizedButton onClick={() => handleDialog(true)} > Add to Campaign </CustomizedButton> : null;
-  const addToCampaignDialog = dialog === true ? <CustomizedDialog handleDialog={handleDialog} dialog={dialog}/> : null;
+  useEffect(() => {
+    getAllCampaigns();
+  }, [])
 
-  const prepareData = () => {
+  // Need to replace hard code user with JWT token 
+  const user = 1
+
+  const getAllCampaigns = () => {
+    fetch(`http://localhost:5000/campaigns/${user}`)
+    .then(res => res.json())
+      .then(data => {
+        handleCampaigns(data.Campaigns)
+    })
+    .catch(err => {
+      console.log(err.message);
+    });
+  }
+
+  const callSave = () => {
+    handleDialog(false)
+    saveProspectsToCampaign()
+  } 
+
+  const saveProspectsToCampaign = () => {
+    const data = {
+      "prospect_ids": prospects,
+    };
+
+    fetch(`http://localhost:5000/campaign/${campaignId}/prospects`, {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+      },
+      body: JSON.stringify(data)
+    })
+      
+    .then(res => res.json())
+      .then(data => {
+        return data.message;
+    })
+    .catch(err => {
+      console.log(err.message);
+    });
+  }
+
+  const addToCampaignButton = prospects.length > 0 ? <CustomizedButton onClick={() =>  handleDialog(true)} > Add to Campaign </CustomizedButton> : null;
+  const addToCampaignDialog = dialog === true ? <CustomizedDialog handleDialog={handleDialog} dialog={dialog} campaigns={campaigns} setCampaignId={setCampaignId} callSave={callSave}/> : null;
+
+  const formatData = () => {
     const results = [];
 
     //replace data with real data
@@ -78,6 +125,7 @@ const Prospects = () => {
     const cloudIcon = <CloudIcon className="fas fa-cloud" style={{color: "grey"}} />
     data.map(each => {
       const obj = {
+        'id': each.id,
         'check': 'check',
         'Email': each.email,
         cloudIcon,
@@ -92,7 +140,8 @@ const Prospects = () => {
     return results;
   }
   
-  const dataToRender = prepareData();
+  const dataToRender = formatData();
+
 
   return (
     <Fragment>
@@ -110,7 +159,7 @@ const Prospects = () => {
             <FlashOnIcon fontSize="small" style={{color: "grey"}} />
           </Box>
           <Box className={classes.icon}>
-            <MailIcon fontSize="2px" style={{color: "grey"}} />
+            <MailIcon fontSize="small" style={{color: "grey"}} />
           </Box>
           <Box pl={2}>
             <OutlinedButton className={classes.importButton}> Imports </OutlinedButton>
@@ -121,7 +170,7 @@ const Prospects = () => {
               Add New Prospect
               <div className={classes.seperationLine}></div>
               <div className={classes.arrow} >
-                <ArrowDropDownIcon fontSize="smaller" style={{color: "white"}} pt={3} />
+                <ArrowDropDownIcon fontSize="small" style={{color: "white"}} pt={3} />
               </div>
             </CustomizedButton>
           </Box>
