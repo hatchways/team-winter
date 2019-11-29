@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useState } from 'react';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
@@ -12,7 +12,9 @@ import OutlinedButton from '../features/OutlinedButton';
 import NavBar from '../features/NavBar/MainBody';
 import UserInputContainer from '../features/UserInputContainer';
 import DataTable from '../features/DataTable';
-import { SampleData } from '../pages/sampledata';
+import CustomizedDialog from '../features/CustomizedDialog'
+import SampleData from '../pages/sampledata';
+
 
 const useStyles = makeStyles((theme) => ({
   importButton: {
@@ -60,12 +62,19 @@ const useStyles = makeStyles((theme) => ({
 
 const Prospects = () => {
   const classes = useStyles();
+  const [prospects, handleProspects] = useState([]);
+  const [dialog, handleDialog] = useState(null);
+  console.log(Date.now())
+
+  const addToCampaignButton = prospects.length > 0 ? <CustomizedButton onClick={() => handleDialog(true)} > Add to Campaign </CustomizedButton> : null;
+  const addToCampaignDialog = dialog === true ? <CustomizedDialog handleDialog={handleDialog} dialog={dialog}/> : null;
 
   const prepareData = () => {
     const results = [];
 
     //replace data with real data
-    const data = SampleData();
+    //id, email, name, status, owner_id, tags
+    const data = SampleData;
     const cloudIcon = <CloudIcon className="fas fa-cloud" style={{color: "grey"}} />
     data.map(each => {
       const obj = {
@@ -73,7 +82,7 @@ const Prospects = () => {
         'Email': each.email,
         cloudIcon,
         'Status': 'working',
-        'Owner': each.owner,
+        'Owner': each.name,
         'Campaigns': each.campaigns,
         'Last Contacted': each.lastContacted,
         'Emails...': each.emails
@@ -93,6 +102,10 @@ const Prospects = () => {
           <Box flexGrow={1}>
             <Typography variant="h5"> Prospects </Typography>
           </Box>
+          <Box flexGrow={1}>
+            {addToCampaignButton}
+          </Box>
+            {addToCampaignDialog}
           <Box className={classes.icon}>
             <FlashOnIcon fontSize="small" style={{color: "grey"}} />
           </Box>
@@ -117,7 +130,7 @@ const Prospects = () => {
       <Box className="classes.tagsContainer" display="flex" justifyContent="center">
       </Box>
       <UserInputContainer className={classes.prospectList}>
-        <DataTable data={dataToRender}></DataTable>
+        <DataTable data={dataToRender} func={handleProspects}></DataTable>
       </UserInputContainer>
     </Fragment>
   )
