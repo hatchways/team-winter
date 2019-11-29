@@ -35,7 +35,8 @@ const StepDialog = (props) => {
 
   return (
     <Dialog aria-labelledby="edit-step" 
-            open={props.open}>
+            open={props.open}
+            onClose={props.onClose} >
       <DialogContent>
         <DialogTitle>
           {props.title}
