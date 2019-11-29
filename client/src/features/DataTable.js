@@ -60,7 +60,9 @@ const HeaderRow = ({ onSelectAllClick, numSelected, rowCount, data }) => {
               >
                 <CloudIcon className="fas fa-cloud" style={{color: "grey"}} />
               </TableCell>
-            }else {
+            } else if (headCell === 'id') {
+              return null;
+            } else {
               return <TableCell
                 key={index}
                 align={"center"}
@@ -85,7 +87,7 @@ const DataTable = ({data, func}) => {
 
   const handleSelectAllClick = event => {
     if (event.target.checked) {
-      const newSelecteds = data.map(n => n.Email);
+      const newSelecteds = data.map(n => n.id);
       setSelected(newSelecteds);;
       return;
     }
@@ -131,21 +133,21 @@ const DataTable = ({data, func}) => {
           />
           <TableBody>
           {data.map((row, index) => {
-            const isItemSelected = isSelected(row.Email)
+            const isItemSelected = isSelected(row.id)
             const labelId = `table-checkbox-${index}`;
             return (
               <TableRow
                 hover
-                onClick={event => handleClick(event, row.Email)}
+                onClick={event => handleClick(event, row.id)}
                 role="checkbox"
                 aria-checked={isItemSelected}
                 tabIndex={-1}
-                key={row.Email}
+                key={row.id}
                 selected={isItemSelected}
                 > 
                 {Object.entries(row).map((eachCell, idx )=> {
                   if (eachCell[0] === 'check') {
-                    return <TableCell padding="checkbox">
+                    return <TableCell padding="checkbox" key={idx}>
                     <Checkbox
                       checked={isItemSelected}
                       inputProps={{ 'aria-labelledby': labelId }}
@@ -153,6 +155,8 @@ const DataTable = ({data, func}) => {
                   </TableCell>
                   } else if (eachCell[0] === "Email") {
                     return <TableCell key={idx} component="th" id={labelId} scope="row" p={1}> {eachCell[1]}</TableCell>
+                  } else if (eachCell[0] === 'id') {
+                    return null;
                   } else {
                     return <TableCell key={idx} id={labelId} align="center">{eachCell[1]}</TableCell>
                   }
