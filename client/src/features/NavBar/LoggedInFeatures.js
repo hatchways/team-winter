@@ -119,7 +119,7 @@ const CustomizedTabs = () => {
       Hatchways
     </Typography>
     <Button className={classes.toggleButton} onClick={handleClick}>
-    <ArrowDropDownIcon fontSize="smaller" style={{color: "grey"}} pt={3} />
+    <ArrowDropDownIcon fontSize="small" style={{color: "grey"}} pt={3} />
     </Button>
     <Menu
       className={classes.toggleMenu}
