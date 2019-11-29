@@ -8,6 +8,7 @@ import {
 import NavBar from '../features/NavBar/MainBody';
 import CampaignSummary from '../features/Campaign/CampaignSummary';
 import StepDialog from '../features/Campaign/StepDialog';
+import ConfirmationDialog from '../features/ConfirmationDialog';
 
 const useStyles = makeStyles( () => ({
   container: {
@@ -61,19 +62,13 @@ const Campaign = (props) => {
   const [editStep, setEditStep] = useState({});
   const [newOpen, setNewOpen] = useState(false);
   const [newStep, setNewStep] = useState(emptyStep);
+  const [confirmOpen, setConfirmOpen] = useState(false);
 
   useEffect( () => {
 
     getCampaign();
 
   }, []);
-
-  const findStep = (id) => {
-    for(let step of campaign.steps) {
-      if(step.id === id) return step;
-    }
-    return {};
-  }
 
   const findStepIndex = (step) => {
     for(let i=0; i<campaign.steps.length; i++) {
@@ -137,7 +132,7 @@ const Campaign = (props) => {
     // append step to campaign
     campaign.steps.push(step);
     setCampaign(campaign);
-    
+
     /** 
      * TODO:
      * update server
@@ -146,6 +141,22 @@ const Campaign = (props) => {
      * 
      * add step id after request 
      * (can't update without id, but can't know id until request)
+     */
+  }
+
+  const deleteStep = () => {
+    console.log('Delete: ' + JSON.stringify(editStep));
+    setConfirmOpen(false);
+    setEditOpen(false);
+    // update UI
+    const idx = findStepIndex(editStep);
+    campaign.steps.splice(idx, 1);
+    setCampaign(campaign);
+
+    /**
+     * TODO:
+     * update server
+     * delete step with id=editStep.id
      */
   }
 
@@ -185,6 +196,14 @@ const Campaign = (props) => {
     setNewStep(newStep);
   }
 
+  const handleDelete = () => {
+    setConfirmOpen(true);
+  }
+
+  const confirmClose = () => {
+    setConfirmOpen(false);
+  }
+
   return (
     <Fragment>
       <NavBar />
@@ -204,6 +223,8 @@ const Campaign = (props) => {
                     onSave={handleEditSave}
                     step={editStep}
                     setStep={handleSetEditStep}
+                    delete={true}
+                    onDeleteClick={handleDelete}
                     templates={campaign.templates} />
         {/* New step dialog */}
         <StepDialog title="New Step"
@@ -211,9 +232,13 @@ const Campaign = (props) => {
                     onClose={handleNewClose}
                     onSave={handleNewSave}
                     step={newStep}
+                    delete={false}
                     setStep={handleSetNewStep}
                     templates={campaign.templates} />
         <Button onClick={handleNewOpen} className={classes.mt1b3} variant="outlined">Add Step</Button>
+        <ConfirmationDialog open={confirmOpen}
+                            onClose={confirmClose}
+                            onConfirm={deleteStep} />
       </Container>
     </Fragment>
   )

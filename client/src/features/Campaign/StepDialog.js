@@ -15,6 +15,10 @@ import {
 const useStyles = makeStyles( () => ({
   select: {
     width: '400px'
+  },
+  deleteButton: {
+    marginLeft: 0,
+    marginRight: 'auto'
   }
 }));
 
@@ -54,6 +58,7 @@ const StepDialog = (props) => {
         </FormControl>
       </DialogContent>
       <DialogActions>
+        { props.delete ? <Button onClick={props.onDeleteClick} color="secondary" className={classes.deleteButton}>Delete</Button> : null }
         <Button onClick={props.onSave} color="primary">
           Save
         </Button>
