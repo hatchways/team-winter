@@ -3,19 +3,13 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import { getJWT } from '../utils';
 
 
-export default function CampaignDialog(props) {
-    const { open, onClose} = props;
+export default function CampaignDialog({open, onClose}) {
     const [name, handleName] = useState("");
-  
-    const handleClose = () => {
-      onClose();
-    }; 
   
     const handleCreate = async () => {
   
@@ -24,7 +18,7 @@ export default function CampaignDialog(props) {
       };
       
       try {
-        const response = await fetch('http://localhost:5000/campaigns', {
+        const response = await fetch('/campaigns', {
           method: 'POST',  
           headers: {
             'Content-Type': 'application/json', 
@@ -42,10 +36,9 @@ export default function CampaignDialog(props) {
     }
   
     return (
-      <Dialog open={open} onClose={handleClose} aria-labelledby="create-campaign">
+      <Dialog open={open} onClose={onClose} aria-labelledby="create-campaign">
         <DialogContent>
           <DialogTitle>Create a Campaign</DialogTitle>
-          <DialogContentText>Enter a name</DialogContentText>
           <TextField
               autoFocus
               type='text'
