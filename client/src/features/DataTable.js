@@ -76,7 +76,6 @@ const HeaderRow = ({ onSelectAllClick, numSelected, rowCount, data }) => {
   );
 }
 
-
 const DataTable = ({data, func}) => {
   const classes = useStyles();
   const [selected, setSelected] = useState([]);
@@ -88,7 +87,7 @@ const DataTable = ({data, func}) => {
   const handleSelectAllClick = event => {
     if (event.target.checked) {
       const newSelecteds = data.map(n => n.id);
-      setSelected(newSelecteds);;
+      setSelected(newSelecteds);
       return;
     }
     setSelected([]);

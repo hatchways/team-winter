@@ -62,7 +62,7 @@ const useStyles = makeStyles((theme) => ({
 
 const Prospects = () => {
   const classes = useStyles();
-  const [prospects, handleProspects] = useState([]);
+  const [prospects, handlelistOfProspects] = useState([]);
   const [dialog, handleDialog] = useState(null);
   const [campaigns, handleCampaigns] = useState(null);
   const [campaignId, setCampaignId] = useState(null);
@@ -75,7 +75,7 @@ const Prospects = () => {
   const user = 1
 
   const getAllCampaigns = () => {
-    fetch(`http://localhost:5000/campaigns/${user}`)
+    fetch(`/campaigns/${user}`)
     .then(res => res.json())
       .then(data => {
         handleCampaigns(data.Campaigns)
@@ -95,7 +95,7 @@ const Prospects = () => {
       "prospect_ids": prospects,
     };
 
-    fetch(`http://localhost:5000/campaign/${campaignId}/prospects`, {
+    fetch(`/campaign/${campaignId}/prospects`, {
       method: "POST",
       headers: {
         'Content-Type': 'application/json',
@@ -106,15 +106,12 @@ const Prospects = () => {
       
     .then(res => res.json())
       .then(data => {
-        return data.message;
+        console.log(data.message);
     })
     .catch(err => {
       console.log(err.message);
     });
   }
-
-  const addToCampaignButton = prospects.length > 0 ? <CustomizedButton onClick={() =>  handleDialog(true)} > Add to Campaign </CustomizedButton> : null;
-  const addToCampaignDialog = dialog === true ? <CustomizedDialog handleDialog={handleDialog} dialog={dialog} campaigns={campaigns} setCampaignId={setCampaignId} callSave={callSave}/> : null;
 
   const formatData = () => {
     const results = [];
@@ -152,9 +149,20 @@ const Prospects = () => {
             <Typography variant="h5"> Prospects </Typography>
           </Box>
           <Box flexGrow={1}>
-            {addToCampaignButton}
+          {prospects.length > 0 &&
+            <CustomizedButton
+              onClick={() => handleDialog(true)}>
+              Add to Campaign
+            </CustomizedButton>}
           </Box>
-            {addToCampaignDialog}
+            {dialog === true &&
+              <CustomizedDialog
+                handleDialog={handleDialog}
+                dialog={dialog}
+                campaigns={campaigns}
+                setCampaignId={setCampaignId}
+                callSave={callSave}
+              />}
           <Box className={classes.icon}>
             <FlashOnIcon fontSize="small" style={{color: "grey"}} />
           </Box>
@@ -179,7 +187,7 @@ const Prospects = () => {
       <Box className="classes.tagsContainer" display="flex" justifyContent="center">
       </Box>
       <UserInputContainer className={classes.prospectList}>
-        <DataTable data={dataToRender} func={handleProspects}></DataTable>
+        <DataTable data={dataToRender} func={handlelistOfProspects}></DataTable>
       </UserInputContainer>
     </Fragment>
   )
