@@ -9,9 +9,9 @@ import CustomizedButton from '../features/CustomizedButton';
 import NavBar from '../features/NavBar/MainBody';
 import UserInputContainer from '../features/UserInputContainer';
 import DataTable from '../features/DataTable';
-import { SampleData } from '../pages/sampledata2';
+// import { SampleData } from '../pages/sampledata2';
 import CampaignDialog from '../features/CampaignDialog';
-
+import { getJWT } from '../utils';
 
 const useStyles = makeStyles((theme) => ({
   createCampaignButton: {
@@ -57,26 +57,56 @@ const Campaigns = () => {
     setOpen(false);
   };
 
-  const prepareData = () => {
-    const results = [];
+  const getUserCampaigns = async () => {
 
-    //replace data with real data
-    const data = SampleData();
-    data.map(each => {
-      const obj = {
-        'Name': each.name,
-        'Created': 'working',
-        'Prospects': each.prospects,
-        'Replies': each.replies,
-        'Steps': each.steps,
-        'Due': each.due
+    await fetch('/campaigns', {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${getJWT()}`
       }
-      return results.push(obj)
     })
-    return results;
+    .then(res => res.json())
+      .then(data => {
+        const campaigns = [];
+        data.Campaigns.map(each => {
+          const campaign = {
+            'id' : each.id,
+            'Name': each.name,
+            'Created': each.creation_date,
+            'Prospects': each.prospects.length,
+            'Replies': 100,
+            'Steps': each.steps.length,
+            'Due': "1/1"
+          }
+          return campaigns.push(campaign);
+        })
+        return campaigns;
+    })
+    .catch(err => {
+      console.log(err.message);
+    });
   }
 
-  const dataToRender = prepareData();
+  // const prepareData = () => {
+  //   const results = [];
+
+  //   //replace data with real data
+  //   const data = SampleData();
+  //   data.map(each => {
+  //     const obj = {
+  //       'Name': each.name,
+  //       'Created': 'working',
+  //       'Prospects': each.prospects,
+  //       'Replies': each.replies,
+  //       'Steps': each.steps,
+  //       'Due': each.due
+  //     }
+  //     return results.push(obj)
+  //   })
+  //   return results;
+  // }
+
+  const dataToRender = getUserCampaigns();
 
   return (
     <Fragment>
