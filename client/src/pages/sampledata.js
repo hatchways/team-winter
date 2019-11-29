@@ -17,4 +17,3 @@ export const SampleData = () => {
   }
   return sample;
 }
-
