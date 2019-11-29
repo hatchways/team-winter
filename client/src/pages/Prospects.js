@@ -65,7 +65,7 @@ const Prospects = () => {
   const [prospects, handlelistOfProspects] = useState([]);
   const [dialog, handleDialog] = useState(null);
   const [campaigns, handleCampaigns] = useState(null);
-  const [campaignId, setCampaignId] = useState(null);
+  const [campaignId, setCampaignId] = useState('');
 
   useEffect(() => {
     getAllCampaigns();
@@ -85,7 +85,7 @@ const Prospects = () => {
     });
   }
 
-  const callSave = () => {
+  const handleCloseDialogAndSaveProspects = () => {
     handleDialog(false)
     saveProspectsToCampaign()
   } 
@@ -103,7 +103,6 @@ const Prospects = () => {
       },
       body: JSON.stringify(data)
     })
-      
     .then(res => res.json())
       .then(data => {
         console.log(data.message);
@@ -139,12 +138,24 @@ const Prospects = () => {
   
   const dataToRender = formatData();
 
+  const actionType = 'Add to Campaign'
+
+  const propsForDialog = {
+    actionType,
+    dialog,
+    campaigns,
+    setCampaignId,
+    campaignId,
+    handleCloseDialogAndSaveProspects
+  }
 
   return (
     <Fragment>
       <NavBar />
       <div>
-        <Box className={classes.featuresContainer} display="flex">
+        <Box
+          className={classes.featuresContainer}
+          display="flex">
           <Box flexGrow={1}>
             <Typography variant="h5"> Prospects </Typography>
           </Box>
@@ -152,16 +163,12 @@ const Prospects = () => {
           {prospects.length > 0 &&
             <CustomizedButton
               onClick={() => handleDialog(true)}>
-              Add to Campaign
+              {actionType}
             </CustomizedButton>}
           </Box>
             {dialog === true &&
               <CustomizedDialog
-                handleDialog={handleDialog}
-                dialog={dialog}
-                campaigns={campaigns}
-                setCampaignId={setCampaignId}
-                callSave={callSave}
+              propsForDialog={propsForDialog}
               />}
           <Box className={classes.icon}>
             <FlashOnIcon fontSize="small" style={{color: "grey"}} />
@@ -187,7 +194,11 @@ const Prospects = () => {
       <Box className="classes.tagsContainer" display="flex" justifyContent="center">
       </Box>
       <UserInputContainer className={classes.prospectList}>
-        <DataTable data={dataToRender} func={handlelistOfProspects}></DataTable>
+        <DataTable
+          data={dataToRender}
+          func={handlelistOfProspects}
+          >
+        </DataTable>
       </UserInputContainer>
     </Fragment>
   )
