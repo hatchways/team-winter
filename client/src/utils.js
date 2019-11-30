@@ -20,7 +20,7 @@ const getJWT = () => {
 
 /**
  * Class for the Error thrown during requests to the MailSender API 
- * made with the apiGET or apiPOST methods
+ * made with the apiRequest method
  * @extends Error
  */
 class APIError extends Error {
@@ -34,50 +34,22 @@ class APIError extends Error {
 }
 
 /**
- * GET data from the MailSender API
+ * Make a request to the MailSender API
  * 
- * @param {string} path - Resource to request
- * @returns {Promise} - Promise which resolves to the returned JSON data
- * @throws {APIError} Thrown if response status code is outside 200-299
+ * @param {string} path - Resource path
+ * @param {object} data - Data to send in the request body
+ * @returns {Promise} - Promise which resolves to the retunred JSON
+ * @throws {APIError} - Thrown if the response status code is not 2xx
  */
-const apiGET = async (path) => {
-  const url = API_BASE_URL + path
-  const response = await fetch(url, {
-    method: 'GET',
+const apiRequest = (method, path, data={}) => {
+  const response = await fetch(path, {
+    method: method,
     headers: {
-      'Authorization': `Bearer ${getJWT()}`
-    }
-  });
-  // accept all 200 status codes
-  if(response.status > 199 && response.status < 300) {
-    const responseJSON = await response.json();
-    return responseJSON;
-  }
-  else {
-    throw new APIError(response.status);
-  }
-}
-
-/**
- * POST data to the MailSender API
- * 
- * @param {string} path - Resource to POST to
- * @param {object} data - Object to send in the body of the request
- * @returns {Promise} - Promise which resolves to the returned JSON data
- * @throws {APIError} Thrown if response status code is outside 200-299
- */
-const apiPOST = async (path, data) => {
-  const url = API_BASE_URL + path;
-  const response = await fetch(url, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
       'Authorization': `Bearer ${getJWT()}`
     },
     body: data
   });
-  // accept all 200 status codes
-  if(response.status < 200 || response.status > 299) {
+  if(response.status > 199 && response.status < 300) {
     const responseJSON = await response.json();
     return responseJSON;
   }
@@ -89,6 +61,5 @@ const apiPOST = async (path, data) => {
 export {
   validatePassword,
   getJWT,
-  apiGET,
-  apiPOST
+  apiRequest
 }

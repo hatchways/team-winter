@@ -8,7 +8,7 @@ import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import queryString from 'query-string';
 
-import { apiPOST } from '../utils';
+import { apiRequest } from '../utils';
 
 function GmailAuthorizationHandler(props) {
 
@@ -22,7 +22,7 @@ function GmailAuthorizationHandler(props) {
 
     if(qs.code && qs.state) {
       setOpen(true);
-      apiPOST('/gmail/authorize', {'code': qs.code, 'state': qs.state})
+      apiRequest('POST', '/gmail/authorize', {'code': qs.code, 'state': qs.state})
       .then( (json) => {
         setGmailAddress(json['gmail_address']);
         setAuthStage('complete');

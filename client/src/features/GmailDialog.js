@@ -10,7 +10,7 @@ import Button from '@material-ui/core/Button';
 import imageEnabled from '../images/btn_google_signin_dark_normal_web.png';
 import imageDisabled from '../images/btn_google_signin_dark_disabled_web.png';
 
-import { apiGET } from '../utils';
+import { apiRequest } from '../utils';
 
 const useStyles = makeStyles({
   imageContainer: {
@@ -30,14 +30,14 @@ function GmailDialog(props) {
   useEffect( () => {
 
     // check if the user has a connected gmail account
-    apiGET('/gmail/get_address')
+    apiRequest('GET', '/gmail/get_address')
     .then( (json) => {
       //no connected gmail for this user
       if(!json['gmail_address'] && props.open) {
         // open the dialog
         setOpen(true);
         // get the auth URL
-        apiGET('/gmail/get_auth_url')
+        apiRequest('GET', '/gmail/get_auth_url')
         .then( (json) => {
           setGoogleAuthURL(json['auth_url']);
           setImage(imageEnabled);
