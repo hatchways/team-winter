@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useState, useEffect} from 'react';
 import Typography from '@material-ui/core/Typography';
 import MailIcon from '@material-ui/icons/Mail';
 import FlashOnIcon from '@material-ui/icons/FlashOn';
@@ -9,7 +9,6 @@ import CustomizedButton from '../features/CustomizedButton';
 import NavBar from '../features/NavBar/MainBody';
 import UserInputContainer from '../features/UserInputContainer';
 import DataTable from '../features/DataTable';
-// import { SampleData } from '../pages/sampledata2';
 import CampaignDialog from '../features/CampaignDialog';
 import { getJWT } from '../utils';
 
@@ -48,7 +47,13 @@ const Campaigns = () => {
   const classes = useStyles();
 
   const [open, setOpen] = useState(false); 
-  
+  const [campaigns, setCampaigns] = useState([{}]);
+
+  useEffect(() => {
+    getUserCampaigns();
+  })
+
+
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -56,6 +61,27 @@ const Campaigns = () => {
   const handleClose = () => {
     setOpen(false);
   };
+
+  const handleCampaigns = data => {
+    const campaigns = [];
+    for(const each of data.Campaigns) {
+      const campaign = {
+        id : each.id,
+        name: each.name,
+        created: each.creation_date,
+        prospects: each.prospects.length,
+        replies: "",
+        steps: each.steps.length,
+        due: ""
+      }
+      campaigns.push(campaign);
+    }
+    setCampaigns(campaigns);
+  }
+
+  const test = () => {
+    console.log('yay')
+  }
 
   const getUserCampaigns = async () => {
 
@@ -66,53 +92,20 @@ const Campaigns = () => {
       }
     })
     .then(res => res.json())
-      .then(data => {
-        const campaigns = [];
-        data.Campaigns.map(each => {
-          const campaign = {
-            'id' : each.id,
-            'Name': each.name,
-            'Created': each.creation_date,
-            'Prospects': each.prospects.length,
-            'Replies': 100,
-            'Steps': each.steps.length,
-            'Due': "1/1"
-          }
-          return campaigns.push(campaign);
-        })
-        return campaigns;
-    })
+      .then(data => {handleCampaigns(data)})
     .catch(err => {
       console.log(err.message);
     });
   }
 
-  // const prepareData = () => {
-  //   const results = [];
 
-  //   //replace data with real data
-  //   const data = SampleData();
-  //   data.map(each => {
-  //     const obj = {
-  //       'Name': each.name,
-  //       'Created': 'working',
-  //       'Prospects': each.prospects,
-  //       'Replies': each.replies,
-  //       'Steps': each.steps,
-  //       'Due': each.due
-  //     }
-  //     return results.push(obj)
-  //   })
-  //   return results;
-  // }
-
-  const dataToRender = getUserCampaigns();
+  
 
   return (
     <Fragment>
       <NavBar />
       <div>
-        <Box className={classes.featuresContainer} display="flex">
+        <Box className={classes.featuresContainer}  display="flex">
           <Box flexGrow={1}>
             <Typography variant="h5"> Campaigns </Typography>
           </Box>
@@ -135,7 +128,7 @@ const Campaigns = () => {
       <Box className="tagsContainer" display="flex" justifyContent="center">
       </Box>
       <UserInputContainer className={classes.campaignList}>
-        <DataTable data={dataToRender}></DataTable>
+        <DataTable data={campaigns} func={test}></DataTable>
       </UserInputContainer>
     </Fragment>
   )

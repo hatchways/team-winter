@@ -57,9 +57,16 @@ class UserCampaigns(Resource):
     @jwt_required
     def get(self):
         current_user = UserModel.find_by_id(get_jwt_identity())
-        campaigns = []
+        campaigns = [] # id, name, creation_date, owner_id, prospects, steps
         for campaign in current_user.campaigns:
-            campaigns.append({'id' : campaign.id, 'name' : campaign.name})
+            campaigns.append({
+                'id' : campaign.id, 
+                'name' : campaign.name,
+                'creation_date' : str(campaign.creation_date), 
+                'owner_id' : campaign.owner_id,
+                'prospects' : campaign.prospects,
+                'steps' : campaign.steps  
+            })
         return {
             'Campaigns': campaigns
             }, 200 
