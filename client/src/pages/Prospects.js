@@ -14,6 +14,7 @@ import UserInputContainer from '../features/UserInputContainer';
 import DataTable from '../features/DataTable';
 import CustomizedDialog from '../features/CustomizedDialog'
 import SampleData from '../pages/sampledata';
+import { getJWT } from '../utils';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -71,11 +72,13 @@ const Prospects = () => {
     getAllCampaigns();
   }, [])
 
-  // Need to replace hard code user with JWT token 
-  const user = 1
-
   const getAllCampaigns = () => {
-    fetch(`/campaigns/${user}`)
+    fetch(`/campaigns`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${getJWT()}`
+      }
+    })
     .then(res => res.json())
       .then(data => {
         handleCampaigns(data.Campaigns)
@@ -98,6 +101,7 @@ const Prospects = () => {
     fetch(`/campaign/${campaignId}/prospects`, {
       method: "POST",
       headers: {
+        'Authorization': `Bearer ${getJWT()}`,
         'Content-Type': 'application/json',
         Accept: 'application/json',
       },
@@ -146,7 +150,8 @@ const Prospects = () => {
     campaigns,
     setCampaignId,
     campaignId,
-    handleCloseDialogAndSaveProspects
+    handleCloseDialogAndSaveProspects,
+    handleDialog
   }
 
   return (
