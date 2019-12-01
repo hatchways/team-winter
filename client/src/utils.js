@@ -39,7 +39,7 @@ class APIError extends Error {
  * @returns {Promise} - Promise which resolves to the retunred JSON
  * @throws {APIError} - Thrown if the response status code is not 2xx
  */
-const apiRequest = async (method, path, data={}) => {
+const apiRequest = async (method, path, data=null) => {
   const response = await fetch(path, {
     method: method,
     headers: {
