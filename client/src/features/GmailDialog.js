@@ -10,10 +10,7 @@ import Button from '@material-ui/core/Button';
 import imageEnabled from '../images/btn_google_signin_dark_normal_web.png';
 import imageDisabled from '../images/btn_google_signin_dark_disabled_web.png';
 
-import { getJWT } from '../utils';
-
-const GET_AUTH_URL_URL = 'http://localhost:5000/gmail/get_auth_url';
-const GET_GMAIL_ADDRESS_URL = 'http://localhost:5000/gmail/get_address';
+import { apiRequest } from '../utils';
 
 const useStyles = makeStyles({
   imageContainer: {
@@ -30,52 +27,19 @@ function GmailDialog(props) {
   const [image, setImage] = useState(imageDisabled);
   const [googleAuthURL, setGoogleAuthURL] = useState('');
 
-  const getAuthURL = async () => {
-    const response = await fetch(GET_AUTH_URL_URL, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer: ${getJWT()}`
-      }
-    });
-    if(response.status === 200) {
-      return response.json()['auth_url'];
-    }
-    else {
-      throw new Error('Could not get authorization URL from server.');
-    }
-  }
-
-  const getUserGmail = async () => {
-    const response = await fetch(GET_GMAIL_ADDRESS_URL, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer: ${getJWT}`
-      }
-    });
-    if(response.status === 200) {
-      return response.json()['gmail_address'];
-    }
-    else {
-      throw new Error('Could not get user\'s Gmail address from server');
-    }
-  }
-
   useEffect( () => {
 
     // check if the user has a connected gmail account
-    getUserGmail()
-    .then( (gmailAddress) => {
-
+    apiRequest('GET', '/gmail/get_address')
+    .then( (json) => {
       //no connected gmail for this user
-      if(!gmailAddress) {
+      if(!json['gmail_address'] && props.open) {
         // open the dialog
         setOpen(true);
         // get the auth URL
-        getAuthURL()
-        .then( (authURL) => {
-          setGoogleAuthURL(authURL);
+        apiRequest('GET', '/gmail/get_auth_url')
+        .then( (json) => {
+          setGoogleAuthURL(json['auth_url']);
           setImage(imageEnabled);
         })
         .catch( (e) => {
@@ -86,8 +50,7 @@ function GmailDialog(props) {
     .catch( (e) => {
       console.log(e);
     });
-
-  }, []);
+  }, [props.open]);
 
   const handleClose = () => {
     setOpen(false);
