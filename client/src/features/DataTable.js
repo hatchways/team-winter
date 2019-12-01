@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-
 import { makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -76,7 +75,7 @@ const HeaderRow = ({ onSelectAllClick, numSelected, rowCount, data }) => {
   );
 }
 
-const DataTable = ({data, func}) => {
+const DataTable = ({data, func, type, campaignId}) => {
   const classes = useStyles();
   const [selected, setSelected] = useState([]);
 
@@ -94,6 +93,9 @@ const DataTable = ({data, func}) => {
   };
 
   const handleClick = (event, email) => {
+    if(type === "campaign") {
+      campaignId(email);
+    }
     const selectedIndex = selected.indexOf(email);
     let newSelected = [];
 
