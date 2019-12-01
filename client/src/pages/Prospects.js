@@ -61,11 +61,13 @@ const useStyles = makeStyles((theme) => ({
 
 const Prospects = () => {
   const classes = useStyles();
-  const [prospects, handlelistOfProspects] = useState([]);
+  const actionType = 'Add to Campaign'
+
   const [data, handleData] = useState([{}]);
   const [dialog, handleDialog] = useState(null);
-  const [campaigns, handleCampaigns] = useState(null);
+  const [listOfCampaigns, handleCampaigns] = useState(null);
   const [campaignId, setCampaignId] = useState('');
+  const [selectedProspects, handleSelectedProspects] = useState([]);
 
   useEffect(() => {
     getAllCampaigns();
@@ -111,7 +113,7 @@ const Prospects = () => {
 
   const saveProspectsToCampaign = () => {
     const data = {
-      "prospect_ids": prospects,
+      "prospect_ids": selectedProspects,
     };
 
     fetch(`/campaign/${campaignId}/prospects`, {
@@ -132,6 +134,37 @@ const Prospects = () => {
     });
   }
 
+  //handle select all row on DataTable.js
+  const handleClickOnAllRows = event => {
+    if (event.target.checked) {
+      const newSelecteds = data.map(n => n.id);
+      handleSelectedProspects(newSelecteds);
+      return;
+    }
+    handleSelectedProspects([]);
+  };
+
+  //handle select one row on DataTable.js
+  const handleClickOnRow = (event, id) => {
+    const selectedIndex = selectedProspects.indexOf(id);
+    let newSelected = [];
+
+    if (selectedIndex === -1) {
+      newSelected = newSelected.concat(selectedProspects, id);
+    } else if (selectedIndex === 0) {
+      newSelected = newSelected.concat(selectedProspects.slice(1));
+    } else if (selectedIndex === selectedProspects.length - 1) {
+      newSelected = newSelected.concat(selectedProspects.slice(0, -1));
+    } else if (selectedIndex > 0) {
+      newSelected = newSelected.concat(
+        selectedProspects.slice(0, selectedIndex),
+        selectedProspects.slice(selectedIndex + 1),
+      );
+    }
+    handleSelectedProspects(newSelected);
+  };
+
+  // format data to render data on DataTable.js
   const formatData = () => {
     const results = [];
     const cloudIcon = <CloudIcon className="fas fa-cloud" style={{color: "grey"}} />
@@ -155,16 +188,21 @@ const Prospects = () => {
   
   const dataToRender = formatData();
 
-  const actionType = 'Add to Campaign'
-
   const propsForDialog = {
     actionType,
     dialog,
-    campaigns,
+    listOfCampaigns,
     setCampaignId,
     campaignId,
     handleCloseDialogAndSaveProspects,
     handleDialog
+  }
+  
+  const propsForDataTable = {
+    data: dataToRender,
+    handleClickOnAllRows,
+    handleClickOnRow,
+    selectedProspects,
   }
 
   return (
@@ -178,7 +216,7 @@ const Prospects = () => {
             <Typography variant="h5"> Prospects </Typography>
           </Box>
           <Box flexGrow={1}>
-          {prospects.length > 0 &&
+          {selectedProspects.length > 0 &&
             <CustomizedButton
               onClick={() => handleDialog(true)}>
               {actionType}
@@ -213,8 +251,7 @@ const Prospects = () => {
       </Box>
       <UserInputContainer className={classes.prospectList}>
         <DataTable
-          data={dataToRender}
-          func={handlelistOfProspects}
+          props={propsForDataTable}
           >
         </DataTable>
       </UserInputContainer>
