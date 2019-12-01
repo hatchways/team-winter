@@ -13,9 +13,7 @@ import NavBar from '../features/NavBar/MainBody';
 import UserInputContainer from '../features/UserInputContainer';
 import DataTable from '../features/DataTable';
 import CustomizedDialog from '../features/CustomizedDialog'
-import SampleData from '../pages/sampledata';
 import { getJWT } from '../utils';
-
 
 const useStyles = makeStyles((theme) => ({
   importButton: {
@@ -64,13 +62,31 @@ const useStyles = makeStyles((theme) => ({
 const Prospects = () => {
   const classes = useStyles();
   const [prospects, handlelistOfProspects] = useState([]);
+  const [data, handleData] = useState([{}]);
   const [dialog, handleDialog] = useState(null);
   const [campaigns, handleCampaigns] = useState(null);
   const [campaignId, setCampaignId] = useState('');
 
   useEffect(() => {
     getAllCampaigns();
+    getAllProspects();
   }, [])
+
+  const getAllProspects = () => {
+    fetch(`/prospects`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${getJWT()}`
+      }
+    })
+    .then(res => res.json())
+      .then(result => {
+        handleData(result.Prospects)
+    })
+    .catch(err => {
+      console.log(err.message);
+    });
+  }
 
   const getAllCampaigns = () => {
     fetch(`/campaigns`, {
@@ -118,24 +134,21 @@ const Prospects = () => {
 
   const formatData = () => {
     const results = [];
-
-    //replace data with real data
-    //id, email, name, status, owner_id, tags
-    const data = SampleData;
     const cloudIcon = <CloudIcon className="fas fa-cloud" style={{color: "grey"}} />
-    data.map(each => {
-      const obj = {
-        'id': each.id,
+
+    data.map(prospect => {
+      const prospectObj = {
+        'id': prospect.id,
         'check': 'check',
-        'Email': each.email,
+        'Email': prospect.email,
         cloudIcon,
         'Status': 'working',
-        'Owner': each.name,
-        'Campaigns': each.campaigns,
-        'Last Contacted': each.lastContacted,
-        'Emails...': each.emails
+        'Owner': prospect.name,
+        'Campaigns': prospect.campaigns,
+        'Last Contacted': prospect.lastContacted,
+        'Emails...': prospect.emails
       }
-      return results.push(obj)
+      return results.push(prospectObj)
     })
     return results;
   }

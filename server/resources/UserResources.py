@@ -81,3 +81,19 @@ class UserCampaigns(Resource):
             return {'message': 'Something went wrong'}, 500
 
 
+class UserProspects(Resource):
+    @jwt_required
+    def get(self):
+        current_user = UserModel.find_by_id(get_jwt_identity())
+        prospects = []
+        for prospect in current_user.prospects:
+            prospects.append({
+                'id' : prospect.id,
+                'email': prospect.email,
+                'name' : prospect.name,
+                'status' : prospect.status,
+                'campaigns': len(prospect.campaigns),
+                })
+        return {
+            'Prospects': prospects
+            }, 200 
