@@ -30,7 +30,7 @@ const MenuProps = {
 
 const SelectFromList = ({ propsForDialog }) => {
   const classes = useStyles();
-  const { campaigns, actionType, setCampaignId, campaignId } = propsForDialog;
+  const { listOfCampaigns, actionType, setCampaignId, campaignId } = propsForDialog;
 
   return (
     <div>
@@ -45,7 +45,7 @@ const SelectFromList = ({ propsForDialog }) => {
           <MenuItem disabled value="">
             {actionType}
           </MenuItem>
-            {campaigns.map(campaign => (
+            {listOfCampaigns.map(campaign => (
             <MenuItem
               key={campaign.name}
               value={campaign.id}
