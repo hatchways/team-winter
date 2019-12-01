@@ -13,22 +13,28 @@ const DialogActions = withStyles(theme => ({
 }))(MuiDialogActions);
 
 const CustomizedDialog = ({ propsForDialog }) => {
-  const { handleCloseDialogAndSaveProspects, dialog } = propsForDialog
+  const { handleCloseDialogAndSaveProspects, dialog, handleDialog } = propsForDialog
 
   return (
     <div>
-      <Dialog aria-labelledby="customized-dialog-title" open={dialog}>
+      <Dialog onClose={() => handleDialog(false)} aria-labelledby="customized-dialog-title" open={dialog}>
       <SelectFromList
         propsForDialog={propsForDialog}
       >
       </SelectFromList>
         <DialogActions>
-          <Button
+        <Button
             autoFocus
             onClick={() => handleCloseDialogAndSaveProspects()}
-            color="primary"
+            color="secondary"
           >
             Add
+          </Button>
+          <Button
+            autoFocus
+            onClick={() => handleDialog(false)}
+          >
+            Cancel
           </Button>
         </DialogActions>
       </Dialog>
