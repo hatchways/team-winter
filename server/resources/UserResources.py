@@ -62,10 +62,10 @@ class UserCampaigns(Resource):
             campaigns.append({
                 'id' : campaign.id, 
                 'name' : campaign.name,
-                'creation_date' : str(campaign.creation_date), 
+                'creation_date' : campaign.creation_date.strftime("%b %d"), 
                 'owner_id' : campaign.owner_id,
-                'prospects' : campaign.prospects,
-                'steps' : campaign.steps  
+                'prospects' : len(campaign.prospects),
+                'steps' : len(campaign.steps)  
             })
         return {
             'Campaigns': campaigns

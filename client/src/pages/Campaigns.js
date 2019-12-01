@@ -77,9 +77,9 @@ const Campaigns = () => {
         id : each.id,
         Name: each.name,
         Created: each.creation_date,
-        Prospects: each.prospects.length,
+        Prospects: each.prospects,
         Replies: "",
-        Steps: each.steps.length,
+        Steps: each.steps,
         Due: ""
       }
       campaigns.push(campaign);
