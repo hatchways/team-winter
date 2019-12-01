@@ -217,7 +217,7 @@ const Prospects = () => {
           </Box>
             {dialog === true &&
               <CustomizedDialog
-              propsForDialog={propsForDialog}
+              props={propsForDialog}
               />}
           <Box className={classes.icon}>
             <FlashOnIcon fontSize="small" style={{color: "grey"}} />

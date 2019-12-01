@@ -28,9 +28,9 @@ const MenuProps = {
   },
 };
 
-const SelectFromList = ({ propsForDialog }) => {
+const SelectFromList = ({ props }) => {
   const classes = useStyles();
-  const { listOfCampaigns, actionType, setCampaignId, campaignId } = propsForDialog;
+  const { listOfCampaigns, actionType, setCampaignId, campaignId } = props;
 
   return (
     <div>
