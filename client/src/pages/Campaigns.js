@@ -51,7 +51,7 @@ const Campaigns = () => {
 
   useEffect(() => {
     getUserCampaigns();
-  })
+  }, []);
 
 
   const handleClickOpen = () => {
@@ -60,6 +60,7 @@ const Campaigns = () => {
 
   const handleClose = () => {
     setOpen(false);
+    getUserCampaigns();
   };
 
   const handleCampaigns = data => {
@@ -67,12 +68,12 @@ const Campaigns = () => {
     for(const each of data.Campaigns) {
       const campaign = {
         id : each.id,
-        name: each.name,
-        created: each.creation_date,
-        prospects: each.prospects.length,
-        replies: "",
-        steps: each.steps.length,
-        due: ""
+        Name: each.name,
+        Created: each.creation_date,
+        Prospects: each.prospects.length,
+        Replies: "",
+        Steps: each.steps.length,
+        Due: ""
       }
       campaigns.push(campaign);
     }
@@ -128,7 +129,7 @@ const Campaigns = () => {
       <Box className="tagsContainer" display="flex" justifyContent="center">
       </Box>
       <UserInputContainer className={classes.campaignList}>
-        <DataTable data={campaigns} func={test}></DataTable>
+        <DataTable data={campaigns} func={test} type="campaign"></DataTable>
       </UserInputContainer>
     </Fragment>
   )
