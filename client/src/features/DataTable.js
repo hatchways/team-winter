@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 
 import { makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
@@ -38,7 +38,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const HeaderRow = ({ onSelectAllClick, numSelected, rowCount, data }) => {
+const HeaderRow = ({ handleClickOnAllRows, numSelected, rowCount, data }) => {
   const header = Object.keys(data[0]);
 
   return (
@@ -50,14 +50,14 @@ const HeaderRow = ({ onSelectAllClick, numSelected, rowCount, data }) => {
               <Checkbox
                 indeterminate={numSelected > 0 && numSelected < rowCount}
                 checked={numSelected === rowCount}
-                onChange={onSelectAllClick}
+                onChange={handleClickOnAllRows}
               />
             </TableCell>
             } else if (headCell === 'cloudIcon') {
               return <TableCell
                 key={index}
                 align={"center"}
-              >
+                >
                 <CloudIcon className="fas fa-cloud" style={{color: "grey"}} />
               </TableCell>
             } else if (headCell === 'id') {
@@ -66,7 +66,7 @@ const HeaderRow = ({ onSelectAllClick, numSelected, rowCount, data }) => {
               return <TableCell
                 key={index}
                 align={"center"}
-              >
+                >
                 {headCell}
               </TableCell>
             }
@@ -76,43 +76,12 @@ const HeaderRow = ({ onSelectAllClick, numSelected, rowCount, data }) => {
   );
 }
 
-const DataTable = ({data, func}) => {
+const DataTable = ({props}) => {
   const classes = useStyles();
-  const [selected, setSelected] = useState([]);
 
-  useEffect(() => {
-    func(selected)
-  }, [func, selected])
-
-  const handleSelectAllClick = event => {
-    if (event.target.checked) {
-      const newSelecteds = data.map(n => n.id);
-      setSelected(newSelecteds);
-      return;
-    }
-    setSelected([]);
-  };
-
-  const handleClick = (event, email) => {
-    const selectedIndex = selected.indexOf(email);
-    let newSelected = [];
-
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, email);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1),
-      );
-    }
-    setSelected(newSelected);
-  };
-
-  const isSelected = email => selected.indexOf(email) !== -1;
+  let { data, handleClickOnAllRows, handleClickOnRow, selectedProspects} = props;
+  selectedProspects = selectedProspects || [];
+  const isSelected = id => selectedProspects.indexOf(id) !== -1;
 
   return (
     <div className={classes.root}>
@@ -122,46 +91,46 @@ const DataTable = ({data, func}) => {
             className={classes.table}
             aria-labelledby="tableTitle"
             aria-label="table"
-          >
-          <HeaderRow
-            classes={classes}
-            numSelected={selected.length}
-            onSelectAllClick={handleSelectAllClick}
-            rowCount={Object.keys(data).length}
-            data={data}
-          />
-          <TableBody>
-          {data.map((row, index) => {
-            const isItemSelected = isSelected(row.id)
-            const labelId = `table-checkbox-${index}`;
-            return (
-              <TableRow
-                hover
-                onClick={event => handleClick(event, row.id)}
-                role="checkbox"
-                aria-checked={isItemSelected}
-                tabIndex={-1}
-                key={row.id}
-                selected={isItemSelected}
-                > 
-                {Object.entries(row).map((eachCell, idx )=> {
-                  if (eachCell[0] === 'check') {
-                    return <TableCell padding="checkbox" key={idx}>
-                    <Checkbox
-                      checked={isItemSelected}
-                      inputProps={{ 'aria-labelledby': labelId }}
-                    />
-                  </TableCell>
-                  } else if (eachCell[0] === "Email") {
-                    return <TableCell key={idx} component="th" id={labelId} scope="row" p={1}> {eachCell[1]}</TableCell>
-                  } else if (eachCell[0] === 'id') {
-                    return null;
-                  } else {
-                    return <TableCell key={idx} id={labelId} align="center">{eachCell[1]}</TableCell>
-                  }
-                })}
-              </TableRow>
-            )})}
+            >
+            <HeaderRow
+              classes={classes}
+              numSelected={selectedProspects.length}
+              handleClickOnAllRows={handleClickOnAllRows}
+              rowCount={Object.keys(data).length}
+              data={data}
+            />
+            <TableBody>
+              {data.map((row, idx) => {
+                const isItemSelected = isSelected(row.id);
+                const labelId = `table-checkbox-${idx}`;
+                return (
+                <TableRow
+                  hover
+                  onClick={event => handleClickOnRow(event, row.id)}
+                  role="checkbox"
+                  aria-checked={isItemSelected}
+                  tabIndex={-1}
+                  key={idx}
+                  selected={isItemSelected}
+                  > 
+                  {Object.entries(row).map((eachCell, idx )=> {
+                    if (eachCell[0] === 'check') {
+                      return <TableCell padding="checkbox" key={idx}>
+                      <Checkbox
+                        checked={isItemSelected}
+                        inputProps={{ 'aria-labelledby': labelId }}
+                      />
+                    </TableCell>
+                    } else if (eachCell[0] === "Email") {
+                      return <TableCell key={idx} component="th" id={labelId} scope="row" p={1}> {eachCell[1]}</TableCell>
+                    } else if (eachCell[0] === 'id') {
+                      return null;
+                    } else {
+                      return <TableCell key={idx} id={labelId} align="center">{eachCell[1]}</TableCell>
+                    }
+                  })}
+                </TableRow>
+              )})}
             </TableBody>
           </Table>
         </div>
