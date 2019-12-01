@@ -73,7 +73,6 @@ const Campaigns = () => {
       }
       return results.push(obj)
     })
-    console.log(results);
     return results;
   }
 
