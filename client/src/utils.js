@@ -1,5 +1,3 @@
-const API_BASE_URL = 'http://localhost:5000';
-
 /**
  * Determine if a password is valid
  * 
@@ -41,7 +39,7 @@ class APIError extends Error {
  * @returns {Promise} - Promise which resolves to the retunred JSON
  * @throws {APIError} - Thrown if the response status code is not 2xx
  */
-const apiRequest = (method, path, data={}) => {
+const apiRequest = async (method, path, data={}) => {
   const response = await fetch(path, {
     method: method,
     headers: {
