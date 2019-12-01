@@ -83,8 +83,25 @@ const Prospects = () => {
     })
     .then(res => res.json())
       .then(result => {
-        handleData(result.Prospects)
-    })
+        const listOfProspects = [];
+        const cloudIcon = <CloudIcon className="fas fa-cloud" style={{color: "grey"}} />
+
+        result.Prospects.map(prospect => {
+          const prospectObj = {
+            'id': prospect.id,
+            'check': 'check',
+            'Email': prospect.email,
+            cloudIcon,
+            'Status': 'working',
+            'Owner': prospect.name,
+            'Campaigns': prospect.campaigns,
+            'Last Contacted': prospect.lastContacted,
+            'Emails...': prospect.emails
+          }
+          return listOfProspects.push(prospectObj)
+        })
+        handleData(listOfProspects)
+      })
     .catch(err => {
       console.log(err.message);
     });
@@ -164,30 +181,6 @@ const Prospects = () => {
     handleSelectedProspects(newSelected);
   };
 
-  // format data to render data on DataTable.js
-  const formatData = () => {
-    const results = [];
-    const cloudIcon = <CloudIcon className="fas fa-cloud" style={{color: "grey"}} />
-
-    data.map(prospect => {
-      const prospectObj = {
-        'id': prospect.id,
-        'check': 'check',
-        'Email': prospect.email,
-        cloudIcon,
-        'Status': 'working',
-        'Owner': prospect.name,
-        'Campaigns': prospect.campaigns,
-        'Last Contacted': prospect.lastContacted,
-        'Emails...': prospect.emails
-      }
-      return results.push(prospectObj)
-    })
-    return results;
-  }
-  
-  const dataToRender = formatData();
-
   const propsForDialog = {
     actionType,
     dialog,
@@ -199,7 +192,7 @@ const Prospects = () => {
   }
   
   const propsForDataTable = {
-    data: dataToRender,
+    data,
     handleClickOnAllRows,
     handleClickOnRow,
     selectedProspects,
