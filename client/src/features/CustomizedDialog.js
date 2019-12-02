@@ -1,5 +1,6 @@
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
+import MuiDialogContent from '@material-ui/core/DialogContent';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import MuiDialogActions from '@material-ui/core/DialogActions';
@@ -12,6 +13,13 @@ const DialogActions = withStyles(theme => ({
   },
 }))(MuiDialogActions);
 
+const DialogContent = withStyles(theme => ({
+  root: {
+    padding: theme.spacing(2),
+  },
+}))(MuiDialogContent);
+
+
 const CustomizedDialog = ({ props }) => {
   const { handleCloseDialogAndSaveProspects, dialog, handleDialog } = props
 
@@ -23,19 +31,21 @@ const CustomizedDialog = ({ props }) => {
       >
       </SelectFromList>
         <DialogActions>
-        <Button
-            autoFocus
-            onClick={() => handleCloseDialogAndSaveProspects()}
-            color="secondary"
-          >
-            Add
-          </Button>
+          <DialogContent>
           <Button
-            autoFocus
-            onClick={() => handleDialog(false)}
-          >
-            Cancel
-          </Button>
+          autoFocus
+          onClick={() => handleCloseDialogAndSaveProspects()}
+          color="secondary"
+        >
+          Add
+        </Button>
+        <Button
+          autoFocus
+          onClick={() => handleDialog(false)}
+        >
+          Cancel
+        </Button>
+          </DialogContent>
         </DialogActions>
       </Dialog>
     </div>
