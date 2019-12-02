@@ -138,7 +138,6 @@ const Prospects = () => {
       headers: {
         'Authorization': `Bearer ${getJWT()}`,
         'Content-Type': 'application/json',
-        Accept: 'application/json',
       },
       body: JSON.stringify(data)
     })
@@ -190,14 +189,14 @@ const Prospects = () => {
     handleCloseDialogAndSaveProspects,
     handleDialog
   }
-  
+
   const propsForDataTable = {
     data,
     handleClickOnAllRows,
     handleClickOnRow,
     selectedProspects,
   }
-
+  
   return (
     <Fragment>
       <NavBar />
