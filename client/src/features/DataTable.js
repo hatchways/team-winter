@@ -76,17 +76,17 @@ const HeaderRow = ({ onSelectAllClick, numSelected, rowCount, data }) => {
   );
 }
 
-const DataTable = ({data, func}) => {
+const DataTable = (props) => {
   const classes = useStyles();
   const [selected, setSelected] = useState([]);
 
   useEffect(() => {
-    func(selected)
-  }, [func, selected])
+    props.func(selected)
+  }, [props.func, selected])
 
   const handleSelectAllClick = event => {
     if (event.target.checked) {
-      const newSelecteds = data.map(n => n.id);
+      const newSelecteds = props.data.map(n => n.id);
       setSelected(newSelecteds);
       return;
     }
@@ -127,11 +127,11 @@ const DataTable = ({data, func}) => {
             classes={classes}
             numSelected={selected.length}
             onSelectAllClick={handleSelectAllClick}
-            rowCount={Object.keys(data).length}
-            data={data}
+            rowCount={Object.keys(props.data).length}
+            data={props.data}
           />
           <TableBody>
-          {data.map((row, index) => {
+          {props.data.map((row, index) => {
             const isItemSelected = isSelected(row.id)
             const labelId = `table-checkbox-${index}`;
             return (

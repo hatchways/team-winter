@@ -105,7 +105,7 @@ const Campaigns = () => {
       <Box className="tagsContainer" display="flex" justifyContent="center">
       </Box>
       <UserInputContainer className={classes.campaignList}>
-        <DataTable data={dataToRender}></DataTable>
+        <DataTable data={dataToRender} func={() => null} ></DataTable>
       </UserInputContainer>
     </Fragment>
   )

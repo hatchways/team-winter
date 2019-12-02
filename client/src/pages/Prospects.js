@@ -82,7 +82,6 @@ const Prospects = () => {
     return false;
   }
   
-  const prepareData = () => {
   const getAllCampaigns = () => {
     fetch(`/campaigns/${user}`)
     .then(res => res.json())
@@ -214,4 +213,4 @@ const Prospects = () => {
   )
 }
 
-export default Prospects;
+export default Prospects
