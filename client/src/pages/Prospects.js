@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
   seperationLine: {
     height: 26,
     borderLeft: "#EDECF2 0.08rem solid",
-    margin: "3px 15px",
+    margin: "1px 10px 0px 10px",
   },
   arrow: {
     marginTop: 6,
@@ -40,8 +40,12 @@ const useStyles = makeStyles((theme) => ({
   icon: {
     margin: "16px 17px 0px 14px",
   },
-  featuresContainer:{
-    padding: "100px 60px 30px",
+  featuresContainer: {
+    padding: "100px 60px 0px",
+    height: 105,
+  },
+  titleContainer: {
+    paddingBottom: 10,
   },
   prospectList: {
     overflow: "auto",
@@ -215,14 +219,16 @@ const Prospects = () => {
           className={classes.featuresContainer}
           display="flex">
           <Box flexGrow={1}>
-            <Typography variant="h5"> Prospects </Typography>
-          </Box>
-          <Box flexGrow={1}>
-          {selectedProspects.length > 0 &&
-            <CustomizedButton
-              onClick={() => handleDialog(true)}>
-              {actionType}
-            </CustomizedButton>}
+            <Box className={classes.titleContainer}>
+              <Typography variant="h5"> Prospects </Typography>
+            </Box>
+            <Box>
+            {selectedProspects.length > 0 &&
+              <CustomizedButton
+                onClick={() => handleDialog(true)}>
+                {actionType}
+              </CustomizedButton>}
+            </Box>
           </Box>
             {dialog === true &&
               <CustomizedDialog
