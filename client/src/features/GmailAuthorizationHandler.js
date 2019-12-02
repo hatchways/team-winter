@@ -8,10 +8,7 @@ import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import queryString from 'query-string';
 
-import { getJWT } from '../utils';
-
-
-const AUTHORIZATION_URL = 'http://localhost:5000/gmail/authorize';
+import { apiRequest } from '../utils';
 
 function GmailAuthorizationHandler(props) {
 
@@ -21,33 +18,13 @@ function GmailAuthorizationHandler(props) {
 
   const qs = queryString.parse(window.location.search);
 
-  const doAuthorization = async (code, state) => {
-    const response = await fetch(AUTHORIZATION_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer: ${getJWT()}`
-      },
-      body: JSON.stringify({
-        'code': code,
-        'state': state
-      })
-    });
-    if(response.status === 200) {
-      return response.json()['gmail_address'];
-    }
-    else {
-      throw new Error('Could not complete authorization.');
-    }
-  }
-
   useEffect( () => {
 
     if(qs.code && qs.state) {
       setOpen(true);
-      doAuthorization(qs.code, qs.state)
-      .then( (address) => {
-        setGmailAddress(address);
+      apiRequest('POST', '/gmail/authorize', {'code': qs.code, 'state': qs.state})
+      .then( (json) => {
+        setGmailAddress(json['gmail_address']);
         setAuthStage('complete');
         setOpen(true);
       })

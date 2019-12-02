@@ -38,6 +38,9 @@
     ]
   },
   "devDependencies": {
+    "draft-js": "^0.11.2",
+    "draft-js-export-html": "^1.4.1",
+    "mui-rte": "^1.9.3",
     "papaparse": "^5.1.0",
     "query-string": "^6.9.0",
     "react-dropzone": "^10.2.1"

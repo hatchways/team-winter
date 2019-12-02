@@ -3,6 +3,7 @@ from utils.RequestParserGenerator import RequestParserGenerator
 from models.UserModel import UserModel
 from models.CampaignModel import CampaignModel
 from flask_jwt_extended import (create_access_token, jwt_required, get_jwt_identity)
+from utils.ValidationDecorator import validate_args
 
 reqParserGen = RequestParserGenerator()
 registerParser = reqParserGen.getParser("email", "password", "first_name", "last_name", "confirm_pass")
@@ -10,6 +11,7 @@ loginParser = reqParserGen.getParser("email", "password")
 campaignParser = reqParserGen.getParser("name")
 
 class UserRegister(Resource):
+    @validate_args("email", "password", "first_name", "last_name", "confirm_pass")
     def post(self):
         data = registerParser.parse_args()
 
@@ -39,6 +41,7 @@ class UserRegister(Resource):
             return {'message': 'Something went wrong'}, 500
 
 class UserLogin(Resource):
+    @validate_args("email", "password")
     def post(self):
         data = loginParser.parse_args()
         current_user = UserModel.find_by_email(data['email'])
