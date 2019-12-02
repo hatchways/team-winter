@@ -48,17 +48,23 @@ const Campaigns = () => {
   const classes = useStyles();
 
   const [open, setOpen] = useState(false); 
-  const [selectedId, setSelectedId] = useState(0);
+  const [id, setId] = useState(0);
   const [campaigns, setCampaigns] = useState([{}]);
 
   useEffect(() => {
     getUserCampaigns();
   }, []);
 
-  if(selectedId) {
-    alert(selectedId);
-    // change redirect to /campaigns/<id> later
-    return <Redirect to="/prospects" />
+  if(id) {
+    return <Redirect to="/campaigns/{id}" />
+  }
+
+  const handleClickOnRow = (event, id) => {
+    setId(id);
+  };
+  const propsForDataTable = {
+    data: campaigns,
+    handleClickOnRow
   }
 
   const handleClickOpen = () => {
@@ -136,7 +142,7 @@ const Campaigns = () => {
       <Box className="tagsContainer" display="flex" justifyContent="center">
       </Box>
       <UserInputContainer className={classes.campaignList}>
-        <DataTable data={campaigns} func={test} type="campaign" campaignId={setSelectedId}></DataTable>
+        <DataTable props={propsForDataTable} ></DataTable>
       </UserInputContainer>
     </Fragment>
   )
