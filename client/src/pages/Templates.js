@@ -20,11 +20,9 @@ const useStyles = makeStyles( (theme) => ({
 
 
 const sampleBody = `
-  <h1>The Header</h1>
-  <p>Hello, recipient</p>
-  <p>This is a message for you.</p>
-  <p>Best regards,</p>
-  <p>The sender</p>
+  <h1>Header</h1>
+  <p>Hello,</p>
+  <p>This is an email template.</p>
 `;
 
 const sampleTemplate = {
@@ -33,7 +31,15 @@ const sampleTemplate = {
   type: 'initial',
   subject: 'Some subject',
   body: sampleBody
-}
+};
+
+const sampleVariables = [
+  'First Name',
+  'Last Name',
+  'Email',
+  'Phone',
+  'Address'
+];
 
 const Templates = (props) => {
 
@@ -48,7 +54,8 @@ const Templates = (props) => {
       <NavBar />
       <Paper className={classes.testPaper}>
         <TemplateEditor onSave={saveTemplate}
-                        template={sampleTemplate} />
+                        template={sampleTemplate}
+                        variables={sampleVariables} />
       </Paper>
     </Fragment>
   )
