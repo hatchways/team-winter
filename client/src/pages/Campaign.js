@@ -9,6 +9,8 @@ import NavBar from '../features/NavBar/MainBody';
 import CampaignSummary from '../features/Campaign/CampaignSummary';
 import StepDialog from '../features/Campaign/StepDialog';
 import ConfirmationDialog from '../features/ConfirmationDialog';
+import Loading from '../features/Loading';
+import ErrorMessage from '../features/ErrorMessage';
 
 const useStyles = makeStyles( () => ({
   container: {
@@ -57,16 +59,25 @@ const Campaign = (props) => {
 
   const classes = useStyles();
 
-  const [campaign, setCampaign] = useState(emptyCampaign);
+  const [campaign, setCampaign] = useState({});
   const [editOpen, setEditOpen] = useState(false);
   const [editStep, setEditStep] = useState({});
   const [newOpen, setNewOpen] = useState(false);
   const [newStep, setNewStep] = useState(emptyStep);
   const [confirmOpen, setConfirmOpen] = useState(false);
+  const [fetching, setFetching] = useState(true);
+  const [notFound, setNotFound] = useState(false);
 
   useEffect( () => {
 
-    getCampaign();
+    getCampaign()
+    .then( (campaign) => {
+      setCampaign(campaign);
+      setFetching(false);
+    })
+    .catch( (e) => {
+      setNotFound(true);
+    });
 
   }, []);
 
@@ -105,6 +116,8 @@ const Campaign = (props) => {
 
     // add template names to steps in campaign
     // setCampaign(thisCampaign);
+    
+    return emptyCampaign;
   }
 
   const updateStep = (step) => {
@@ -202,6 +215,29 @@ const Campaign = (props) => {
 
   const confirmClose = () => {
     setConfirmOpen(false);
+  }
+
+  if(notFound) {
+    return (
+      <Fragment>
+        <NavBar />
+        <Container className={classes.container}>
+          <ErrorMessage header="Not found" 
+                        message="Coundn't find that campaign" />
+        </Container>
+      </Fragment>
+    )
+  }
+
+  if(fetching) {
+    return (
+      <Fragment>
+        <NavBar />
+        <Container className={classes.container}>
+          <Loading />
+        </Container>
+      </Fragment>
+    )
   }
 
   return (

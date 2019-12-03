@@ -14,17 +14,18 @@ import Reporting from './pages/Reporting';
 import "./Main.css";
 
 const Main = () => {
-  
+
   return (
     <MuiThemeProvider theme={theme}>
       <BrowserRouter>
-      <Route exact path="/">
-        <Redirect to="/login" />
-      </Route>
+        <Route exact path="/">
+          <Redirect to="/login" />
+        </Route>
         <Route path="/login" component={Login} />
         <Route path="/signup" component={SignUp} />
-        <Route path="/campaigns" component={Campaigns} />
-        <Route path="/campaigns/:id" component={Campaign} />
+        <Route path="/campaigns" component={Campaigns} >
+          <Route path="/campaigns/:id" component={Campaign} />
+        </Route>
         <Route path="/prospects" component={Prospects} />
         <Route path="/templates" component={Templates} />
         <Route path="/reporting" component={Reporting} />

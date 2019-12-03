@@ -26,8 +26,8 @@ const sampleBody = `
 `;
 
 const sampleTemplate = {
-  templateId: 1,
-  templateName: 'The sample template',
+  id: 1,
+  name: 'The sample template',
   type: 'initial',
   subject: 'Some subject',
   body: sampleBody
@@ -44,6 +44,10 @@ const sampleVariables = [
 const Templates = (props) => {
 
   const classes = useStyles();
+
+  const getTemplates = () => {
+    
+  }
 
   const saveTemplate = (template) => {
     console.log(template);

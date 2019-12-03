@@ -25,8 +25,14 @@ class TemplateEditor extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      editorContent: this.props.template.body
+      name: props.template.name,
+      type: props.template.type,
+      subject: props.template.subject,
+      body: props.template.body,
     };
+    this.handleNameChange = this.handleNameChange.bind(this);
+    this.handleSubjectChange = this.handleSubjectChange.bind(this);
+    this.handleTypeChange = this.handleTypeChange.bind(this);
     this.handleSave = this.handleSave.bind(this);
     this.handleEditorChange = this.handleEditorChange.bind(this);
   }
@@ -38,16 +44,31 @@ class TemplateEditor extends Component {
     return false;
   }
 
+  handleNameChange(event) {
+    this.setState( {name: event.target.value} );
+  }
+
+  handleSubjectChange(event) {
+    this.setState( {subject: event.target.value} );
+  }
+
   handleTypeChange(event) {
-    console.log(event.target.value);
+    this.setState( {type: event.target.value} );
   } 
 
   handleEditorChange(content) {
-    this.setState( { editorContent: content } );
+    this.setState( { body: content } );
   }
 
   handleSave() {
-    console.log(this.state.editorContent);
+    const toSave = {
+      id: this.props.template.id,
+      name: this.state.name,
+      type: this.state.type,
+      subject: this.state.subject,
+      body: this.state.body
+    }
+    this.props.onSave(toSave);
   }
 
   render() {
@@ -55,23 +76,35 @@ class TemplateEditor extends Component {
     return(
       <Fragment>
         {/* Template name */}
-        <TextField id="template-name" label="Name" variant="outlined" className={classes.inputField} fullWidth />
+        <TextField id="template-name" 
+                   defaultValue={this.props.template.name}
+                   label="Name" 
+                   variant="outlined" 
+                   className={classes.inputField} 
+                   onChange={this.handleNameChange}
+                   fullWidth />
         {/* Template type */}
         <TextField id="template-type"
-                  select fullWidth
-                  label="Type"
-                  className={classes.inputField}
-                  value={this.props.template.type}
-                  onChange={this.handleTypeChange}
-                  margin="normal"
-                  variant="outlined" >
+                   select fullWidth
+                   label="Type"
+                   className={classes.inputField}
+                   defaultValue={this.props.template.type}
+                   onChange={this.handleTypeChange}
+                   margin="normal"
+                   variant="outlined" >
           <MenuItem key={'initial'} value={'initial'}>Initial Contact</MenuItem>
           <MenuItem key={'reply'} value={'reply'}>Reply</MenuItem>
         </TextField>
         {/* Subject */}
-        <TextField id="template-subject" label="Subject" variant="outlined" className={classes.inputField} fullWidth />
+        <TextField id="template-subject" 
+                   defaultValue={this.props.template.subject}
+                   label="Subject" 
+                   variant="outlined" 
+                   className={classes.inputField} 
+                   onChange={this.handleSubjectChange}
+                   fullWidth />
         {/* Body */}
-        <TextEditor content={this.state.editorContent}
+        <TextEditor content={this.state.body}
                     onChange={this.handleEditorChange}
                     templateVariables={this.props.variables} />
         <Button variant="contained" 
