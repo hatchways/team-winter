@@ -3,7 +3,6 @@ from utils.RequestParserGenerator import RequestParserGenerator
 from models.UserModel import UserModel
 from models.CampaignModel import CampaignModel
 from flask_jwt_extended import (create_access_token, jwt_required, get_jwt_identity)
-from utils.ValidationDecorator import validate_args
 
 reqParserGen = RequestParserGenerator()
 registerParser = reqParserGen.getParser("email", "password", "first_name", "last_name", "confirm_pass")
@@ -11,7 +10,6 @@ loginParser = reqParserGen.getParser("email", "password")
 campaignParser = reqParserGen.getParser("name")
 
 class UserRegister(Resource):
-    @validate_args("email", "password", "first_name", "last_name", "confirm_pass")
     def post(self):
         data = registerParser.parse_args()
 
@@ -41,7 +39,6 @@ class UserRegister(Resource):
             return {'message': 'Something went wrong'}, 500
 
 class UserLogin(Resource):
-    @validate_args("email", "password")
     def post(self):
         data = loginParser.parse_args()
         current_user = UserModel.find_by_email(data['email'])
@@ -60,11 +57,18 @@ class UserCampaigns(Resource):
     @jwt_required
     def get(self):
         current_user = UserModel.find_by_id(get_jwt_identity())
-        campaigns = []
+        campaigns = [] # id, name, creation_date, owner_id, prospects, steps
         for campaign in current_user.campaigns:
-            campaigns.append({'id' : campaign.id, 'name' : campaign.name})
+            campaigns.append({
+                'id' : campaign.id, 
+                'name' : campaign.name,
+                'creation_date' : campaign.creation_date.strftime("%b %d"), 
+                'owner_id' : campaign.owner_id,
+                'prospects' : len(campaign.prospects),
+                'steps' : len(campaign.steps)  
+            })
         return {
-            'Campaigns': campaigns
+            'campaigns': campaigns
             }, 200 
     
     @jwt_required
@@ -78,25 +82,17 @@ class UserCampaigns(Resource):
         try:    
             new_campaign.save_to_db()
             return {
-                'message': 'Campaign {} was created'.format( data['name'])
+                'campaign': {
+                    'id' : new_campaign.id, 
+                    'name' : new_campaign.name,
+                    'creation_date' : new_campaign.creation_date.strftime("%b %d"), 
+                    'owner_id' : new_campaign.owner_id,
+                    'prospects' : len(new_campaign.prospects),
+                    'steps' : len(new_campaign.steps)
+                }
             }, 201
         except:
             return {'message': 'Something went wrong'}, 500
 
 
-class UserProspects(Resource):
-    @jwt_required
-    def get(self):
-        current_user = UserModel.find_by_id(get_jwt_identity())
-        prospects = []
-        for prospect in current_user.prospects:
-            prospects.append({
-                'id' : prospect.id,
-                'email': prospect.email,
-                'name' : prospect.name,
-                'status' : prospect.status,
-                'campaigns': len(prospect.campaigns),
-                })
-        return {
-            'Prospects': prospects
-            }, 200 
+

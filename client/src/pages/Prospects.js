@@ -15,6 +15,7 @@ import OutlinedButton from '../features/OutlinedButton';
 import NavBar from '../features/NavBar/MainBody';
 import UserInputContainer from '../features/UserInputContainer';
 import DataTable from '../features/DataTable';
+import GmailDialog from '../features/GmailDialog';
 import CustomizedDialog from '../features/CustomizedDialog'
 import GmailDialog from '../features/GmailDialog';
 import { getJWT } from '../utils';
@@ -121,6 +122,12 @@ const Prospects = () => {
     });
   }
 
+  const gmailDialogShouldOpen = () => {
+    const qs = queryString.parse(window.location.search);
+    if(qs['gmail_dialog']) return true;
+    return false;
+  }
+  
   const getAllCampaigns = () => {
     fetch(`/campaigns`, {
       method: 'GET',
@@ -268,4 +275,4 @@ const Prospects = () => {
   )
 }
 
-export default Prospects;
+export default Prospects

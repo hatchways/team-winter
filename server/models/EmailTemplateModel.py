@@ -6,7 +6,7 @@ class EmailTemplateModel(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     type = db.Column(db.String(120))
     subject = db.Column(db.String(120))
-    body = db.Column(db.VARCHAR(500)) 
+    body = db.Column(db.VARCHAR(2000)) 
     step_id = db.Column(db.Integer, db.ForeignKey('steps.id'))
 
     def save_to_db(self):

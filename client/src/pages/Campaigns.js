@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useState, useEffect} from 'react';
 import Typography from '@material-ui/core/Typography';
 import MailIcon from '@material-ui/icons/Mail';
 import FlashOnIcon from '@material-ui/icons/FlashOn';
@@ -9,9 +9,8 @@ import CustomizedButton from '../features/CustomizedButton';
 import NavBar from '../features/NavBar/MainBody';
 import UserInputContainer from '../features/UserInputContainer';
 import DataTable from '../features/DataTable';
-import { SampleData } from '../pages/sampledata2';
 import CampaignDialog from '../features/CampaignDialog';
-
+import { getJWT } from '../utils';
 
 const useStyles = makeStyles((theme) => ({
   createCampaignButton: {
@@ -48,7 +47,16 @@ const Campaigns = () => {
   const classes = useStyles();
 
   const [open, setOpen] = useState(false); 
-  
+  const [campaigns, setCampaigns] = useState([{}]);
+
+  useEffect(() => {
+    getUserCampaigns();
+  }, setCampaigns);
+
+  const propsForDataTable = {
+    data: campaigns
+  }
+
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -57,32 +65,47 @@ const Campaigns = () => {
     setOpen(false);
   };
 
-  const prepareData = () => {
-    const results = [];
-
-    //replace data with real data
-    const data = SampleData();
-    data.map(each => {
-      const obj = {
-        'Name': each.name,
-        'Created': 'working',
-        'Prospects': each.prospects,
-        'Replies': each.replies,
-        'Steps': each.steps,
-        'Due': each.due
+  const handleCampaigns = data => {
+    const campaigns = [];
+    for(const each of data.campaigns) {
+      const campaign = {
+        id : each.id,
+        Name: each.name,
+        Created: each.creation_date,
+        Prospects: each.prospects,
+        Replies: "",
+        Steps: each.steps,
+        Due: "",
+        link: "/campaigns/" + each.id
       }
-      return results.push(obj)
-    })
-    return results;
+      campaigns.push(campaign);
+    }
+    setCampaigns(campaigns);
   }
 
-  const dataToRender = prepareData();
+  const getUserCampaigns = async () => {
+
+    await fetch('/campaigns', {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${getJWT()}`
+      }
+    })
+    .then(res => res.json())
+      .then(data => {handleCampaigns(data)})
+    .catch(err => {
+      console.log(err.message);
+    });
+  }
+
+
+
 
   return (
     <Fragment>
       <NavBar />
       <div>
-        <Box className={classes.featuresContainer} display="flex">
+        <Box className={classes.featuresContainer}  display="flex">
           <Box flexGrow={1}>
             <Typography variant="h5"> Campaigns </Typography>
           </Box>
@@ -100,12 +123,12 @@ const Campaigns = () => {
             </CustomizedButton>
           </Box>
         </Box>
-        <CampaignDialog open={open} onClose={handleClose}/>
+        <CampaignDialog campaigns={campaigns} open={open} onClose={handleClose}/>
       </div>
       <Box className="tagsContainer" display="flex" justifyContent="center">
       </Box>
       <UserInputContainer className={classes.campaignList}>
-        <DataTable data={dataToRender} func={() => null} ></DataTable>
+        <DataTable props={propsForDataTable} ></DataTable>
       </UserInputContainer>
     </Fragment>
   )
