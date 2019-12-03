@@ -22,8 +22,8 @@ export default function CampaignDialog(props) {
       Prospects: campaign.prospects,
       Replies: "",
       Steps: campaign.steps,
-      Due: ""
-      // Link: "/campaigns/" + campaign.id 
+      Due: "",
+      link: "/campaigns/" + campaign.id 
     })
     onClose();
   }

@@ -1,5 +1,4 @@
 import React, { Fragment, useState, useEffect} from 'react';
-import { Redirect } from "react-router-dom";
 import Typography from '@material-ui/core/Typography';
 import MailIcon from '@material-ui/icons/Mail';
 import FlashOnIcon from '@material-ui/icons/FlashOn';
@@ -77,7 +76,7 @@ const Campaigns = () => {
         Replies: "",
         Steps: each.steps,
         Due: "",
-        Link: "/campaigns/" + each.id
+        link: "/campaigns/" + each.id
       }
       campaigns.push(campaign);
     }
@@ -100,7 +99,7 @@ const Campaigns = () => {
   }
 
 
-  
+
 
   return (
     <Fragment>

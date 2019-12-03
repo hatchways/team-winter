@@ -36,13 +36,6 @@ const useStyles = makeStyles(theme => ({
     width: 1,
   },
 }));
-// const StyledLink = styled(Link)`
-//     text-decoration: none;
-
-//     &:focus, &:hover, &:visited, &:link, &:active {
-//         text-decoration: none;
-//     }
-// `;
 
 const HeaderRow = ({ handleClickOnAllRows, numSelected, rowCount, data }) => {
   const header = Object.keys(data[0]);
@@ -65,7 +58,7 @@ const HeaderRow = ({ handleClickOnAllRows, numSelected, rowCount, data }) => {
                 >
                 <CloudIcon className="fas fa-cloud" style={{color: "grey"}} />
               </TableCell>
-            } else if (headCell === 'id' || headCell === 'Link') {
+            } else if (headCell === 'id' || headCell === 'link') {
               return null;
             } else {
               return <TableCell
@@ -105,7 +98,7 @@ const DataTable = ({props}) => {
               {data.map((row, idx) => {
                 const isItemSelected = isSelected(row.id);
                 const labelId = `table-checkbox-${idx}`;
-                const url = row.Link ? row.Link : "#";
+                const url = row.link ? row.link : "#";
                 return (
                 <TableRow
                   hover
@@ -127,7 +120,7 @@ const DataTable = ({props}) => {
                     </TableCell>
                     } else if (eachCell[0] === "Email") {
                       return <TableCell key={idx} component="th" id={labelId} scope="row" p={1}> {eachCell[1]}</TableCell>
-                    } else if (eachCell[0] === 'id' || eachCell[0] === 'Link') {
+                    } else if (eachCell[0] === 'id' || eachCell[0] === 'link') {
                       return null;
                     } else {
                       return <TableCell key={idx} id={labelId} align="center">{eachCell[1]}</TableCell>
