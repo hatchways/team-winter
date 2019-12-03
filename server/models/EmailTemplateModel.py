@@ -1,5 +1,8 @@
 from app import db 
-from sqlalchemy.schema import CheckConstraint
+from sqlalchemy.schema import (
+    CheckConstraint,
+    UniqueConstraint
+)
 from sqlalchemy.orm import validates
 
 
@@ -17,6 +20,7 @@ class EmailTemplateModel(db.Model):
     __table_args__ = (
         CheckConstraint('char_length(name) > 0', name='name_min_length'),
         CheckConstraint('char_length(subject) > 0', name='subject_min_length'),
+        UniqueConstraint('owner', 'name', name='owner_name_uc')
     )
 
     @validates('name')

@@ -2,6 +2,7 @@ from flask_restful import Resource, reqparse
 from models.UserModel import UserModel
 from models.EmailTemplateModel import EmailTemplateModel
 from flask_jwt_extended import (jwt_required, get_jwt_identity)
+import psycopg2
 
 templatesOneGetParser = reqparse.RequestParser()
 templatesOneGetParser.add_argument('id', type=int, location='json', required=True)
@@ -60,6 +61,10 @@ class OneTemplate(Resource):
             return {
               'message': str(e)
             }, 400
+        except Exception as e:
+            return {
+                'message': str(e)
+            }, 500
 
 
     @jwt_required

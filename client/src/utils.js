@@ -26,8 +26,8 @@ class APIError extends Error {
    * Create an APIError
    * @param {number} statusCode - Status code returned by the API
    */
-  constructor(statusCode) {
-    super(`Error during API request. Received ${statusCode} status code.`);
+  constructor(statusCode, message) {
+    super(`Error during API request. Received ${statusCode} status code. Message: ${message}`);
   }
 }
 
@@ -43,16 +43,18 @@ const apiRequest = async (method, path, data=null) => {
   const response = await fetch(path, {
     method: method,
     headers: {
+      'Content-Type': 'application/json',
       'Authorization': `Bearer ${getJWT()}`
     },
-    body: data
+    body: data ? JSON.stringify(data) : null
   });
   if(response.status > 199 && response.status < 300) {
     const responseJSON = await response.json();
     return responseJSON;
   }
   else {
-    throw new APIError(response.status);
+    const responseJSON = await response.json();
+    throw new APIError(response.status, JSON.stringify(responseJSON.message));
   }
 }
 
