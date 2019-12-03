@@ -59,7 +59,7 @@ class OneTemplate(Resource):
         except ValueError as e:
             return {
               'message': str(e)
-            }, 500
+            }, 400
 
 
     @jwt_required
@@ -79,7 +79,7 @@ class OneTemplate(Resource):
         except ValueError as e:
             return {
               'message': str(e)
-            }, 500
+            }, 400
 
 def serializableTemplate(template):
     ret = {
