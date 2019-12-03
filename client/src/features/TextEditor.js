@@ -58,7 +58,11 @@ const TextEditor = (props) => {
     blocksFromHTML.contentBlocks,
     blocksFromHTML.entityMap
   );
-  const initialValue = JSON.stringify(convertToRaw(initialContent));
+  console.log(initialContent.getBlockMap().size);
+
+  const initialValue = initialContent.getBlockMap().size > 0 ?
+                       JSON.stringify(convertToRaw(initialContent))
+                     : JSON.stringify(convertToRaw(EditorState.createEmpty().getCurrentContent()));
 
   const insertText = (text, editorState) => {
     const currentContent = editorState.getCurrentContent();
@@ -89,8 +93,8 @@ const TextEditor = (props) => {
     });
   }
 
-  const variableControls = props.templateVariables ? makeVariableControls(props.templateVariables) : null;
-  const variableCustomControls = props.templateVariables ? makeVariableCustomControls(props.templateVariables) : null;
+  const variableControls = props.templateVariables ? makeVariableControls(props.templateVariables) : [];
+  const variableCustomControls = props.templateVariables ? makeVariableCustomControls(props.templateVariables) : [];
 
   const handleChange = (newState) => {
     props.onChange(stateToHTML(newState.getCurrentContent()));

@@ -1,12 +1,25 @@
 import React from 'react'
 import {
-  CircularProgress
+  CircularProgress,
+  makeStyles
 } from '@material-ui/core'
+
+const useStyles = makeStyles( (theme) => ({
+  
+  progress: {
+    margin: '200px auto',
+    display: 'block'
+  }
+
+}));
 
 const Loading = (props) => {
   
+  const classes = useStyles();
+
   return (
-    <CircularProgress size={props.size ? props.size : 40} />
+    <CircularProgress className={classes.progress} 
+                      size={props.size ? props.size : 60} />
   )
 
 }
