@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { Fragment } from 'react';
+import Box from '@material-ui/core/Box';
 import { Link } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
@@ -40,8 +41,15 @@ const useStyles = makeStyles(theme => ({
 }));
 
 
-const HeaderRow = ({ handleClickOnAllRows, numSelected, rowCount, data }) => {
-  const header = Object.keys(data[0]);
+const HeaderRow = ({props}) => {
+  const { handleClickOnAllRows, numSelected, data } = props
+  let header = null;
+  let rowCount = null;
+
+  if (data.length > 0 || data !== undefined) {
+    header = Object.keys(data[0]);
+    rowCount = Object.keys(data).length;
+  }
   return (
     <TableHead>
       <TableRow>
@@ -82,61 +90,94 @@ const DataTable = ({props}) => {
   let { data, handleClickOnAllRows, handleClickOnRow, selectedProspects} = props;
   selectedProspects = selectedProspects || [];
   const isSelected = id => selectedProspects.indexOf(id) !== -1;
+
+  const tableProps = {
+    data,
+    numSelected: selectedProspects.length,
+    handleClickOnAllRows,
+  }
+
+  let renderData = null;
+
+  const emptyState = (
+    <Box
+      display="flex"
+      justifyContent="center"
+        >
+      <img
+        alt="empty state"
+        src="https://assets.materialup.com/uploads/77a5d214-0a8a-4444-a523-db0c4e97b9c0/preview.jpg"
+        >
+      </img>
+    </Box> 
+  )
+
+  if (data === undefined) {
+    renderData = emptyState;
+
+  } else if (data.length === 0) {
+    renderData = emptyState;
+
+  } else if (data.length > 0) {
+    renderData = (
+      <div className={classes.root}>
+        <Paper className={classes.paper}>
+          <div className={classes.tableWrapper}>
+            <Table
+              className={classes.table}
+              aria-labelledby="tableTitle"
+              aria-label="table"
+              >
+              <HeaderRow
+                  classes={classes}
+                  props={tableProps}
+                />
+              <TableBody>
+                {data.map((row, idx) => {
+                  const isItemSelected = isSelected(row.id);
+                  const labelId = `table-checkbox-${idx}`;
+                  const url = row.link ? row.link : "#";
+                  return (
+                  <TableRow
+                    hover
+                    component={Link} to={url} style={{ textDecoration: 'none' }}
+                    onClick={event => handleClickOnRow === undefined ? null : handleClickOnRow(event, row.id)}
+                    role="checkbox"
+                    aria-checked={isItemSelected}
+                    tabIndex={-1}
+                    key={idx}
+                    selected={isItemSelected}
+                    > 
+                    {Object.entries(row).map((eachCell, idx )=> {
+                      if (eachCell[0] === "check") {
+                        return <TableCell padding="checkbox" key={idx}>
+                        <Checkbox
+                          checked={isItemSelected}
+                          inputProps={{ "aria-labelledby": labelId }}
+                        />
+                      </TableCell>
+                      } else if (eachCell[0] === "Email") {
+                        return <TableCell key={idx} component="th" id={labelId} scope="row" p={1}> {eachCell[1]}</TableCell>
+                      } else if (eachCell[0] === "id" || eachCell[0] === 'link') {
+                        return null;
+                      } else {
+                        return <TableCell key={idx} id={labelId} align="center">{eachCell[1]}</TableCell>
+                      }
+                    })}
+                  </TableRow>
+                )})}
+              </TableBody>
+            </Table>
+          </div>
+        </Paper>
+      </div>
+    )
+  }
+
   return (
-    <div className={classes.root}>
-      <Paper className={classes.paper}>
-        <div className={classes.tableWrapper}>
-          <Table
-            className={classes.table}
-            aria-labelledby="tableTitle"
-            aria-label="table"
-            >
-            <HeaderRow
-              classes={classes}
-              numSelected={selectedProspects.length}
-              handleClickOnAllRows={handleClickOnAllRows}
-              rowCount={Object.keys(data).length}
-              data={data}
-            />
-            <TableBody>
-              {data.map((row, idx) => {
-                const isItemSelected = isSelected(row.id);
-                const labelId = `table-checkbox-${idx}`;
-                const url = row.link ? row.link : "#";
-                return (
-                <TableRow
-                  hover
-                  component={Link} to={url} style={{ textDecoration: 'none' }}
-                  onClick={event => handleClickOnRow === undefined ? null : handleClickOnRow(event, row.id)}
-                  role="checkbox"
-                  aria-checked={isItemSelected}
-                  tabIndex={-1}
-                  key={idx}
-                  selected={isItemSelected}
-                  > 
-                  {Object.entries(row).map((eachCell, idx )=> {
-                    if (eachCell[0] === 'check') {
-                      return <TableCell padding="checkbox" key={idx}>
-                      <Checkbox
-                        checked={isItemSelected}
-                        inputProps={{ 'aria-labelledby': labelId }}
-                      />
-                    </TableCell>
-                    } else if (eachCell[0] === "Email") {
-                      return <TableCell key={idx} component="th" id={labelId} scope="row" p={1}> {eachCell[1]}</TableCell>
-                    } else if (eachCell[0] === 'id' || eachCell[0] === 'link') {
-                      return null;
-                    } else {
-                      return <TableCell key={idx} id={labelId} align="center">{eachCell[1]}</TableCell>
-                    }
-                  })}
-                </TableRow>
-              )})}
-            </TableBody>
-          </Table>
-        </div>
-      </Paper>
-    </div>
+    <Fragment>
+      {renderData}
+    </Fragment>
   );
 }
 export default DataTable;
