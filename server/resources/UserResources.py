@@ -68,7 +68,7 @@ class UserCampaigns(Resource):
                 'steps' : len(campaign.steps)  
             })
         return {
-            'Campaigns': campaigns
+            'campaigns': campaigns
             }, 200 
     
     @jwt_required
@@ -82,7 +82,14 @@ class UserCampaigns(Resource):
         try:    
             new_campaign.save_to_db()
             return {
-                'message': 'Campaign {} was created'.format( data['name'])
+                'campaign': {
+                    'id' : new_campaign.id, 
+                    'name' : new_campaign.name,
+                    'creation_date' : new_campaign.creation_date.strftime("%b %d"), 
+                    'owner_id' : new_campaign.owner_id,
+                    'prospects' : len(new_campaign.prospects),
+                    'steps' : len(new_campaign.steps)
+                }
             }, 201
         except:
             return {'message': 'Something went wrong'}, 500

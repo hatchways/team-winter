@@ -53,7 +53,7 @@ const Campaigns = () => {
 
   useEffect(() => {
     getUserCampaigns();
-  }, []);
+  }, setCampaigns);
 
   if(id) {
     return <Redirect to="/campaigns/{id}" />
@@ -73,12 +73,11 @@ const Campaigns = () => {
 
   const handleClose = () => {
     setOpen(false);
-    getUserCampaigns();
   };
 
   const handleCampaigns = data => {
     const campaigns = [];
-    for(const each of data.Campaigns) {
+    for(const each of data.campaigns) {
       const campaign = {
         id : each.id,
         Name: each.name,
@@ -91,10 +90,6 @@ const Campaigns = () => {
       campaigns.push(campaign);
     }
     setCampaigns(campaigns);
-  }
-
-  const test = () => {
-    console.log('yay')
   }
 
   const getUserCampaigns = async () => {
@@ -137,7 +132,7 @@ const Campaigns = () => {
             </CustomizedButton>
           </Box>
         </Box>
-        <CampaignDialog open={open} onClose={handleClose}/>
+        <CampaignDialog campaigns={campaigns} open={open} onClose={handleClose}/>
       </div>
       <Box className="tagsContainer" display="flex" justifyContent="center">
       </Box>
