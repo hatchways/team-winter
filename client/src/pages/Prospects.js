@@ -1,3 +1,5 @@
+
+
 import React, { Fragment, useState, useEffect } from 'react';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
@@ -15,8 +17,8 @@ import UserInputContainer from '../features/UserInputContainer';
 import DataTable from '../features/DataTable';
 import GmailDialog from '../features/GmailDialog';
 import CustomizedDialog from '../features/CustomizedDialog'
-import SampleData from '../pages/sampledata';
-
+import GmailDialog from '../features/GmailDialog';
+import { getJWT } from '../utils';
 
 const useStyles = makeStyles((theme) => ({
   importButton: {
@@ -31,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
   seperationLine: {
     height: 26,
     borderLeft: "#EDECF2 0.08rem solid",
-    margin: "3px 15px",
+    margin: "1px 10px 0px 10px",
   },
   arrow: {
     marginTop: 6,
@@ -39,8 +41,12 @@ const useStyles = makeStyles((theme) => ({
   icon: {
     margin: "16px 17px 0px 14px",
   },
-  featuresContainer:{
-    padding: "100px 60px 30px",
+  featuresContainer: {
+    padding: "100px 60px 0px",
+    height: 105,
+  },
+  titleContainer: {
+    paddingBottom: 10,
   },
   prospectList: {
     overflow: "auto",
@@ -64,17 +70,57 @@ const useStyles = makeStyles((theme) => ({
 
 const Prospects = () => {
   const classes = useStyles();
-  const [prospects, handlelistOfProspects] = useState([]);
+  const actionType = 'Add to Campaign'
+
+  const [data, handleData] = useState([{}]);
   const [dialog, handleDialog] = useState(null);
-  const [campaigns, handleCampaigns] = useState(null);
+  const [listOfCampaigns, handleCampaigns] = useState(null);
   const [campaignId, setCampaignId] = useState('');
+  const [selectedProspects, handleSelectedProspects] = useState([]);
 
   useEffect(() => {
     getAllCampaigns();
+    getAllProspects();
   }, [])
 
-  // Need to replace hard code user with JWT token 
-  const user = 1
+  const gmailDialogShouldOpen = () => {
+    const qs = queryString.parse(window.location.search);
+    if(qs['gmail_dialog']) return true;
+    return false;
+  }
+
+  const getAllProspects = () => {
+    fetch(`/prospects`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${getJWT()}`
+      }
+    })
+    .then(res => res.json())
+      .then(result => {
+        const listOfProspects = [];
+        const cloudIcon = <CloudIcon className="fas fa-cloud" style={{color: "grey"}} />
+
+        result.Prospects.map(prospect => {
+          const prospectObj = {
+            'id': prospect.id,
+            'check': 'check',
+            'Email': prospect.email,
+            cloudIcon,
+            'Status': 'working',
+            'Owner': prospect.name,
+            'Campaigns': prospect.campaigns,
+            'Last Contacted': prospect.lastContacted,
+            'Emails...': prospect.emails
+          }
+          return listOfProspects.push(prospectObj)
+        })
+        handleData(listOfProspects)
+      })
+    .catch(err => {
+      console.log(err.message);
+    });
+  }
 
   const gmailDialogShouldOpen = () => {
     const qs = queryString.parse(window.location.search);
@@ -83,7 +129,12 @@ const Prospects = () => {
   }
   
   const getAllCampaigns = () => {
-    fetch(`/campaigns/${user}`)
+    fetch(`/campaigns`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${getJWT()}`
+      }
+    })
     .then(res => res.json())
       .then(data => {
         handleCampaigns(data.Campaigns)
@@ -100,14 +151,14 @@ const Prospects = () => {
 
   const saveProspectsToCampaign = () => {
     const data = {
-      "prospect_ids": prospects,
+      "prospect_ids": selectedProspects,
     };
 
     fetch(`/campaign/${campaignId}/prospects`, {
       method: "POST",
       headers: {
+        'Authorization': `Bearer ${getJWT()}`,
         'Content-Type': 'application/json',
-        Accept: 'application/json',
       },
       body: JSON.stringify(data)
     })
@@ -120,43 +171,53 @@ const Prospects = () => {
     });
   }
 
-  const formatData = () => {
-    const results = [];
+  //handle select all row on DataTable.js
+  const handleClickOnAllRows = event => {
+    if (event.target.checked) {
+      const newSelecteds = data.map(n => n.id);
+      handleSelectedProspects(newSelecteds);
+      return;
+    }
+    handleSelectedProspects([]);
+  };
 
-    //replace data with real data
-    //id, email, name, status, owner_id, tags
-    const data = SampleData;
-    const cloudIcon = <CloudIcon className="fas fa-cloud" style={{color: "grey"}} />
-    data.map(each => {
-      const obj = {
-        'id': each.id,
-        'check': 'check',
-        'Email': each.email,
-        cloudIcon,
-        'Status': 'working',
-        'Owner': each.name,
-        'Campaigns': each.campaigns,
-        'Last Contacted': each.lastContacted,
-        'Emails...': each.emails
-      }
-      return results.push(obj)
-    })
-    return results;
-  }
-  
-  const dataToRender = formatData();
+  //handle select one row on DataTable.js
+  const handleClickOnRow = (event, id) => {
+    const selectedIndex = selectedProspects.indexOf(id);
+    let newSelected = [];
 
-  const actionType = 'Add to Campaign'
+    if (selectedIndex === -1) {
+      newSelected = newSelected.concat(selectedProspects, id);
+    } else if (selectedIndex === 0) {
+      newSelected = newSelected.concat(selectedProspects.slice(1));
+    } else if (selectedIndex === selectedProspects.length - 1) {
+      newSelected = newSelected.concat(selectedProspects.slice(0, -1));
+    } else if (selectedIndex > 0) {
+      newSelected = newSelected.concat(
+        selectedProspects.slice(0, selectedIndex),
+        selectedProspects.slice(selectedIndex + 1),
+      );
+    }
+    handleSelectedProspects(newSelected);
+  };
 
   const propsForDialog = {
     actionType,
     dialog,
-    campaigns,
+    listOfCampaigns,
     setCampaignId,
     campaignId,
-    handleCloseDialogAndSaveProspects
+    handleCloseDialogAndSaveProspects,
+    handleDialog
   }
 
+  const propsForDataTable = {
+    data,
+    handleClickOnAllRows,
+    handleClickOnRow,
+    selectedProspects,
+  }
+  
   return (
     <Fragment>
       <NavBar />
@@ -165,18 +226,20 @@ const Prospects = () => {
           className={classes.featuresContainer}
           display="flex">
           <Box flexGrow={1}>
-            <Typography variant="h5"> Prospects </Typography>
-          </Box>
-          <Box flexGrow={1}>
-          {prospects.length > 0 &&
-            <CustomizedButton
-              onClick={() => handleDialog(true)}>
-              {actionType}
-            </CustomizedButton>}
+            <Box className={classes.titleContainer}>
+              <Typography variant="h5"> Prospects </Typography>
+            </Box>
+            <Box>
+            {selectedProspects.length > 0 &&
+              <CustomizedButton
+                onClick={() => handleDialog(true)}>
+                {actionType}
+              </CustomizedButton>}
+            </Box>
           </Box>
             {dialog === true &&
               <CustomizedDialog
-              propsForDialog={propsForDialog}
+              props={propsForDialog}
               />}
           <Box className={classes.icon}>
             <FlashOnIcon fontSize="small" style={{color: "grey"}} />
@@ -203,8 +266,7 @@ const Prospects = () => {
       </Box>
       <UserInputContainer className={classes.prospectList}>
         <DataTable
-          data={dataToRender}
-          func={handlelistOfProspects}
+          props={propsForDataTable}
           >
         </DataTable>
       </UserInputContainer>

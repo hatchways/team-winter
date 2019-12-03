@@ -9,6 +9,8 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Checkbox from '@material-ui/core/Checkbox';
 import CloudIcon from '@material-ui/icons/Cloud';
+
+
 const useStyles = makeStyles(theme => ({
   root: {
     width: '100%',
@@ -36,6 +38,7 @@ const useStyles = makeStyles(theme => ({
     width: 1,
   },
 }));
+
 
 const HeaderRow = ({ handleClickOnAllRows, numSelected, rowCount, data }) => {
   const header = Object.keys(data[0]);
@@ -73,6 +76,7 @@ const HeaderRow = ({ handleClickOnAllRows, numSelected, rowCount, data }) => {
     </TableHead>
   );
 }
+
 const DataTable = ({props}) => {
   const classes = useStyles();
   let { data, handleClickOnAllRows, handleClickOnRow, selectedProspects} = props;

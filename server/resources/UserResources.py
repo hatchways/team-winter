@@ -95,3 +95,4 @@ class UserCampaigns(Resource):
             return {'message': 'Something went wrong'}, 500
 
 
+

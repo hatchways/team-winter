@@ -1,6 +1,6 @@
 from functools import wraps
 from flask import request
-
+ 
 def validate_args(*expected_args):
     def decorator(func):
         @wraps(func)

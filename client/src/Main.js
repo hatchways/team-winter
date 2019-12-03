@@ -26,6 +26,7 @@ const Main = () => {
         <Route path="/signup" component={SignUp} />
         <Route path="/campaigns/:id" component={Campaign} />
         <Route path="/campaigns" component={Campaigns} />
+        <Route path="/campaigns/:id" component={Campaign} />
         <Route path="/prospects" component={Prospects} />
         <Route path="/templates" component={Templates} />
         <Route path="/reporting" component={Reporting} />
