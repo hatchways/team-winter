@@ -48,23 +48,14 @@ const Campaigns = () => {
   const classes = useStyles();
 
   const [open, setOpen] = useState(false); 
-  const [id, setId] = useState(0);
   const [campaigns, setCampaigns] = useState([{}]);
 
   useEffect(() => {
     getUserCampaigns();
   }, setCampaigns);
 
-  if(id) {
-    return <Redirect to="/campaigns/{id}" />
-  }
-
-  const handleClickOnRow = (event, id) => {
-    setId(id);
-  };
   const propsForDataTable = {
-    data: campaigns,
-    handleClickOnRow
+    data: campaigns
   }
 
   const handleClickOpen = () => {
@@ -85,7 +76,8 @@ const Campaigns = () => {
         Prospects: each.prospects,
         Replies: "",
         Steps: each.steps,
-        Due: ""
+        Due: "",
+        Link: "/campaigns/" + each.id
       }
       campaigns.push(campaign);
     }

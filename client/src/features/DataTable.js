@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -35,6 +36,14 @@ const useStyles = makeStyles(theme => ({
     width: 1,
   },
 }));
+// const StyledLink = styled(Link)`
+//     text-decoration: none;
+
+//     &:focus, &:hover, &:visited, &:link, &:active {
+//         text-decoration: none;
+//     }
+// `;
+
 const HeaderRow = ({ handleClickOnAllRows, numSelected, rowCount, data }) => {
   const header = Object.keys(data[0]);
   return (
@@ -56,7 +65,7 @@ const HeaderRow = ({ handleClickOnAllRows, numSelected, rowCount, data }) => {
                 >
                 <CloudIcon className="fas fa-cloud" style={{color: "grey"}} />
               </TableCell>
-            } else if (headCell === 'id') {
+            } else if (headCell === 'id' || headCell === 'Link') {
               return null;
             } else {
               return <TableCell
@@ -96,10 +105,12 @@ const DataTable = ({props}) => {
               {data.map((row, idx) => {
                 const isItemSelected = isSelected(row.id);
                 const labelId = `table-checkbox-${idx}`;
+                const url = row.Link ? row.Link : "#";
                 return (
                 <TableRow
                   hover
-                  onClick={event => handleClickOnRow(event, row.id)}
+                  component={Link} to={url} style={{ textDecoration: 'none' }}
+                  onClick={event => handleClickOnRow === undefined ? null : handleClickOnRow(event, row.id)}
                   role="checkbox"
                   aria-checked={isItemSelected}
                   tabIndex={-1}
@@ -116,7 +127,7 @@ const DataTable = ({props}) => {
                     </TableCell>
                     } else if (eachCell[0] === "Email") {
                       return <TableCell key={idx} component="th" id={labelId} scope="row" p={1}> {eachCell[1]}</TableCell>
-                    } else if (eachCell[0] === 'id') {
+                    } else if (eachCell[0] === 'id' || eachCell[0] === 'Link') {
                       return null;
                     } else {
                       return <TableCell key={idx} id={labelId} align="center">{eachCell[1]}</TableCell>

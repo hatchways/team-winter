@@ -23,6 +23,7 @@ export default function CampaignDialog(props) {
       Replies: "",
       Steps: campaign.steps,
       Due: ""
+      // Link: "/campaigns/" + campaign.id 
     })
     onClose();
   }
@@ -34,7 +35,7 @@ export default function CampaignDialog(props) {
     };
       
     
-    const response = await fetch('/campaigns', {
+    await fetch('/campaigns', {
         method: 'POST',  
         headers: {
           'Content-Type': 'application/json', 
