@@ -13,10 +13,13 @@ class UserModel(db.Model):
     gmail_address = db.Column(db.String(120), nullable = True)
     gmail_auth_state = db.Column(db.String(120), nullable = True)
     prospects = db.relationship(
-        'ProspectModel', backref='owner', lazy = 'select'
+        'ProspectModel', backref='prospect_owner', lazy = 'select'
     )
     campaigns = db.relationship(
-        'CampaignModel', backref='owner', lazy = 'select'
+        'CampaignModel', backref='campaign_owner', lazy = 'select'
+    )
+    templates = db.relationship(
+        'EmailTemplateModel', backref='template_owner', lazy='dynamic'
     )
 
     def save_to_db(self):
