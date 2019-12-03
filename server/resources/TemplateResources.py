@@ -44,17 +44,22 @@ class OneTemplate(Resource):
     def post(self):
         data = templatesOnePostParser.parse_args()
         current_user = UserModel.find_by_id(get_jwt_identity())
-        template = EmailTemplateModel(
-            name=data['name'],
-            type=data['type'],
-            subject=data['subject'],
-            body=data['body'],
-            owner=current_user.id
-        )
-        template.save_to_db()
-        return {
-            'template': serializableTemplate(template)
-        }, 200
+        try:
+            template = EmailTemplateModel(
+                name=data['name'],
+                type=data['type'],
+                subject=data['subject'],
+                body=data['body'],
+                owner=current_user.id
+            )
+            template.save_to_db()
+            return {
+                'template': serializableTemplate(template)
+            }, 200
+        except ValueError as e:
+            return {
+              'message': str(e)
+            }, 500
 
 
     @jwt_required
@@ -66,10 +71,15 @@ class OneTemplate(Resource):
         if data['type'] is not None: template.type = data['type']
         if data['subject'] is not None: template.subject = data['subject']
         if data['body'] is not None: template.body = data['body']
-        template.update()
-        return {
-            'template': serializableTemplate(template)
-        }, 200
+        try:
+            template.update()
+            return {
+                'template': serializableTemplate(template)
+            }, 200
+        except ValueError as e:
+            return {
+              'message': str(e)
+            }, 500
 
 def serializableTemplate(template):
     ret = {

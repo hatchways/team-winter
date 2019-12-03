@@ -1,4 +1,7 @@
 from app import db 
+from sqlalchemy.schema import CheckConstraint
+from sqlalchemy.orm import validates
+
 
 class EmailTemplateModel(db.Model):
     __tablename__ = 'email_templates'
@@ -11,9 +14,28 @@ class EmailTemplateModel(db.Model):
     owner = db.Column(db.Integer, db.ForeignKey('users.id'))
     step_id = db.Column(db.Integer, db.ForeignKey('steps.id'))
 
+    __table_args__ = (
+        CheckConstraint('char_length(name) > 0', name='name_min_length'),
+        CheckConstraint('char_length(subject) > 0', name='subject_min_length'),
+    )
+
+    @validates('name')
+    def validate_name(self, key, name) -> str:
+        if len(name) < 1:
+            raise ValueError('name too short')
+        return name
+
+    @validates('subject')
+    def validate_subject(self, key, subject) -> str:
+        if len(subject) < 1:
+            raise ValueError('subject too short')
+        return subject
+
     def save_to_db(self):
         db.session.add(self)
         db.session.commit()
 
     def update(self):
         db.session.commit()
+
+    
