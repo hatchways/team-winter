@@ -79,11 +79,23 @@ const Prospects = () => {
   const [listOfCampaigns, handleCampaigns] = useState(null);
   const [campaignId, setCampaignId] = useState('');
   const [selectedProspects, handleSelectedProspects] = useState([]);
+  const [filterTerms, handleFilter] = useState('');
 
   useEffect(() => {
     getAllCampaigns();
     getAllProspects();
   }, [])
+
+  const handleSearch = (query) => {
+    const filteredData = data.filter(prospect => {
+      if (prospect.imported_from === query) {
+        return prospect;
+      }
+    })
+    handleData(filteredData);
+    handleFilter(query.name);
+    console.log(data)
+  }
 
   const gmailDialogShouldOpen = () => {
     const qs = queryString.parse(window.location.search);
@@ -113,7 +125,8 @@ const Prospects = () => {
             'Owner': prospect.name,
             'Campaigns': prospect.campaigns,
             'Last Contacted': prospect.lastContacted,
-            'Emails...': prospect.emails
+            'Emails...': prospect.emails,
+            'imported_from': prospect.imported_from
           }
           return listOfProspects.push(prospectObj)
         })
@@ -199,10 +212,10 @@ const Prospects = () => {
 
   const propsForDialog = {
     actionType,
+    dataList: listOfCampaigns,
+    setValue: setCampaignId,
+    currentValue: campaignId,
     dialog,
-    listOfCampaigns,
-    setCampaignId,
-    campaignId,
     handleCloseDialogAndSaveProspects,
     handleDialog
   }
@@ -213,14 +226,14 @@ const Prospects = () => {
     handleClickOnRow,
     selectedProspects,
   }
-  
+
   return (
     <Fragment>
       <NavBar />
       <Grid container>
         <Grid item xs={2} id='sidePanel'>
           <Box>
-            <SidePanel></SidePanel>
+            <SidePanel data={data} filterTerms={filterTerms} handleSearch={handleSearch}> </SidePanel>
           </Box>
         </Grid>
         <Grid item xs={10}>
