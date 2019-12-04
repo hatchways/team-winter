@@ -66,10 +66,9 @@ class CreateStepToCampaign(Resource):
         # )
         new_step = StepModel(
             campaign_id = id,
-            email_template = EmailTemplateModel.find_by_id(template_id)  
+            email_template_id = template_id 
         )
         try:
-            # new_email_template.save_to_db()
             new_step.save_to_db()
             return {
                 'step' : new_step.to_dict()

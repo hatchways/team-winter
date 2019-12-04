@@ -9,7 +9,9 @@ class EmailTemplateModel(db.Model, SerializerMixin):
     type = db.Column(db.String(120))
     subject = db.Column(db.String(120))
     body = db.Column(db.VARCHAR(2000)) 
-    step_id = db.Column(db.Integer, db.ForeignKey('steps.id'))
+    steps = db.relationship(
+        'StepModel', backref='email_template', lazy = 'select'
+    )
 
     def save_to_db(self):
         db.session.add(self)

@@ -3,13 +3,11 @@ from app import db
 
 class StepModel(db.Model, SerializerMixin):
     __tablename__ = 'steps'
-    serialize_rules = ('-email_template.step', '-campaign')
+    serialize_rules = ('-email_template.steps', '-campaign')
 
     id = db.Column(db.Integer, primary_key = True)
     campaign_id = db.Column(db.Integer, db.ForeignKey('campaigns.id'))
-    email_template = db.relationship(
-        'EmailTemplateModel', backref='step', lazy = 'select', uselist = False
-    )
+    email_template_id = db.Column(db.Integer, db.ForeignKey('email_templates.id'))
 
     def save_to_db(self):
         db.session.add(self)
