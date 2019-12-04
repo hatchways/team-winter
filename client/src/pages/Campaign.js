@@ -9,6 +9,7 @@ import NavBar from '../features/NavBar/MainBody';
 import CampaignSummary from '../features/Campaign/CampaignSummary';
 import StepDialog from '../features/Campaign/StepDialog';
 import ConfirmationDialog from '../features/ConfirmationDialog';
+import { getJWT } from '../utils';
 
 const useStyles = makeStyles( () => ({
   container: {
@@ -84,27 +85,56 @@ const Campaign = (props) => {
     return {};
   }
 
-  const getCampaign = async () => {
-    /**
-     * get from server:
-     *   id
-     *   title
-     *   userName
-     *   prospectsTotal
-     *   prospectsContacted
-     *   prospectsReplied
-     *   steps {list}:
-     *     id
-     *     templateId
-     *     sent
-     *     replied
-     *   templates {list}:
-     *     id
-     *     name
-     */   
 
-    // add template names to steps in campaign
-    // setCampaign(thisCampaign);
+  const handleCampaign = data => {
+    const campaign = data.campaign;
+    const stepsData = campaign.steps;
+    const steps = [];
+    const templates = [];
+    for(let stepData of stepsData) {
+      const step = {
+        id : stepData.id,
+        templateId : stepData.email_template.id,
+        templateName : stepData.email_template.name,
+        sent : 100,
+        replied : 25
+      }
+      const template = {
+        id : stepData.email_template.id,
+        name : stepData.email_template.name
+      }
+      steps.push(step);
+      templates.push(template);
+    }
+
+    setCampaign(
+      {
+        id : campaign.id,
+        title : campaign.name,
+        userName : campaign.owner_name,
+        prospectsTotal : campaign.prospects,
+        prospectsContacted : 20,
+        prospectsReplied : 10,
+        steps : steps,
+        templates : templates
+    })
+  }
+
+  const getCampaign = async () => {
+    const id = props.match.params.id;
+    await fetch(`/campaigns/${id}`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${getJWT()}`
+      }
+    })
+    .then(res => res.json())
+      .then(data => {
+        handleCampaign(data)
+      })
+    .catch(err => {
+      console.log(err.message);
+    });
   }
 
   const updateStep = (step) => {
@@ -179,7 +209,7 @@ const Campaign = (props) => {
   }
 
   const handleNewOpen = () => {
-    setNewStep(emptyStep);
+    // setNewStep(emptyStep);
     setNewOpen(true);
   }
 

@@ -38,3 +38,6 @@ class UserModel(db.Model):
     @staticmethod
     def verify_hash(password, hash):
         return sha256.verify(password, hash)
+
+    def getName(self):
+        return "{} {}".format(self.first_name, self.last_name)
