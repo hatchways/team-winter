@@ -95,6 +95,7 @@ class UserProspects(Resource):
                 'email': prospect.email,
                 'name' : prospect.name,
                 'status' : prospect.status,
+                'imported_from': prospect.imported_from,
                 'campaigns': len(prospect.campaigns),
                 })
         return {
