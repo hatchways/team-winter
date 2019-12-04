@@ -69,7 +69,7 @@ const HeaderRow = ({props}) => {
                 >
                 <CloudIcon className="fas fa-cloud" style={{color: "grey"}} />
               </TableCell>
-            } else if (headCell === 'id') {
+            } else if (headCell === 'id' || headCell === "last_imported") {
               return null;
             } else {
               return <TableCell
@@ -157,7 +157,7 @@ const DataTable = ({props}) => {
                       </TableCell>
                       } else if (eachCell[0] === "Email") {
                         return <TableCell key={idx} component="th" id={labelId} scope="row" p={1}> {eachCell[1]}</TableCell>
-                      } else if (eachCell[0] === "id") {
+                      } else if (eachCell[0] === "id" || eachCell[0] === "last_imported") {
                         return null;
                       } else {
                         return <TableCell key={idx} id={labelId} align="center">{eachCell[1]}</TableCell>
