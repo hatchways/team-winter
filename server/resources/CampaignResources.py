@@ -9,7 +9,8 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 
 reqParserGen = RequestParserGenerator()
 campaignProspectsParser = reqParserGen.getParser(["prospect_ids"])
-campaignStepsParser = reqParserGen.getParser("name", "type", "subject", "body")
+# campaignStepsParser = reqParserGen.getParser("name", "type", "subject", "body")
+campaignStepsParser = reqParserGen.getParser("id")
 
 
 class CampaignProspects(Resource):
@@ -52,23 +53,26 @@ class CreateStepToCampaign(Resource):
     def post(self, id):
         data = campaignStepsParser.parse_args()
         campaign = CampaignModel.find_by_id(id)
+        template_id = data['id']
         if not campaign:
             return {'message': 'Campaign {} doesn\'t exist'.format(id)}, 400
-        new_email_template = EmailTemplateModel(
-            name = data["name"],
-            type = data["type"],
-            subject = data["subject"],
-            body = data["body"]
-        )
+        if campaign.owner_id != get_jwt_identity():
+            return {'message': 'You don\'t have permission to do that.'}, 403
+        # new_email_template = EmailTemplateModel(
+        #     name = data["name"],
+        #     type = data["type"],
+        #     subject = data["subject"],
+        #     body = data["body"]
+        # )
         new_step = StepModel(
             campaign_id = id,
-            email_template = new_email_template  
+            email_template = EmailTemplateModel.find_by_id(template_id)  
         )
         try:
-            new_email_template.save_to_db()
-            new_step.save_to_db
+            # new_email_template.save_to_db()
+            new_step.save_to_db()
             return {
-                'message': 'Successfully created Step {} for Campaign {}'.format(new_step.id, campaign.name)
+                'step' : new_step.to_dict()
             }, 201
         except:
             return {'message': 'Something went wrong'}, 500

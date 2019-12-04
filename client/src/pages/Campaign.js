@@ -85,6 +85,15 @@ const Campaign = (props) => {
     return {};
   }
 
+  const createStepObject = stepData => {
+    return {
+      id : stepData.id,
+      templateId : stepData.email_template.id,
+      templateName : stepData.email_template.name,
+      sent : 100,
+      replied : 25
+    }
+  }
 
   const handleCampaign = data => {
     const campaign = data.campaign;
@@ -92,13 +101,7 @@ const Campaign = (props) => {
     const steps = [];
     const templates = [];
     for(let stepData of stepsData) {
-      const step = {
-        id : stepData.id,
-        templateId : stepData.email_template.id,
-        templateName : stepData.email_template.name,
-        sent : 100,
-        replied : 25
-      }
+      const step = createStepObject(stepData);
       const template = {
         id : stepData.email_template.id,
         name : stepData.email_template.name
@@ -152,16 +155,36 @@ const Campaign = (props) => {
      */
   }
 
-  const addStep = (step) => {
-    console.log('Add: ' + JSON.stringify(step));
+  const addNewStep = async (template) => {
+    const id = campaign.id;
+    const data = {
+      id : template.id
+    }
+    await fetch(`'/campaign/${id}/steps'`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${getJWT()}`
+      },
+      body: JSON.stringify(data)
+    })
+    .then(res => res.json())
+      .then(data => createStepObject(data.step))
+        .then(step => {
+          campaign.steps.push(step);
+          setCampaign(campaign);
+        })
+    .catch(err => {
+      console.log(err.message);
+    });
+
     // update UI
     // fill in template name, sent, and replied
-    step.templateName = findTemplate(step.templateId).name;
-    step.sent = 0;
-    step.replied = 0;
-    // append step to campaign
-    campaign.steps.push(step);
-    setCampaign(campaign);
+    // step.templateName = findTemplate(step.templateId).name;
+    // step.sent = 0;
+    // step.replied = 0;
+    // // append step to campaign
+    // campaign.steps.push(step);
+    // setCampaign(campaign);
 
     /** 
      * TODO:
@@ -189,7 +212,7 @@ const Campaign = (props) => {
      * delete step with id=editStep.id
      */
   }
-
+//---------------Edit Step-----------------------//
   const handleEditOpen = (idx) => {
     setEditStep(campaign.steps[idx]);
     setEditOpen(true);
@@ -207,9 +230,8 @@ const Campaign = (props) => {
   const handleSetEditStep = (newStep) => {
     setEditStep(newStep);
   }
-
+//-----------------Create Step-----------------------//
   const handleNewOpen = () => {
-    // setNewStep(emptyStep);
     setNewOpen(true);
   }
 
@@ -218,7 +240,7 @@ const Campaign = (props) => {
   }
 
   const handleNewSave = () => {
-    addStep(newStep);
+    addNewStep();
     setNewOpen(false);
   }
 

@@ -14,3 +14,7 @@ class EmailTemplateModel(db.Model, SerializerMixin):
     def save_to_db(self):
         db.session.add(self)
         db.session.commit()
+
+    @classmethod
+    def find_by_id(cls, id):
+        return cls.query.get(id)
