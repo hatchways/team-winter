@@ -16,9 +16,13 @@ const useStyles = makeStyles(theme => ({
   },
   heading: {
     fontWeight: theme.typography.fontWeightRegular,
+    padding: 5,
   },
   select: {
     width: 200,
+  },
+  checkbox: {
+    padding: 5,
   }
 }));
 
@@ -38,7 +42,7 @@ const ExpandPanel = ({ getAllImportedFrom, importedFromList, actionType, placeho
         <ExpansionPanelSummary
           onClick={() => handleExpand()}
         >
-        {checked ? <CheckBoxIcon /> : <CheckBoxOutlineBlankIcon />}
+        {checked ? <div><CheckBoxIcon className={classes.checkbox} /></div>  : <div><CheckBoxOutlineBlankIcon className={classes.checkbox} /></div>}
           <Typography className={classes.heading}>{actionType}</Typography>
         </ExpansionPanelSummary>
         <SelectFromList

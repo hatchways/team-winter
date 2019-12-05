@@ -9,12 +9,9 @@ import Select from '@material-ui/core/Select';
 
 const useStyles = makeStyles(theme => ({
   formControl: {
-    margin: theme.spacing(1),
-    minWidth: 200,
+    margin: "0px 20px",
+    minWidth: 150,
     maxWidth: 300,
-  },
-  noLabel: {
-    marginTop: theme.spacing(3),
   },
 }));
 
@@ -38,7 +35,7 @@ const SelectFromList = ({ dataList, actionType, setValue, currentValue }) => {
 
   return (
     <div>
-      <FormControl className={clsx(classes.formControl, classes.noLabel)}>
+      <FormControl className={clsx(classes.formControl)}>
         <Select
           displayEmpty
           value={currentValue}

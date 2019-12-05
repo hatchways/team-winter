@@ -45,6 +45,22 @@ export const theme = createMuiTheme({
         padding: 10,
       }
     },
+    MuiExpansionPanelSummary: {
+      root: {
+        padding: "0px 15px",
+        '&$expanded': {
+          margin: 0,
+          minHeight: 10,
+        },
+      },
+      content: {
+        margin: 0,
+        '&$expanded': {
+          margin: 0,
+          minHeight: 10,
+        },
+      },
+    },
   }
 });
 
