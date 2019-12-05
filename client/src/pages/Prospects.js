@@ -1,14 +1,15 @@
 import React, { Fragment, useState, useEffect } from 'react';
+
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
 import queryString from 'query-string';
-
 import Grid from '@material-ui/core/Grid';
 import CloudIcon from '@material-ui/icons/Cloud';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import MailIcon from '@material-ui/icons/Mail';
 import FlashOnIcon from '@material-ui/icons/FlashOn';
+
 import CustomizedButton from '../features/CustomizedButton';
 import OutlinedButton from '../features/OutlinedButton';
 import NavBar from '../features/NavBar/MainBody';
@@ -79,7 +80,6 @@ const Prospects = () => {
   const [listOfCampaigns, handleCampaigns] = useState(null);
   const [campaignId, setCampaignId] = useState('');
   const [selectedProspects, handleSelectedProspects] = useState([]);
-  const [filterTerms, handleFilter] = useState('');
 
   useEffect(() => {
     getAllCampaigns();
@@ -93,8 +93,6 @@ const Prospects = () => {
       }
     })
     handleData(filteredData);
-    handleFilter(query.name);
-    console.log(data)
   }
 
   const gmailDialogShouldOpen = () => {
@@ -210,16 +208,6 @@ const Prospects = () => {
     handleSelectedProspects(newSelected);
   };
 
-  const propsForDialog = {
-    actionType,
-    dataList: listOfCampaigns,
-    setValue: setCampaignId,
-    currentValue: campaignId,
-    dialog,
-    handleCloseDialogAndSaveProspects,
-    handleDialog
-  }
-
   const propsForDataTable = {
     data,
     handleClickOnAllRows,
@@ -233,7 +221,7 @@ const Prospects = () => {
       <Grid container>
         <Grid item xs={2} id='sidePanel'>
           <Box>
-            <SidePanel data={data} filterTerms={filterTerms} handleSearch={handleSearch}> </SidePanel>
+          <SidePanel handleSearch={handleSearch}> </SidePanel>
           </Box>
         </Grid>
         <Grid item xs={10}>
@@ -257,7 +245,13 @@ const Prospects = () => {
                   </Box>
                     {dialog === true &&
                       <CustomizedDialog
-                      props={propsForDialog}
+                      actionType={actionType}
+                      dataList={listOfCampaigns}
+                      setValue={setCampaignId}
+                      currentValue={campaignId}
+                      dialog={dialog}
+                      handleCloseDialogAndSaveProspects={handleCloseDialogAndSaveProspects}
+                      handleDialog={handleDialog}
                       />}
                   <Box className={classes.icon}>
                     <FlashOnIcon fontSize="small" style={{color: "grey"}} />

@@ -16,7 +16,7 @@ const useStyles = makeStyles(() => ({
   }
 }));
 
-const SidePanel = ({ handleSearch, filterTerms}) => {
+const SidePanel = ({ handleSearch }) => {
   const classes = useStyles();
   const [importedFromList, handleImportedFrom] = useState([{}]);
   const [placeholderValue, handlePlaceHolder] = useState('')
@@ -50,9 +50,9 @@ const SidePanel = ({ handleSearch, filterTerms}) => {
   }
 
   const handleQueryTerm = (query) => {
-    const queried = (importedFromList.filter(each => (each.id === query))[0].name)
-    handleSearch(queried)
-    handlePlaceHolder(queried)
+    const queried = importedFromList.filter(each => (each.id === query))
+    handleSearch(queried[0].name)
+    handlePlaceHolder(queried[0].id)
   }
 
   return (
@@ -62,7 +62,6 @@ const SidePanel = ({ handleSearch, filterTerms}) => {
         actionType={actionType1}
         importedFromList={importedFromList}
         handleSearch={handleSearch}
-        filterTerms={filterTerms}
         getAllImportedFrom={getAllImportedFrom}
         placeholderValue={placeholderValue}
         handleQueryTerm={handleQueryTerm}

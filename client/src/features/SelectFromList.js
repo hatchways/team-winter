@@ -1,4 +1,5 @@
 import React from 'react';
+
 import clsx from 'clsx';
 import { makeStyles} from '@material-ui/core/styles';
 import Input from '@material-ui/core/Input';
@@ -28,9 +29,8 @@ const MenuProps = {
   },
 };
 
-const SelectFromList = (props) => {
+const SelectFromList = ({ dataList, actionType, setValue, currentValue }) => {
   const classes = useStyles();
-  let { dataList, actionType, setValue, currentValue } = props;
 
   if (dataList === undefined) {
     dataList = [];
@@ -51,8 +51,8 @@ const SelectFromList = (props) => {
           </MenuItem>
             {dataList.map(item => (
             <MenuItem
-              key={item.id}
-              value={item.name}
+              key={item.name}
+              value={item.id}
               >
               {item.name}
             </MenuItem>
