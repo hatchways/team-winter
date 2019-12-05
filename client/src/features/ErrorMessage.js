@@ -19,7 +19,7 @@ const ErrorMessage = (props) => {
 
   return (
     <Paper className={classes.paper}>
-      <Typography align="center" variant="h2">
+      <Typography align="center" variant="h3">
         {props.header}
       </Typography>
       <Typography align="center" component="p">

@@ -1,4 +1,5 @@
 from app import db 
+import datetime
 from sqlalchemy.schema import (
     CheckConstraint,
     UniqueConstraint
@@ -15,12 +16,11 @@ class EmailTemplateModel(db.Model):
     subject = db.Column(db.String(120))
     body = db.Column(db.VARCHAR(500)) 
     owner = db.Column(db.Integer, db.ForeignKey('users.id'))
-    step_id = db.Column(db.Integer, db.ForeignKey('steps.id'))
+    date_created = db.Column(db.DateTime, default=datetime.datetime.utcnow)
 
     __table_args__ = (
         CheckConstraint('char_length(name) > 0', name='name_min_length'),
-        CheckConstraint('char_length(subject) > 0', name='subject_min_length'),
-        UniqueConstraint('owner', 'name', name='owner_name_uc')
+        CheckConstraint('char_length(subject) > 0', name='subject_min_length')
     )
 
     @validates('name')
@@ -40,6 +40,10 @@ class EmailTemplateModel(db.Model):
         db.session.commit()
 
     def update(self):
+        db.session.commit()
+
+    def delete(self):
+        db.session.delete(self)
         db.session.commit()
 
     

@@ -20,6 +20,9 @@ templatesOnePutParser.add_argument('type', type=str, location='json')
 templatesOnePutParser.add_argument('subject', type=str, location='json')
 templatesOnePutParser.add_argument('body', type=str, location='json')
 
+templatesOneDeleteParser = reqparse.RequestParser()
+templatesOneDeleteParser.add_argument('id', type=int, location='json', required=True)
+
 class AllTemplates(Resource):
     @jwt_required
     def get(self):
@@ -87,12 +90,28 @@ class OneTemplate(Resource):
               'message': str(e)
             }, 400
 
+    @jwt_required
+    def delete(self):
+        data = templatesOneDeleteParser.parse_args()
+        current_user = UserModel.find_by_id(get_jwt_identity())
+        template = current_user.templates.filter_by(id=data['id']).first()
+        if template is not None: 
+            template.delete()
+            return {
+                'message': f'Template {template.id} deleted'
+            }, 200
+        else:
+            return {
+                'message': 'Template not found'
+            }, 404
+
 def serializableTemplate(template):
     ret = {
         'id': template.id,
         'name': template.name,
         'type': template.type,
         'subject': template.subject,
-        'body': template.body
+        'body': template.body,
+        'dateCreated': str(template.date_created)
     }
     return ret

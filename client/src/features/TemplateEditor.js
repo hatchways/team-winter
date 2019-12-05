@@ -42,13 +42,11 @@ class TemplateEditor extends Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    const shouldUpdate = this.props.template.id !== nextProps.template.id ||
-                         this.props.variables !== nextProps.variables || 
-                         this.state.nameError !== nextState.nameError || 
-                         this.state.typeEror !== nextState.typeEror || 
-                         this.state.subjectError !== nextState.subjectError;
-    if(shouldUpdate) return true;
-    return false;
+    return (this.props.template.id !== nextProps.template.id ||
+            this.state.nameError !== nextState.nameError || 
+            this.props.variables !== nextProps.variables || 
+            this.state.typeEror !== nextState.typeEror || 
+            this.state.subjectError !== nextState.subjectError);
   }
 
   handleNameChange(event) {
@@ -71,9 +69,6 @@ class TemplateEditor extends Component {
     const nameError = this.state.name.length < 1,
           typeError = this.state.type.length < 1,
           subjectError = this.state.subject.length < 1;
-    console.log(nameError);
-    console.log(typeError);
-    console.log(subjectError);
     if(nameError || typeError || subjectError) {
       this.setState({
         nameError: nameError,

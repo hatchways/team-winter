@@ -5,6 +5,7 @@ class StepModel(db.Model):
 
     id = db.Column(db.Integer, primary_key = True)
     campaign_id = db.Column(db.Integer, db.ForeignKey('campaigns.id'))
+    template_id = db.Column(db.Integer, db.ForeignKey('email_templates.id'))
     email_template = db.relationship(
         'EmailTemplateModel', backref='step', lazy = 'select', uselist = False
     )
