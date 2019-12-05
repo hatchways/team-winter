@@ -9,7 +9,6 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 
 reqParserGen = RequestParserGenerator()
 campaignProspectsParser = reqParserGen.getParser(["prospect_ids"])
-# campaignStepsParser = reqParserGen.getParser("name", "type", "subject", "body")
 campaignStepsParser = reqParserGen.getParser("id")
 
 
@@ -58,12 +57,6 @@ class CreateStepToCampaign(Resource):
             return {'message': 'Campaign {} doesn\'t exist'.format(id)}, 400
         if campaign.owner_id != get_jwt_identity():
             return {'message': 'You don\'t have permission to do that.'}, 403
-        # new_email_template = EmailTemplateModel(
-        #     name = data["name"],
-        #     type = data["type"],
-        #     subject = data["subject"],
-        #     body = data["body"]
-        # )
         new_step = StepModel(
             campaign_id = id,
             email_template_id = template_id 
@@ -72,7 +65,8 @@ class CreateStepToCampaign(Resource):
             new_step.save_to_db()
             return {
                 'step' : new_step.to_dict(rules = 
-                    ('-email_template.steps', '-email_template.owner', '-campaign'))
+                    ('-email_template.steps', '-email_template.owner', '-prospects.campaigns',
+                    '-prospects.tags', '-prospects.steps', '-campaign'))
             }, 201
         except:
             return {'message': 'Something went wrong'}, 500
@@ -91,10 +85,11 @@ class GetCampaign(Resource):
                     'name' : campaign.name,
                     'creation_date' : campaign.creation_date.strftime("%b %d"), 
                     'owner_name' : campaign.owner.getName(),
-                   'prospects' : len(campaign.prospects),
+                    'prospects' : len(campaign.prospects),
                     'steps' : [
                         step.to_dict(rules = 
-                            ('-email_template.steps', '-email_template.owner', '-campaign')) 
+                            ('-email_template.steps', '-email_template.owner', '-prospects.campaigns',
+                            '-prospects.tags', '-prospects.steps', '-prospects.owner', '-campaign')) 
                         for step in campaign.steps
                     ]
                 }

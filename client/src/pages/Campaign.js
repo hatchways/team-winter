@@ -250,6 +250,26 @@ const Campaign = (props) => {
     setConfirmOpen(false);
   }
 
+  const handleImportProspects = (event, currStep, idx) => {
+    const prevStep = campaign.steps[idx-1];
+    const data = {
+      'prevStep' : prevStep,
+      'currStep' : currStep
+    }
+    console.log(prevStep);
+    console.log(currStep);
+    // fetch(`/steps/prospects`, {
+    //   method: 'POST',
+    //   headers: {
+    //     'Content-Type': 'application/json', 
+    //     'Authorization': `Bearer ${getJWT()}`
+    //   },
+    //   body: JSON.stringify(data)
+    // })
+
+    event.stopPropagation();
+  }
+
 
   return (
     <Fragment>
@@ -262,6 +282,7 @@ const Campaign = (props) => {
                          contacted={campaign.prospectsContacted}
                          replied={campaign.prospectsReplied}
                          steps={campaign.steps}
+                         handleOnClick={handleImportProspects}
                          openEditStepDialog={handleEditOpen} />
         {/* Edit dialog */}
         <StepDialog title="Edit Step"
