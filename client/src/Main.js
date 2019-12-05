@@ -14,7 +14,7 @@ import Reporting from './pages/Reporting';
 import "./Main.css";
 
 const Main = () => {
-  
+
   return (
     <MuiThemeProvider theme={theme}>
       <BrowserRouter>

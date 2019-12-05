@@ -40,15 +40,6 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const HeaderRow = ({props}) => {
-  const { handleClickOnAllRows, numSelected, data } = props
-  let header = null;
-  let rowCount = null;
-
-  if (data.length > 0 || data !== undefined) {
-    header = Object.keys(data[0]);
-    rowCount = Object.keys(data).length;
-  }
 
 const HeaderRow = ({props}) => {
   const { handleClickOnAllRows, numSelected, data } = props

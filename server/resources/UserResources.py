@@ -1,6 +1,7 @@
-from flask_restful import Resource
+from flask_restful import Resource, reqparse
 from utils.RequestParserGenerator import RequestParserGenerator
 from models.UserModel import UserModel
+from models.EmailTemplateModel import EmailTemplateModel
 from models.CampaignModel import CampaignModel
 from flask_jwt_extended import (create_access_token, jwt_required, get_jwt_identity)
 from utils.ValidationDecorator import validate_args
@@ -9,6 +10,7 @@ reqParserGen = RequestParserGenerator()
 registerParser = reqParserGen.getParser("email", "password", "first_name", "last_name", "confirm_pass")
 loginParser = reqParserGen.getParser("email", "password")
 campaignParser = reqParserGen.getParser("name")
+
 
 class UserRegister(Resource):
     def post(self):
@@ -131,3 +133,4 @@ class UserProspects(Resource):
         return {
             'Prospects': prospects
             }, 200 
+
