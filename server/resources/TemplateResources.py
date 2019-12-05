@@ -2,31 +2,16 @@ from flask_restful import Resource, reqparse
 from models.UserModel import UserModel
 from models.EmailTemplateModel import EmailTemplateModel
 from flask_jwt_extended import (jwt_required, get_jwt_identity)
-import psycopg2
 
-templatesOneGetParser = reqparse.RequestParser()
-templatesOneGetParser.add_argument('id', type=int, location='json', required=True)
-
-templatesOnePostParser = reqparse.RequestParser()
-templatesOnePostParser.add_argument('name', type=str, location='json', required=True)
-templatesOnePostParser.add_argument('type', type=str, location='json', required=True)
-templatesOnePostParser.add_argument('subject', type=str, location='json', required=True)
-templatesOnePostParser.add_argument('body', type=str, location='json', required=True)
-
-templatesOnePutParser = reqparse.RequestParser()
-templatesOnePutParser.add_argument('id', type=int, location='json', required=True)
-templatesOnePutParser.add_argument('name', type=str, location='json')
-templatesOnePutParser.add_argument('type', type=str, location='json')
-templatesOnePutParser.add_argument('subject', type=str, location='json')
-templatesOnePutParser.add_argument('body', type=str, location='json')
-
-templatesOneDeleteParser = reqparse.RequestParser()
-templatesOneDeleteParser.add_argument('id', type=int, location='json', required=True)
+parser = reqparse.RequestParser()
+parser.add_argument('name', type=str, location='json', required=True)
+parser.add_argument('type', type=str, location='json', required=True)
+parser.add_argument('subject', type=str, location='json', required=True)
+parser.add_argument('body', type=str, location='json', required=True)
 
 class TemplatesById(Resource):
     @jwt_required
     def delete(self, id):
-        data = templatesOneDeleteParser.parse_args()
         current_user = UserModel.find_by_id(get_jwt_identity())
         template = current_user.templates.filter_by(id=id).first()
         if template is not None: 
@@ -41,7 +26,6 @@ class TemplatesById(Resource):
 
     @jwt_required
     def get(self, id):
-        data = templatesOneGetParser.parse_args()
         current_user = UserModel.find_by_id(get_jwt_identity())
         template = current_user.templates.filter_by(id=id).first()
         return {
@@ -50,7 +34,7 @@ class TemplatesById(Resource):
 
     @jwt_required
     def put(self, id):
-        data = templatesOnePutParser.parse_args()
+        data = parser.parse_args()
         current_user = UserModel.find_by_id(get_jwt_identity())
         template = current_user.templates.filter_by(id=id).first()
         if data['name'] is not None: template.name = data['name']
@@ -79,7 +63,7 @@ class Templates(Resource):
 
     @jwt_required
     def post(self):
-        data = templatesOnePostParser.parse_args()
+        data = parser.parse_args()
         print(data)
         current_user = UserModel.find_by_id(get_jwt_identity())
         try:
@@ -102,10 +86,6 @@ class Templates(Resource):
             return {
                 'message': str(e)
             }, 500
-
-
-    
-
     
 
 def serializableTemplate(template):
