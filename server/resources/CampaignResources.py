@@ -89,7 +89,10 @@ class GetCampaign(Resource):
                     'creation_date' : campaign.creation_date.strftime("%b %d"), 
                     'owner_name' : campaign.owner.getName(),
                    'prospects' : len(campaign.prospects),
-                    'steps' : [step.to_dict() for step in campaign.steps]
+                    'steps' : [
+                        step.to_dict(rules = ('-campaign',)) 
+                        for step in campaign.steps
+                    ]
                 }
         }
 

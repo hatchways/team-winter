@@ -38,17 +38,8 @@ const emptyCampaign = {
       replied: 23
     }
   ],
-  templates: [
-    {
-      id: 1,
-      name: 'First template'
-    },
-    {
-      id: 2,
-      name: 'Second template'
-    }
-  ]
 }
+
 
 const emptyStep = {
   templateId: ''
@@ -62,13 +53,13 @@ const Campaign = (props) => {
   const [editOpen, setEditOpen] = useState(false);
   const [editStep, setEditStep] = useState({});
   const [newOpen, setNewOpen] = useState(false);
-  const [newStep, setNewStep] = useState(emptyStep);
   const [confirmOpen, setConfirmOpen] = useState(false);
+  const [templateId, setTemplateId] = useState(0);
+  const [emailTemplates, setEmailTemplates] = useState([{}]);
 
   useEffect( () => {
-
     getCampaign();
-
+    getEmailTemplates();
   }, []);
 
   const findStepIndex = (step) => {
@@ -99,15 +90,9 @@ const Campaign = (props) => {
     const campaign = data.campaign;
     const stepsData = campaign.steps;
     const steps = [];
-    const templates = [];
     for(let stepData of stepsData) {
       const step = createStepObject(stepData);
-      const template = {
-        id : stepData.email_template.id,
-        name : stepData.email_template.name
-      }
       steps.push(step);
-      templates.push(template);
     }
 
     setCampaign(
@@ -118,8 +103,7 @@ const Campaign = (props) => {
         prospectsTotal : campaign.prospects,
         prospectsContacted : 20,
         prospectsReplied : 10,
-        steps : steps,
-        templates : templates
+        steps : steps
     })
   }
 
@@ -134,6 +118,37 @@ const Campaign = (props) => {
     .then(res => res.json())
       .then(data => {
         handleCampaign(data)
+      })
+    .catch(err => {
+      console.log(err.message);
+    });
+  }
+
+  const handleEmailTemplates = data => {
+    const emailTemplatesData = data.email_templates;
+    const emailTemplates = [];
+    for(let emailTemplate of emailTemplatesData) {
+      emailTemplates.push({
+        id : emailTemplate.id,
+        name : emailTemplate.name,
+        type : emailTemplate.type,
+        subject : emailTemplate.subject,
+        body : emailTemplate.body
+      })
+    }
+    setEmailTemplates(emailTemplates);
+  }
+
+  const getEmailTemplates = async () => {
+    await fetch('/email_templates', {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${getJWT()}`
+      }
+    })
+    .then(res => res.json())
+      .then(data => {
+        handleEmailTemplates(data)
       })
     .catch(err => {
       console.log(err.message);
@@ -155,14 +170,15 @@ const Campaign = (props) => {
      */
   }
 
-  const addNewStep = async (template) => {
+  const addNewStep = async () => {
     const id = campaign.id;
     const data = {
-      id : template.id
+      id : templateId
     }
-    await fetch(`'/campaign/${id}/steps'`, {
+    await fetch(`/campaign/${id}/steps`, {
       method: 'POST',
       headers: {
+        'Content-Type': 'application/json', 
         'Authorization': `Bearer ${getJWT()}`
       },
       body: JSON.stringify(data)
@@ -170,8 +186,10 @@ const Campaign = (props) => {
     .then(res => res.json())
       .then(data => createStepObject(data.step))
         .then(step => {
+          console.log(campaign.steps.length);
           campaign.steps.push(step);
           setCampaign(campaign);
+          console.log(campaign.steps.length);
         })
     .catch(err => {
       console.log(err.message);
@@ -244,9 +262,9 @@ const Campaign = (props) => {
     setNewOpen(false);
   }
 
-  const handleSetNewStep = (newStep) => {
-    setNewStep(newStep);
-  }
+  // const handleSetNewStep = (newStep) => {
+  //   setNewStep(newStep);
+  // }
 
   const handleDelete = () => {
     setConfirmOpen(true);
@@ -277,16 +295,18 @@ const Campaign = (props) => {
                     setStep={handleSetEditStep}
                     delete={true}
                     onDeleteClick={handleDelete}
-                    templates={campaign.templates} />
+                    templates={emailTemplates} />
         {/* New step dialog */}
         <StepDialog title="New Step"
                     open={newOpen}
                     onClose={handleNewClose}
                     onSave={handleNewSave}
-                    step={newStep}
+                    // step={newStep}
                     delete={false}
-                    setStep={handleSetNewStep}
-                    templates={campaign.templates} />
+                    // setStep={handleSetNewStep}
+                    setTemplateId={setTemplateId}
+                    
+                    templates={emailTemplates} />
         <Button onClick={handleNewOpen} className={classes.mt1b3} variant="outlined">Add Step</Button>
         <ConfirmationDialog open={confirmOpen}
                             onClose={confirmClose}

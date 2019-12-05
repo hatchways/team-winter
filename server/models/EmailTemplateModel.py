@@ -3,6 +3,7 @@ from app import db
 
 class EmailTemplateModel(db.Model, SerializerMixin):
     __tablename__ = 'email_templates'
+    # serialize_rules = ('-steps.email_template', '-steps.campaign')
 
     id = db.Column(db.Integer, primary_key = True)
     name = db.Column(db.String(120))
@@ -20,3 +21,7 @@ class EmailTemplateModel(db.Model, SerializerMixin):
     @classmethod
     def find_by_id(cls, id):
         return cls.query.get(id)
+
+    @classmethod
+    def get_all_templates(cls):
+        return cls.query.all()

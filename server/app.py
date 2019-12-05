@@ -22,7 +22,7 @@ jwt = JWTManager(app)
 
 
 from models import UserModel, ProspectModel, TagModel, CampaignModel, StepModel, EmailTemplateModel
-from resources import UserResources, GmailResources, CampaignResources, ProspectsResources
+from resources import UserResources, GmailResources, CampaignResources, ProspectsResources, TemplateResources
 
 
 
@@ -37,5 +37,6 @@ api.add_resource(ProspectsResources.UploadProspects, '/prospects/upload')
 api.add_resource(CampaignResources.GetCampaign, '/campaigns/<int:id>')
 api.add_resource(CampaignResources.CampaignProspects, '/campaign/<int:id>/prospects')
 api.add_resource(CampaignResources.CreateStepToCampaign, '/campaign/<int:id>/steps')
+api.add_resource(TemplateResources.EmailTemplates, '/email_templates')
 
 app.register_blueprint(home_handler)

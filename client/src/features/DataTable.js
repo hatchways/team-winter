@@ -141,7 +141,7 @@ const DataTable = ({props}) => {
                   <TableRow
                     hover
                     component={Link} to={url} style={{ textDecoration: 'none' }}
-                    onClick={event => handleClickOnRow === undefined ? null : handleClickOnRow(event, row.id)}
+                    onClick={event => handleClickOnRow ? handleClickOnRow(event, row.id) : null}
                     role="checkbox"
                     aria-checked={isItemSelected}
                     tabIndex={-1}
