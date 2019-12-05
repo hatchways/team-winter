@@ -20,19 +20,14 @@ const DialogContent = withStyles(theme => ({
 }))(MuiDialogContent);
 
 
-const CustomizedDialog = (
-  { handleCloseDialogAndSaveProspects, dialog, handleDialog, actionType ,dataList, setValue, currentValue }
-  ) => {
+const CustomizedDialog = ({ props }) => {
+  const { handleCloseDialogAndSaveProspects, dialog, handleDialog } = props
 
-  console.log('dialog', dataList)
   return (
     <div>
       <Dialog onClose={() => handleDialog(false)} aria-labelledby="customized-dialog-title" open={dialog}>
       <SelectFromList
-        actionType={actionType}
-        dataList={dataList}
-        setValue={setValue}
-        currentValue={currentValue}
+        props={props}
       >
       </SelectFromList>
         <DialogActions>
