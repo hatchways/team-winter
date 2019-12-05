@@ -18,6 +18,9 @@ class UserModel(db.Model):
     campaigns = db.relationship(
         'CampaignModel', backref='owner', lazy = 'select'
     )
+    email_templates = db.relationship(
+        'EmailTemplateModel', backref='owner', lazy = 'select'
+    )
 
     def save_to_db(self):
         db.session.add(self)

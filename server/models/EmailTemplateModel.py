@@ -10,6 +10,7 @@ class EmailTemplateModel(db.Model, SerializerMixin):
     type = db.Column(db.String(120))
     subject = db.Column(db.String(120))
     body = db.Column(db.VARCHAR(2000)) 
+    owner_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     steps = db.relationship(
         'StepModel', backref='email_template', lazy = 'select'
     )
@@ -25,3 +26,7 @@ class EmailTemplateModel(db.Model, SerializerMixin):
     @classmethod
     def get_all_templates(cls):
         return cls.query.all()
+
+    @classmethod
+    def get_templates_by_owner_id(cls, owner_id):
+        return cls.query.filter(EmailTemplateModel.owner_id == owner_id).all()

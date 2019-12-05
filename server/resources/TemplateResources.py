@@ -10,11 +10,11 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 class EmailTemplates(Resource):
     @jwt_required
     def get(self):
-        email_templates = EmailTemplateModel.get_all_templates()
+        email_templates = EmailTemplateModel.get_templates_by_owner_id(get_jwt_identity())
         try:
             return {
                 'email_templates': [
-                    template.to_dict(rules=('-steps.email_template', '-steps.campaign'))
+                    template.to_dict(rules=('-steps.email_template', '-steps.campaign', '-owner'))
                     for template in email_templates
                 ]
             }, 200
