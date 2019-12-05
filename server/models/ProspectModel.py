@@ -15,6 +15,7 @@ class ProspectModel(db.Model):
     name = db.Column(db.String(120))
     status = db.Column(db.String(120))
     owner_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    imported_from = db.Column(db.String(120))
     tags = db.relationship(
         'TagModel', secondary=prospects_tags, backref='prospects', lazy='select'
     )
@@ -32,7 +33,6 @@ class ProspectModel(db.Model):
     def find_by_id(cls, id):
         return cls.query.get(id)
 
-    @classmethod 
+    @classmethod
     def get_list_by_ids(cls, ids):
         return cls.query.filter(ProspectModel.id.in_(ids)).all()
-   

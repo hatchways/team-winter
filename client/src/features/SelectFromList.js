@@ -1,4 +1,5 @@
 import React from 'react';
+
 import clsx from 'clsx';
 import { makeStyles} from '@material-ui/core/styles';
 import Input from '@material-ui/core/Input';
@@ -9,7 +10,7 @@ import Select from '@material-ui/core/Select';
 const useStyles = makeStyles(theme => ({
   formControl: {
     margin: theme.spacing(1),
-    minWidth: 300,
+    minWidth: 200,
     maxWidth: 300,
   },
   noLabel: {
@@ -28,29 +29,32 @@ const MenuProps = {
   },
 };
 
-const SelectFromList = ({ props }) => {
+const SelectFromList = ({ dataList, actionType, setValue, currentValue }) => {
   const classes = useStyles();
-  const { listOfCampaigns, actionType, setCampaignId, campaignId } = props;
+
+  if (dataList === undefined) {
+    dataList = [];
+  }
 
   return (
     <div>
       <FormControl className={clsx(classes.formControl, classes.noLabel)}>
         <Select
           displayEmpty
-          value={campaignId}
-          onChange={e => setCampaignId(e.target.value)}
+          value={currentValue}
+          onChange={e => setValue(e.target.value)}
           input={<Input />}
           MenuProps={MenuProps}
           >
           <MenuItem disabled value="">
             {actionType}
           </MenuItem>
-            {listOfCampaigns.map(campaign => (
+            {dataList.map(item => (
             <MenuItem
-              key={campaign.name}
-              value={campaign.id}
+              key={item.name}
+              value={item.id}
               >
-              {campaign.name}
+              {item.name}
             </MenuItem>
           ))}
         </Select>
