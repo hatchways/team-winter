@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import ExpandPanel from './ExpandPanel';
 
-import { getJWT } from '../utils';
+import { getAllImportedFrom } from '../utils';
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -19,32 +19,11 @@ const SidePanel = ({ handleSearch }) => {
   const [importedFromList, handleImportedFrom] = useState([{}]);
   const [placeholderValue, handlePlaceHolder] = useState('')
 
-  console.log('sidepanel', importedFromList)
-  const actionType1 = 'Imported from';
-
-  const getAllImportedFrom = () => {
-    fetch(`/prospects`, {
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${getJWT()}`
-      }
-    })
-    .then(res => res.json())
-      .then(result => {
-        const importedFromObj = {};
-        let idx = 0;
-
-        result.Prospects.map((prospect) => {
-          if (!importedFromObj[prospect.imported_from]) {
-            importedFromObj[prospect.imported_from] = {'name': prospect.imported_from, 'id': idx};
-            idx ++;
-          } 
-        })
-        handleImportedFrom(Object.values(importedFromObj));
-      })
-    .catch(err => {
-      console.log(err.message);
-    });
+  
+  const actionType1 = ['Imported from', 'imported_from'];
+  
+  const getData = (action) => {
+    getAllImportedFrom(action).then((data) => handleImportedFrom(data));
   }
 
   const handleQueryTerm = (query) => {
@@ -60,7 +39,7 @@ const SidePanel = ({ handleSearch }) => {
         actionType={actionType1}
         importedFromList={importedFromList}
         handleSearch={handleSearch}
-        getAllImportedFrom={getAllImportedFrom}
+        getData={getData}
         placeholderValue={placeholderValue}
         handleQueryTerm={handleQueryTerm}
         >
