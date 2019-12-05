@@ -73,7 +73,7 @@ const useStyles = makeStyles((theme) => ({
 
 const Prospects = () => {
   const classes = useStyles();
-  const actionType = 'Add to Campaign'
+  const actionType = ['Add to Campaign']
 
   const [data, handleData] = useState([{}]);
   const [filteredData, handlefilteredData] = useState([{}]);

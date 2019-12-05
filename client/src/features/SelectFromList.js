@@ -44,11 +44,11 @@ const SelectFromList = ({ dataList, actionType, setValue, currentValue }) => {
           MenuProps={MenuProps}
           >
           <MenuItem disabled value="">
-            {actionType}
+            {actionType[0]}
           </MenuItem>
-            {dataList.map(item => (
+            {dataList.map((item, idx) => (
             <MenuItem
-              key={item.name}
+              key={idx}
               value={item.id}
               >
               {item.name}
