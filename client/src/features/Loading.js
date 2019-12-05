@@ -7,7 +7,7 @@ import {
 const useStyles = makeStyles( (theme) => ({
   
   progress: {
-    margin: '200px auto',
+    margin: '100px auto',
     display: 'block'
   }
 

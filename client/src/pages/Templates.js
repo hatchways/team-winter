@@ -13,6 +13,7 @@ import {
 import { apiRequest } from '../utils';
 import TemplateEditor from '../features/TemplateEditor';
 import Loading from '../features/Loading';
+import CustomizedButton from '../features/CustomizedButton';
 
 
 const useStyles = makeStyles( (theme) => ({
@@ -23,9 +24,56 @@ const useStyles = makeStyles( (theme) => ({
   template: {
     marginBottom: '20px',
     padding: '20px'
+  },
+  addTemplateButton: {
+    float: 'right'
+  },
+  header: {
+    marginBottom: '1rem'
   }
 
 }));
+
+const TemplatesHeader = (props) => {
+
+  const classes = useStyles();
+
+  return (
+    <Grid container
+          direction="row"
+          justify="space-between"
+          alignItems="center"
+          className={classes.header} >
+      <Grid item
+            xs={12}
+            sm={8} >
+        <Typography variant="h4">Templates</Typography>
+      </Grid>
+      <Grid item
+            xs={12}
+            sm={4} >
+        <CustomizedButton className={classes.addTemplateButton} onClick={props.clickNew}>New Template</CustomizedButton>
+      </Grid>
+    </Grid>
+  )
+
+}
+
+const NoTemplates = () => {
+
+  const classes = useStyles();
+
+  return (
+    <Paper className={classes.template}>
+      <Grid container>
+        <Grid item>
+          <Typography align="center">You don't have any templates yet. Click "New Template" to create one.</Typography>
+        </Grid>
+      </Grid>
+    </Paper>
+  )
+
+}
 
 const Template = (props) => {
 
@@ -67,6 +115,10 @@ const Templates = (props) => {
     .then( (json) => { 
       setTemplates(json.templates);
       setFetching(false);
+    })
+    .catch( (e) => {
+      setFetching(false);
+      console.log(e);
     });
   }
 
@@ -100,6 +152,11 @@ const Templates = (props) => {
     setDialogOpen(true);
   }
 
+  const handleNewTemplateClick = () => {
+    setEditorTemplate({});
+    setDialogOpen(true);
+  }
+
   const handleSave = (template) => {
     console.log(template);
     saveTemplate(template);
@@ -114,6 +171,7 @@ const Templates = (props) => {
       <Fragment>
         <NavBar />
         <Container className={classes.container}>
+        <TemplatesHeader clickNew={handleNewTemplateClick} />
           <Loading />
         </Container>
       </Fragment>
@@ -124,6 +182,10 @@ const Templates = (props) => {
     <Fragment>
       <NavBar />
       <Container className={classes.container}>
+        <TemplatesHeader clickNew={handleNewTemplateClick} />
+        {
+          templates.length === 0 ? <NoTemplates /> : null
+        }
         { 
           templates.map( (template) => {
             return(
@@ -134,7 +196,9 @@ const Templates = (props) => {
           })
         }
       </Container>
-      <Dialog open={dialogOpen}
+      <Dialog fullWidth
+              maxWidth="sm"
+              open={dialogOpen}
               onClose={handleDialogClose} >
         <DialogContent>
           <TemplateEditor template={editorTemplate}

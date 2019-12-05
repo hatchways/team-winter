@@ -15,6 +15,7 @@ const styles = (theme) => ({
   },
   saveButton: {
     marginTop: '20px',
+    marginBottom: '20px',
     float: 'right'
   }
 
@@ -25,10 +26,10 @@ class TemplateEditor extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      name: props.template.name,
-      type: props.template.type,
-      subject: props.template.subject,
-      body: props.template.body,
+      name: props.template.name === undefined ? '' : props.template.name,
+      type: props.template.type === undefined ? 'initial' : props.template.type,
+      subject: props.template.subject === undefined ? '' : props.template.subject,
+      body: props.template.body === undefined ? '' : props.template.body
     };
     this.handleNameChange = this.handleNameChange.bind(this);
     this.handleSubjectChange = this.handleSubjectChange.bind(this);
@@ -77,32 +78,32 @@ class TemplateEditor extends Component {
       <Fragment>
         {/* Template name */}
         <TextField id="template-name" 
-                   defaultValue={this.props.template.name}
-                   label="Name" 
-                   variant="outlined" 
-                   className={classes.inputField} 
-                   onChange={this.handleNameChange}
-                   fullWidth />
+                  defaultValue={this.props.template.name}
+                  label="Name" 
+                  variant="outlined" 
+                  className={classes.inputField} 
+                  onChange={this.handleNameChange}
+                  fullWidth />
         {/* Template type */}
         <TextField id="template-type"
-                   select fullWidth
-                   label="Type"
-                   className={classes.inputField}
-                   defaultValue={this.props.template.type}
-                   onChange={this.handleTypeChange}
-                   margin="normal"
-                   variant="outlined" >
+                  select fullWidth
+                  label="Type"
+                  className={classes.inputField}
+                  defaultValue={this.props.template.type}
+                  onChange={this.handleTypeChange}
+                  margin="normal"
+                  variant="outlined" >
           <MenuItem key={'initial'} value={'initial'}>Initial Contact</MenuItem>
           <MenuItem key={'reply'} value={'reply'}>Reply</MenuItem>
         </TextField>
         {/* Subject */}
         <TextField id="template-subject" 
-                   defaultValue={this.props.template.subject}
-                   label="Subject" 
-                   variant="outlined" 
-                   className={classes.inputField} 
-                   onChange={this.handleSubjectChange}
-                   fullWidth />
+                  defaultValue={this.props.template.subject}
+                  label="Subject" 
+                  variant="outlined" 
+                  className={classes.inputField} 
+                  onChange={this.handleSubjectChange}
+                  fullWidth />
         {/* Body */}
         <TextEditor content={this.state.body}
                     onChange={this.handleEditorChange}

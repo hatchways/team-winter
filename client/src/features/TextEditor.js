@@ -31,7 +31,7 @@ Object.assign(editorTheme, {
       root: {
         border: '1px solid rgba(0, 0, 0, 0.23)',
         borderRadius: '4px',
-        minHeight: '500px'
+        minHeight: '300px'
       },
       editor: {
         padding: '0 20px 20px 20px',
@@ -58,7 +58,6 @@ const TextEditor = (props) => {
     blocksFromHTML.contentBlocks,
     blocksFromHTML.entityMap
   );
-  console.log(initialContent.getBlockMap().size);
 
   const initialValue = initialContent.getBlockMap().size > 0 ?
                        JSON.stringify(convertToRaw(initialContent))
