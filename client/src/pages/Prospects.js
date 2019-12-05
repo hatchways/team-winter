@@ -225,14 +225,14 @@ const Prospects = () => {
   return (
     <Fragment>
       <NavBar />
-      <Grid container>
-        <Grid item xs={2} id='sidePanel'>
+      <Grid container id="container">
+        <Grid item xs={12} lg={2} id='sidePanel' className="halfContainer">
           <Box>
           <SidePanel handleSearch={handleSearch}> </SidePanel>
           </Box>
         </Grid>
-        <Grid item xs={10}>
-          <Box id='ContainerWrapper'  display="flex" flexDirection="row" justifyContent="center">
+        <Grid item xs={12} lg={10} className="halfContainer">
+          <Box id='ContainerWrapper' display="flex" flexDirection="row" justifyContent="center">
             <Box id="FeatureContainerAndDataTable" display="flex" flexDirection="column" width='100%'>
               <Box id="FeaturesContainer">
                   <Box
@@ -284,10 +284,7 @@ const Prospects = () => {
               <Box display="flex" justifyContent="center" id="DataTable" >
               <Box className={classes.tableContainer}>
                 <UserInputContainer className={classes.prospectList}>
-                  <DataTable
-                    props={propsForDataTable}
-                    >
-                  </DataTable>
+                  <DataTable props={propsForDataTable}></DataTable>
                 </UserInputContainer>
             </Box>
               </Box>

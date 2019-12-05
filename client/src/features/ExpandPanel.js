@@ -15,7 +15,7 @@ const useStyles = makeStyles(theme => ({
     width: '100%',
   },
   heading: {
-    fontWeight: theme.typography.fontWeightRegular,
+    fontWeight: 500,
     padding: 5,
   },
   select: {
@@ -23,6 +23,7 @@ const useStyles = makeStyles(theme => ({
   },
   checkbox: {
     padding: 5,
+    color: "#4FBE75"
   }
 }));
 

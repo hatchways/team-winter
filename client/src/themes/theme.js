@@ -61,6 +61,14 @@ export const theme = createMuiTheme({
         },
       },
     },
+    MuiInput: {
+      underline: {
+        borderBottom: 'none',
+        '&:after': {
+          borderBottom: 'none',
+        },
+      }
+    }
   }
 });
 

@@ -8,11 +8,9 @@ import { getJWT } from '../utils';
 
 const useStyles = makeStyles(() => ({
   root: {
-    width: "250px",
-    height: "880px",
   },
   test:{
-    height: 150,
+    height: 400,
   }
 }));
 
@@ -22,7 +20,7 @@ const SidePanel = ({ handleSearch }) => {
   const [placeholderValue, handlePlaceHolder] = useState('')
 
   console.log('sidepanel', importedFromList)
-  const actionType1 = 'Imported from : ';
+  const actionType1 = 'Imported from';
 
   const getAllImportedFrom = () => {
     fetch(`/prospects`, {
@@ -67,6 +65,7 @@ const SidePanel = ({ handleSearch }) => {
         handleQueryTerm={handleQueryTerm}
         >
       </ExpandPanel>
+      <div className={classes.test}></div>
     </Paper>
   );
 }
