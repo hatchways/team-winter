@@ -18,6 +18,9 @@ class UserModel(db.Model):
     campaigns = db.relationship(
         'CampaignModel', backref='owner', lazy = 'select'
     )
+    email_templates = db.relationship(
+        'EmailTemplateModel', backref='owner', lazy = 'select'
+    )
 
     def save_to_db(self):
         db.session.add(self)
@@ -38,3 +41,6 @@ class UserModel(db.Model):
     @staticmethod
     def verify_hash(password, hash):
         return sha256.verify(password, hash)
+
+    def getName(self):
+        return "{} {}".format(self.first_name, self.last_name)

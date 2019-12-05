@@ -45,8 +45,8 @@ const StepDialog = (props) => {
           <InputLabel id="template-select-label">Template</InputLabel>
           <Select labelId="template-select-label"
                   id="template-select"
-                  value={props.step.templateId}
-                  onChange={setTemplate} 
+                  value= {props.step ? props.step.templateId : null}
+                  onChange={e => props.step ? setTemplate(e) : props.setTemplateId(e.target.value)} 
                   className={classes.select} >
             {
             props.templates.map( (template) => {
