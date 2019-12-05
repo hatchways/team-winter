@@ -44,6 +44,7 @@ class OneTemplate(Resource):
     @jwt_required
     def post(self):
         data = templatesOnePostParser.parse_args()
+        print(data)
         current_user = UserModel.find_by_id(get_jwt_identity())
         try:
             template = EmailTemplateModel(

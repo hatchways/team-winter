@@ -13,6 +13,7 @@ import {
 import { apiRequest } from '../utils';
 import TemplateEditor from '../features/TemplateEditor';
 import Loading from '../features/Loading';
+import ErrorMessage from '../features/ErrorMessage';
 import CustomizedButton from '../features/CustomizedButton';
 
 
@@ -103,6 +104,7 @@ const Templates = (props) => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editorTemplate, setEditorTemplate] = useState(null);
   const [fetching, setFetching] = useState(true);
+  const [error, setError] = useState(false);
 
   useEffect( (props) => {
 
@@ -118,6 +120,7 @@ const Templates = (props) => {
     })
     .catch( (e) => {
       setFetching(false);
+      setError(true);
       console.log(e);
     });
   }
@@ -136,6 +139,7 @@ const Templates = (props) => {
     }
     else {
       // POST to create new
+      console.log(template);
       apiRequest('POST', '/templates', template)
       .then( (json) => {
         console.log(json);
@@ -158,7 +162,6 @@ const Templates = (props) => {
   }
 
   const handleSave = (template) => {
-    console.log(template);
     saveTemplate(template);
   }
 
@@ -171,8 +174,21 @@ const Templates = (props) => {
       <Fragment>
         <NavBar />
         <Container className={classes.container}>
-        <TemplatesHeader clickNew={handleNewTemplateClick} />
+          <TemplatesHeader clickNew={handleNewTemplateClick} />
           <Loading />
+        </Container>
+      </Fragment>
+    )
+  }
+
+  if(error) {
+    return (
+      <Fragment>
+        <NavBar />
+        <Container className={classes.container}>
+          <TemplatesHeader clickNew={handleNewTemplateClick} />
+          <ErrorMessage header="Something went wrong..."
+                         message="There was a problem retrieving your templates." />
         </Container>
       </Fragment>
     )
