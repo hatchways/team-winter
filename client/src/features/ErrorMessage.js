@@ -10,6 +10,9 @@ const useStyles = makeStyles( () => ({
     padding: '30px',
     maxWidth: '400px',
     margin: '0 auto'
+  },
+  heaader: {
+    marginBottom: '20px'
   }
 }));
 
@@ -19,7 +22,7 @@ const ErrorMessage = (props) => {
 
   return (
     <Paper className={classes.paper}>
-      <Typography align="center" variant="h3">
+      <Typography align="center" variant="h3" className={classes.header}>
         {props.header}
       </Typography>
       <Typography align="center" component="p">

@@ -168,7 +168,7 @@ const Templates = (props) => {
   }, []);
 
   const getTemplates = async () => {
-    apiRequest('GET', '/templates/all')
+    apiRequest('GET', '/templates')
     .then( (json) => { 
       const sorted = json.templates.sort( (a, b) => {
         const aDate = new Date(a.dateCreated),
@@ -189,7 +189,7 @@ const Templates = (props) => {
   const saveTemplate = (template) => {
     if(template.id) {
       // PUT to update
-      apiRequest('PUT', '/templates', template)
+      apiRequest('PUT', `/templates/${template.id}`, template)
       .then( (json) => {
         console.log(json);
         setDialogOpen(false);
@@ -237,7 +237,7 @@ const Templates = (props) => {
 
   const confirmDelete = () => {
     console.log(toDelete);
-    apiRequest('DELETE', 'http://localhost:5000/templates', toDelete)
+    apiRequest('DELETE', `/templates/${toDelete.id}`, toDelete)
     .then( (json) => {
       console.log(json);
       setConfirmationOpen(false);

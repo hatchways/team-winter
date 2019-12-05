@@ -23,7 +23,52 @@ templatesOnePutParser.add_argument('body', type=str, location='json')
 templatesOneDeleteParser = reqparse.RequestParser()
 templatesOneDeleteParser.add_argument('id', type=int, location='json', required=True)
 
-class AllTemplates(Resource):
+class TemplatesById(Resource):
+    @jwt_required
+    def delete(self, id):
+        data = templatesOneDeleteParser.parse_args()
+        current_user = UserModel.find_by_id(get_jwt_identity())
+        template = current_user.templates.filter_by(id=id).first()
+        if template is not None: 
+            template.delete()
+            return {
+                'message': f'Template {template.id} deleted'
+            }, 200
+        else:
+            return {
+                'message': 'Template not found'
+            }, 404
+
+    @jwt_required
+    def get(self, id):
+        data = templatesOneGetParser.parse_args()
+        current_user = UserModel.find_by_id(get_jwt_identity())
+        template = current_user.templates.filter_by(id=id).first()
+        return {
+            'template': serializableTemplate(template)
+        }, 200
+
+    @jwt_required
+    def put(self, id):
+        data = templatesOnePutParser.parse_args()
+        current_user = UserModel.find_by_id(get_jwt_identity())
+        template = current_user.templates.filter_by(id=id).first()
+        if data['name'] is not None: template.name = data['name']
+        if data['type'] is not None: template.type = data['type']
+        if data['subject'] is not None: template.subject = data['subject']
+        if data['body'] is not None: template.body = data['body']
+        try:
+            template.update()
+            return {
+                'template': serializableTemplate(template)
+            }, 200
+        except ValueError as e:
+            return {
+              'message': str(e)
+            }, 400
+
+
+class Templates(Resource):
     @jwt_required
     def get(self):
         current_user = UserModel.find_by_id(get_jwt_identity())
@@ -31,18 +76,6 @@ class AllTemplates(Resource):
         return {
             'templates': templates
         }, 200
-
-
-class OneTemplate(Resource):
-    @jwt_required
-    def get(self):
-        data = templatesOneGetParser.parse_args()
-        current_user = UserModel.find_by_id(get_jwt_identity())
-        template = current_user.templates.filter_by(id=data.id).first()
-        return {
-            'template': serializableTemplate(template)
-        }, 200
-        
 
     @jwt_required
     def post(self):
@@ -71,39 +104,9 @@ class OneTemplate(Resource):
             }, 500
 
 
-    @jwt_required
-    def put(self):
-        data = templatesOnePutParser.parse_args()
-        current_user = UserModel.find_by_id(get_jwt_identity())
-        template = current_user.templates.filter_by(id=data['id']).first()
-        if data['name'] is not None: template.name = data['name']
-        if data['type'] is not None: template.type = data['type']
-        if data['subject'] is not None: template.subject = data['subject']
-        if data['body'] is not None: template.body = data['body']
-        try:
-            template.update()
-            return {
-                'template': serializableTemplate(template)
-            }, 200
-        except ValueError as e:
-            return {
-              'message': str(e)
-            }, 400
+    
 
-    @jwt_required
-    def delete(self):
-        data = templatesOneDeleteParser.parse_args()
-        current_user = UserModel.find_by_id(get_jwt_identity())
-        template = current_user.templates.filter_by(id=data['id']).first()
-        if template is not None: 
-            template.delete()
-            return {
-                'message': f'Template {template.id} deleted'
-            }, 200
-        else:
-            return {
-                'message': 'Template not found'
-            }, 404
+    
 
 def serializableTemplate(template):
     ret = {
