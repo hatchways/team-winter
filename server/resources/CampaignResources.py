@@ -9,7 +9,8 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 
 reqParserGen = RequestParserGenerator()
 campaignProspectsParser = reqParserGen.getParser(["prospect_ids"])
-campaignStepsParser = reqParserGen.getParser("type", "subject", "body")
+# campaignStepsParser = reqParserGen.getParser("name", "type", "subject", "body")
+campaignStepsParser = reqParserGen.getParser("id")
 
 
 class CampaignProspects(Resource):
@@ -52,25 +53,52 @@ class CreateStepToCampaign(Resource):
     def post(self, id):
         data = campaignStepsParser.parse_args()
         campaign = CampaignModel.find_by_id(id)
+        template_id = data['id']
         if not campaign:
             return {'message': 'Campaign {} doesn\'t exist'.format(id)}, 400
-        new_email_template = EmailTemplateModel(
-            type = data["type"],
-            subject = data["subject"],
-            body = data["body"]
-        )
+        if campaign.owner_id != get_jwt_identity():
+            return {'message': 'You don\'t have permission to do that.'}, 403
+        # new_email_template = EmailTemplateModel(
+        #     name = data["name"],
+        #     type = data["type"],
+        #     subject = data["subject"],
+        #     body = data["body"]
+        # )
         new_step = StepModel(
             campaign_id = id,
-            email_template = new_email_template  
+            email_template_id = template_id 
         )
         try:
-            new_email_template.save_to_db()
-            new_step.save_to_db
+            new_step.save_to_db()
             return {
-                'message': 'Successfully created Step {} for Campaign {}'.format(new_step.id, campaign.name)
+                'step' : new_step.to_dict(rules = 
+                    ('-email_template.steps', '-email_template.owner', '-campaign'))
             }, 201
         except:
             return {'message': 'Something went wrong'}, 500
+
+class GetCampaign(Resource):
+    @jwt_required
+    def get(self, id):
+        campaign = CampaignModel.find_by_id(id)
+        if not campaign:
+            return {'message': 'Campaign {} doesn\'t exist'.format(id)}, 400
+        if campaign.owner_id != get_jwt_identity():
+            return {'message': 'You don\'t have permission to do that.'}, 403
+        return {
+            'campaign': {
+                    'id' : campaign.id, 
+                    'name' : campaign.name,
+                    'creation_date' : campaign.creation_date.strftime("%b %d"), 
+                    'owner_name' : campaign.owner.getName(),
+                   'prospects' : len(campaign.prospects),
+                    'steps' : [
+                        step.to_dict(rules = 
+                            ('-email_template.steps', '-email_template.owner', '-campaign')) 
+                        for step in campaign.steps
+                    ]
+                }
+        }
 
 
         
