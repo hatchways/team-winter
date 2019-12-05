@@ -55,7 +55,7 @@ class OneTemplate(Resource):
                 type=data['type'],
                 subject=data['subject'],
                 body=data['body'],
-                owner=current_user.id
+                owner_id=current_user.id
             )
             template.save_to_db()
             return {

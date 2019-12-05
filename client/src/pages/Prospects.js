@@ -89,38 +89,6 @@ const Prospects = () => {
     getAllProspects();
   }, [])
 
-  const getAllProspects = () => {
-    fetch(`/prospects`, {
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${getJWT()}`
-      }
-    })
-    .then(res => res.json())
-      .then(result => {
-        const listOfProspects = [];
-        const cloudIcon = <CloudIcon className="fas fa-cloud" style={{color: "grey"}} />
-
-        result.Prospects.map(prospect => {
-          const prospectObj = {
-            'id': prospect.id,
-            'check': 'check',
-            'Email': prospect.email,
-            cloudIcon,
-            'Status': 'working',
-            'Owner': prospect.name,
-            'Campaigns': prospect.campaigns,
-            'Last Contacted': prospect.lastContacted,
-            'Emails...': prospect.emails
-          }
-          return listOfProspects.push(prospectObj)
-        })
-        handleData(listOfProspects)
-      })
-    .catch(err => {
-      console.log(err.message);
-    });
-  }
 
   const gmailDialogShouldOpen = () => {
     const qs = queryString.parse(window.location.search);
@@ -160,6 +128,10 @@ const Prospects = () => {
     .catch(err => {
       console.log(err.message);
     });
+  }
+
+  const handleSearch = () => {
+    
   }
 
   const getAllCampaigns = () => {

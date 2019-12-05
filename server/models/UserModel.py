@@ -21,9 +21,6 @@ class UserModel(db.Model):
     templates = db.relationship(
         'EmailTemplateModel', backref='template_owner', lazy='dynamic'
     )
-    email_templates = db.relationship(
-        'EmailTemplateModel', backref='owner', lazy = 'select'
-    )
 
     def save_to_db(self):
         db.session.add(self)
