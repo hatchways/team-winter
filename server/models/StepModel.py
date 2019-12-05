@@ -3,7 +3,7 @@ from app import db
 
 class StepModel(db.Model, SerializerMixin):
     __tablename__ = 'steps'
-    serialize_rules = ('-email_template.steps', '-campaign')
+    # serialize_rules = ('-email_template.steps', '-campaign')
 
     id = db.Column(db.Integer, primary_key = True)
     campaign_id = db.Column(db.Integer, db.ForeignKey('campaigns.id'))

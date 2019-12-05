@@ -71,7 +71,7 @@ class CreateStepToCampaign(Resource):
         try:
             new_step.save_to_db()
             return {
-                'step' : new_step.to_dict()
+                'step' : new_step.to_dict(rules = ('-email_template.steps', '-campaign'))
             }, 201
         except:
             return {'message': 'Something went wrong'}, 500
@@ -90,7 +90,7 @@ class GetCampaign(Resource):
                     'owner_name' : campaign.owner.getName(),
                    'prospects' : len(campaign.prospects),
                     'steps' : [
-                        step.to_dict(rules = ('-campaign',)) 
+                        step.to_dict(rules = ('-email_template.steps', '-campaign')) 
                         for step in campaign.steps
                     ]
                 }

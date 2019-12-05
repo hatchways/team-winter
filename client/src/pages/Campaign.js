@@ -186,33 +186,13 @@ const Campaign = (props) => {
     .then(res => res.json())
       .then(data => createStepObject(data.step))
         .then(step => {
-          console.log(campaign.steps.length);
-          campaign.steps.push(step);
-          setCampaign(campaign);
-          console.log(campaign.steps.length);
+          const newCampaign = Object.assign({}, campaign);
+          newCampaign.steps.push(step);
+          setCampaign(newCampaign);
         })
     .catch(err => {
       console.log(err.message);
     });
-
-    // update UI
-    // fill in template name, sent, and replied
-    // step.templateName = findTemplate(step.templateId).name;
-    // step.sent = 0;
-    // step.replied = 0;
-    // // append step to campaign
-    // campaign.steps.push(step);
-    // setCampaign(campaign);
-
-    /** 
-     * TODO:
-     * update server
-     * create new step with campaign_id=campaign.id
-     * and template_id=step.templateId
-     * 
-     * add step id after request 
-     * (can't update without id, but can't know id until request)
-     */
   }
 
   const deleteStep = () => {
@@ -262,10 +242,6 @@ const Campaign = (props) => {
     setNewOpen(false);
   }
 
-  // const handleSetNewStep = (newStep) => {
-  //   setNewStep(newStep);
-  // }
-
   const handleDelete = () => {
     setConfirmOpen(true);
   }
@@ -273,6 +249,7 @@ const Campaign = (props) => {
   const confirmClose = () => {
     setConfirmOpen(false);
   }
+
 
   return (
     <Fragment>

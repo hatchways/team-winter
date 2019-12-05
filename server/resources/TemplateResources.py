@@ -14,7 +14,7 @@ class EmailTemplates(Resource):
         try:
             return {
                 'email_templates': [
-                    template.to_dict(rules=('-steps.email_template',))
+                    template.to_dict(rules=('-steps.email_template', '-steps.campaign'))
                     for template in email_templates
                 ]
             }, 200
