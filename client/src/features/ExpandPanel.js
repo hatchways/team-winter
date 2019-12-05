@@ -27,15 +27,27 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const ExpandPanel = ({ getAllImportedFrom, importedFromList, actionType, placeholderValue, handleQueryTerm}) => {
+const ExpandPanel = ({ getData, importedFromList, actionType, placeholderValue, handleQueryTerm}) => {
   const classes = useStyles();
   const [checked, handleCheck] = useState(false);
 
   const handleExpand = () => {
-    getAllImportedFrom()
+    getData(actionType[1])
     handleCheck(!checked)
   }
-
+  let selectFromList = null;
+  if (importedFromList.length > 0) {
+    selectFromList = (
+      <SelectFromList
+        className={classes.select}
+        dataList={importedFromList}
+        actionType={actionType}
+        setValue={handleQueryTerm}
+        currentValue={placeholderValue}
+        >
+      </SelectFromList>
+    )
+  }
   return (
     <div className={classes.root}>
       <ExpansionPanel>
@@ -44,16 +56,9 @@ const ExpandPanel = ({ getAllImportedFrom, importedFromList, actionType, placeho
           onClick={() => handleExpand()}
         >
         {checked ? <div><CheckBoxIcon className={classes.checkbox} /></div>  : <div><CheckBoxOutlineBlankIcon className={classes.checkbox} /></div>}
-          <Typography className={classes.heading}>{actionType}</Typography>
+          <Typography className={classes.heading}>{actionType[0]}</Typography>
         </ExpansionPanelSummary>
-        <SelectFromList
-          className={classes.select}
-          dataList={importedFromList}
-          actionType={actionType}
-          setValue={handleQueryTerm}
-          currentValue={placeholderValue}
-          >
-        </SelectFromList>
+       {selectFromList}
       </ExpansionPanel>
     </div>
   );
