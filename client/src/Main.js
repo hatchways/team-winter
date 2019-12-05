@@ -1,6 +1,6 @@
 import React from "react";
 import { MuiThemeProvider } from "@material-ui/core";
-import { BrowserRouter, Route, Redirect } from "react-router-dom";
+import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
 
 import { theme } from "./themes/theme";
 import Login from "./pages/Login";
@@ -18,17 +18,19 @@ const Main = () => {
   return (
     <MuiThemeProvider theme={theme}>
       <BrowserRouter>
-        <Route exact path="/">
-          <Redirect to="/login" />
-        </Route>
+      <Switch>
+      <Route exact path="/">
+        <Redirect to="/login" />
+      </Route>
         <Route path="/login" component={Login} />
         <Route path="/signup" component={SignUp} />
-        <Route path="/campaigns" component={Campaigns} >
-          <Route path="/campaigns/:id" component={Campaign} />
-        </Route>
+        <Route path="/campaigns/:id" component={Campaign} />
+        <Route path="/campaigns" component={Campaigns} />
+        <Route path="/campaigns/:id" component={Campaign} />
         <Route path="/prospects" component={Prospects} />
         <Route path="/templates" component={Templates} />
         <Route path="/reporting" component={Reporting} />
+      </Switch>
       </BrowserRouter>
     </MuiThemeProvider>
   );

@@ -1,3 +1,4 @@
+from sqlalchemy_serializer import SerializerMixin
 from app import db 
 import datetime
 from sqlalchemy.schema import (
@@ -7,16 +8,20 @@ from sqlalchemy.schema import (
 from sqlalchemy.orm import validates
 
 
-class EmailTemplateModel(db.Model):
+class EmailTemplateModel(db.Model, SerializerMixin):
     __tablename__ = 'email_templates'
+    # serialize_rules = ('-steps.email_template', '-steps.campaign')
 
     id = db.Column(db.Integer, primary_key = True)
     name = db.Column(db.String(120))
     type = db.Column(db.String(120))
     subject = db.Column(db.String(120))
     body = db.Column(db.VARCHAR(500)) 
-    owner = db.Column(db.Integer, db.ForeignKey('users.id'))
+    owner_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     date_created = db.Column(db.DateTime, default=datetime.datetime.utcnow)
+    steps = db.relationship(
+        'StepModel', backref='email_template', lazy = 'select'
+    )
 
     __table_args__ = (
         CheckConstraint('char_length(name) > 0', name='name_min_length'),
@@ -47,3 +52,14 @@ class EmailTemplateModel(db.Model):
         db.session.commit()
 
     
+    @classmethod
+    def find_by_id(cls, id):
+        return cls.query.get(id)
+
+    @classmethod
+    def get_all_templates(cls):
+        return cls.query.all()
+
+    @classmethod
+    def get_templates_by_owner_id(cls, owner_id):
+        return cls.query.filter(EmailTemplateModel.owner_id == owner_id).all()
