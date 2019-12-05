@@ -68,6 +68,11 @@ export const theme = createMuiTheme({
           borderBottom: 'none',
         },
       }
+    },
+    MuiDialogContent: {
+      root: {
+        padding: 0,
+      }
     }
   }
 });

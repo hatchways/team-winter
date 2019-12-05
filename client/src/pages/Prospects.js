@@ -15,7 +15,7 @@ import OutlinedButton from '../features/OutlinedButton';
 import NavBar from '../features/NavBar/MainBody';
 import UserInputContainer from '../features/UserInputContainer';
 import DataTable from '../features/DataTable';
-import CustomizedDialog from '../features/CustomizedDialog'
+import AddToCampaignDialog from '../features/AddToCampaignDialog'
 import GmailDialog from '../features/GmailDialog';
 import { getJWT } from '../utils';
 import SidePanel from '../features/SidePanel';
@@ -226,12 +226,12 @@ const Prospects = () => {
     <Fragment>
       <NavBar />
       <Grid container id="container">
-        <Grid item xs={12} lg={2} id='sidePanel' className="halfContainer">
+        <Grid item lg={2} id='sidePanel' className="halfContainer">
           <Box>
           <SidePanel handleSearch={handleSearch}> </SidePanel>
           </Box>
         </Grid>
-        <Grid item xs={12} lg={10} className="halfContainer">
+        <Grid item lg={10} className="halfContainer">
           <Box id='ContainerWrapper' display="flex" flexDirection="row" justifyContent="center">
             <Box id="FeatureContainerAndDataTable" display="flex" flexDirection="column" width='100%'>
               <Box id="FeaturesContainer">
@@ -251,7 +251,7 @@ const Prospects = () => {
                     </Box>
                   </Box>
                     {dialog === true &&
-                      <CustomizedDialog
+                      <AddToCampaignDialog
                       actionType={actionType}
                       dataList={listOfCampaigns}
                       setValue={setCampaignId}
