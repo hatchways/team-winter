@@ -76,6 +76,7 @@ const Prospects = () => {
   const actionType = 'Add to Campaign'
 
   const [data, handleData] = useState([{}]);
+  const [filteredData, handlefilteredData] = useState([{}]);
   const [dialog, handleDialog] = useState(null);
   const [listOfCampaigns, handleCampaigns] = useState(null);
   const [campaignId, setCampaignId] = useState('');
@@ -92,7 +93,7 @@ const Prospects = () => {
         return prospect;
       }
     })
-    handleData(filteredData);
+    handlefilteredData(filteredData);
   }
 
   const gmailDialogShouldOpen = () => {
@@ -208,8 +209,14 @@ const Prospects = () => {
     handleSelectedProspects(newSelected);
   };
 
+  let listOfProspects = data;
+
+  if (filteredData.length > 1) {
+    listOfProspects = filteredData
+  }
+
   const propsForDataTable = {
-    data,
+    data: listOfProspects,
     handleClickOnAllRows,
     handleClickOnRow,
     selectedProspects,
