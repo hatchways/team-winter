@@ -82,6 +82,14 @@ const Prospects = () => {
     getAllProspects();
   }, [])
 
+
+  const gmailDialogShouldOpen = () => {
+    const qs = queryString.parse(window.location.search);
+    if(qs['gmail_dialog']) return true;
+    return false;
+  }
+
+
   const getAllProspects = () => {
     fetch(`/prospects`, {
       method: 'GET',
@@ -104,7 +112,8 @@ const Prospects = () => {
             'Owner': prospect.name,
             'Campaigns': prospect.campaigns,
             'Last Contacted': prospect.lastContacted,
-            'Emails...': prospect.emails
+            'Emails...': prospect.emails,
+            'imported_from': prospect.imported_from
           }
           return listOfProspects.push(prospectObj)
         })
@@ -115,12 +124,10 @@ const Prospects = () => {
     });
   }
 
-  const gmailDialogShouldOpen = () => {
-    const qs = queryString.parse(window.location.search);
-    if(qs['gmail_dialog']) return true;
-    return false;
+  const handleSearch = () => {
+    
   }
-  
+
   const getAllCampaigns = () => {
     fetch(`/campaigns`, {
       method: 'GET',
