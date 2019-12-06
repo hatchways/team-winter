@@ -60,6 +60,12 @@ class Templates(Resource):
         return {
             'templates': templates
         }, 200
+      
+#       'email_templates': [
+#                     template.to_dict(rules=('-steps.email_template', '-steps.campaign', '-owner',
+#                                             '-steps.prospects'))
+#                     for template in email_templates
+#                 ]
 
     @jwt_required
     def post(self):
@@ -76,7 +82,9 @@ class Templates(Resource):
             )
             template.save_to_db()
             return {
-                'template': serializableTemplate(template)
+
+                'template':  template.to_dict(rules=('-steps.email_template', '-steps.campaign', '-owner',
+                                            '-steps.prospects'))
             }, 200
         except ValueError as e:
             return {

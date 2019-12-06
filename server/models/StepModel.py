@@ -1,5 +1,10 @@
-from sqlalchemy_serializer import SerializerMixin
 from app import db 
+from sqlalchemy_serializer import SerializerMixin
+
+steps_prospects = db.Table('steps_prospects',
+    db.Column('step_id', db.Integer, db.ForeignKey('steps.id')),
+    db.Column('prospect_id', db.Integer, db.ForeignKey('prospects.id'))
+)
 
 class StepModel(db.Model, SerializerMixin):
     __tablename__ = 'steps'
@@ -8,9 +13,16 @@ class StepModel(db.Model, SerializerMixin):
     id = db.Column(db.Integer, primary_key = True)
     campaign_id = db.Column(db.Integer, db.ForeignKey('campaigns.id'))
     email_template_id = db.Column(db.Integer, db.ForeignKey('email_templates.id'))
+    prospects = db.relationship(
+        'ProspectModel', secondary=steps_prospects, backref='steps', lazy='select'
+    )
 
     def save_to_db(self):
         db.session.add(self)
+        db.session.commit()
+
+    def add_prospects(self, prospects):
+        self.prospects.extend(prospects)
         db.session.commit()
 
     @classmethod
