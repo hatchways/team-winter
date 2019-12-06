@@ -13,6 +13,7 @@ import SelectFromList from './SelectFromList';
 const useStyles = makeStyles(theme => ({
   root: {
     width: '100%',
+    padding: "20px 0px",
   },
   heading: {
     fontWeight: 500,
@@ -27,7 +28,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const ExpandPanel = ({ getData, importedFromList, actionType, placeholderValue, handleQueryTerm}) => {
+const ExpandPanel = ({ getData, list, actionType, handleSearchTerm, placeholderValue}) => {
   const classes = useStyles();
   const [checked, handleCheck] = useState(false);
 
@@ -35,12 +36,19 @@ const ExpandPanel = ({ getData, importedFromList, actionType, placeholderValue, 
     getData(actionType[1])
     handleCheck(!checked)
   }
+
+  const handleQueryTerm = (query) => {
+    const queried = list.filter(each => (each.id === query))
+
+    handleSearchTerm({id: queried[0].id, name: queried[0].name})
+  }
+
   let selectFromList = null;
-  if (importedFromList.length > 0) {
+  if (list.length > 0) {
     selectFromList = (
       <SelectFromList
         className={classes.select}
-        dataList={importedFromList}
+        dataList={list}
         actionType={actionType}
         setValue={handleQueryTerm}
         currentValue={placeholderValue}
@@ -51,7 +59,6 @@ const ExpandPanel = ({ getData, importedFromList, actionType, placeholderValue, 
   return (
     <div className={classes.root}>
       <ExpansionPanel>
-        
         <ExpansionPanelSummary
           onClick={() => handleExpand()}
         >

@@ -17,6 +17,7 @@ import UserInputContainer from '../features/UserInputContainer';
 import DataTable from '../features/DataTable';
 import AddToCampaignDialog from '../features/AddToCampaignDialog'
 import GmailDialog from '../features/GmailDialog';
+import GmailAuthorizationHandler from '../features/GmailAuthorizationHandler';
 import { getJWT } from '../utils';
 import SidePanel from '../features/SidePanel';
 
@@ -76,29 +77,21 @@ const Prospects = () => {
   const actionType = ['Add to Campaign']
 
   const [data, handleData] = useState([{}]);
-  const [filteredData, handlefilteredData] = useState([{}]);
   const [dialog, handleDialog] = useState(null);
   const [listOfCampaigns, handleCampaigns] = useState(null);
   const [campaignId, setCampaignId] = useState('');
   const [selectedProspects, handleSelectedProspects] = useState([]);
+  const [importedFromTerm, handleSearchImportedFrom] = useState({id: '', name: ''});
+  const [statusTerm, handleSearchStatus] = useState({id: '', name: ''});
 
   useEffect(() => {
     getAllCampaigns();
     getAllProspects();
-  }, [])
-
-  const handleSearch = (query) => {
-    const filteredData = data.filter(prospect => {
-      if (prospect.imported_from === query) {
-        return prospect;
-      }
-    })
-    handlefilteredData(filteredData);
-  }
+  },[])
 
   const gmailDialogShouldOpen = () => {
     const qs = queryString.parse(window.location.search);
-    if(qs['gmail_dialog']) return true;
+    if(qs['gmail_dialog']) return true;;
     return false;
   }
 
@@ -120,12 +113,10 @@ const Prospects = () => {
             'check': 'check',
             'Email': prospect.email,
             cloudIcon,
-            'Status': 'working',
+            'Status': prospect.status,
             'Owner': prospect.name,
             'Campaigns': prospect.campaigns,
-            'Last Contacted': prospect.lastContacted,
-            'Emails...': prospect.emails,
-            'imported_from': prospect.imported_from
+            'Imported_from': prospect.imported_from
           }
           return listOfProspects.push(prospectObj)
         })
@@ -209,14 +200,22 @@ const Prospects = () => {
     handleSelectedProspects(newSelected);
   };
 
-  let listOfProspects = data;
-
-  if (filteredData.length > 1) {
-    listOfProspects = filteredData
-  }
+  // Filter inported_from's option
+  const filteredImportedFrom = importedFromTerm.name === ''
+  ? data 
+  : data.filter(data => {
+    return data['Imported_from'] === importedFromTerm.name;
+  })
+ 
+  // Filter status's option
+  const filteredStatus = statusTerm.name === ''
+  ? filteredImportedFrom
+  : filteredImportedFrom.filter(data => {
+    return data['Status'] === statusTerm.name;
+  })
 
   const propsForDataTable = {
-    data: listOfProspects,
+    data: filteredStatus,
     handleClickOnAllRows,
     handleClickOnRow,
     selectedProspects,
@@ -228,7 +227,12 @@ const Prospects = () => {
       <Grid container id="container">
         <Grid item lg={2} id='sidePanel' className="halfContainer">
           <Box>
-          <SidePanel handleSearch={handleSearch}> </SidePanel>
+          <SidePanel
+          importedFromTerm={importedFromTerm}
+          handleSearchImportedFrom={handleSearchImportedFrom}
+          statusTerm={statusTerm}
+          handleSearchStatus={handleSearchStatus}
+          > </SidePanel>
           </Box>
         </Grid>
         <Grid item lg={10} className="halfContainer">
@@ -292,7 +296,8 @@ const Prospects = () => {
           </Box>
         </Grid>
       </Grid>
-      <GmailDialog open={gmailDialogShouldOpen()} />
+      <GmailDialog open={gmailDialogShouldOpen()} /> 
+      <GmailAuthorizationHandler/>
     </Fragment>
   )
 }

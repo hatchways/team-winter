@@ -10,38 +10,42 @@ const useStyles = makeStyles(() => ({
   root: {
   },
   test:{
-    height: 400,
+    height: 320,
   }
 }));
 
-const SidePanel = ({ handleSearch }) => {
+const SidePanel = ({ importedFromTerm,  handleSearchImportedFrom, statusTerm, handleSearchStatus}) => {
   const classes = useStyles();
-  const [importedFromList, handleImportedFrom] = useState([{}]);
-  const [placeholderValue, handlePlaceHolder] = useState('')
+  const [importedFromList, handleImportedFromList] = useState([{}]);
+  const [statusList, handleStatusList] = useState([{}]);
 
+  const actionType = [['Imported from', 'imported_from'], ['Status', 'status']];
   
-  const actionType1 = ['Imported from', 'imported_from'];
-  
-  const getData = (action) => {
-    getAllImportedFrom(action).then((data) => handleImportedFrom(data));
+  const getImportedFromData = (action) => {
+    getAllImportedFrom(action).then((data) => handleImportedFromList(data));
   }
 
-  const handleQueryTerm = (query) => {
-    const queried = importedFromList.filter(each => (each.id === query))
-    handleSearch(queried[0].name)
-    handlePlaceHolder(queried[0].id)
+  const getStatusData = (action) => {
+    getAllImportedFrom(action).then((data) => handleStatusList(data));
   }
 
   return (
     <Paper className={classes.root}>
     <div className={classes.test}></div>
-      <ExpandPanel
-        actionType={actionType1}
-        importedFromList={importedFromList}
-        handleSearch={handleSearch}
-        getData={getData}
-        placeholderValue={placeholderValue}
-        handleQueryTerm={handleQueryTerm}
+        <ExpandPanel
+          actionType={actionType[0]}
+          list={importedFromList}
+          handleSearchTerm={handleSearchImportedFrom}
+          getData={getImportedFromData}
+          placeholderValue={importedFromTerm.id}
+          >
+        </ExpandPanel>
+        <ExpandPanel
+        actionType={actionType[1]}
+        list={statusList}
+        handleSearchTerm={handleSearchStatus}
+        getData={getStatusData}
+        placeholderValue={statusTerm.id}
         >
       </ExpandPanel>
       <div className={classes.test}></div>
