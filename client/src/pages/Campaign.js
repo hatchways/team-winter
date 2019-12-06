@@ -77,12 +77,23 @@ const Campaign = (props) => {
   }
 
   const createStepObject = stepData => {
+    const prospects = [];
+    for (let prospect of stepData.prospects) {
+      prospects.push(
+        {
+          id : prospect.id,
+        email : prospect.email,
+        owner : prospect.name,
+        status : prospect.status,  
+      })
+    } 
     return {
       id : stepData.id,
       templateId : stepData.email_template.id,
       templateName : stepData.email_template.name,
       sent : 100,
-      replied : 25
+      replied : 25,
+      prospects : prospects
     }
   }
 
@@ -250,22 +261,36 @@ const Campaign = (props) => {
     setConfirmOpen(false);
   }
 
+  const mergeStepProspects = (prevStep, currStep) => {
+    const prevProspects = prevStep.prospects;
+    const currProspects = currStep.prospects;
+    const combineProspects = [...prevProspects, ...currProspects];
+    const uniqueProspects = combineProspects.fitler(
+      (prospect, idx) => uniqueProspects.indexOf(prospect) === idx);
+    currStep.prospects = uniqueProspects;
+  }
+
   const handleImportProspects = (event, currStep, idx) => {
     const prevStep = campaign.steps[idx-1];
     const data = {
-      'prevStep' : prevStep,
-      'currStep' : currStep
+      'prev_step_id' : prevStep.id,
+      'curr_step_id' : currStep.id
     }
-    console.log(prevStep);
-    console.log(currStep);
-    // fetch(`/steps/prospects`, {
-    //   method: 'POST',
-    //   headers: {
-    //     'Content-Type': 'application/json', 
-    //     'Authorization': `Bearer ${getJWT()}`
-    //   },
-    //   body: JSON.stringify(data)
-    // })
+    try{
+      const response = fetch(`/steps/prospects`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json', 
+          'Authorization': `Bearer ${getJWT()}`
+        },
+        body: JSON.stringify(data)
+      })
+      if(response.ok) {
+        mergeStepProspects(prevStep, currStep);
+      } 
+    } catch(error) {
+        console.error('Error:', error);
+    }
 
     event.stopPropagation();
   }

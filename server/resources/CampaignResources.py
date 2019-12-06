@@ -93,7 +93,7 @@ class GetCampaign(Resource):
                         for step in campaign.steps
                     ]
                 }
-        }
+        }, 200 
 
 
         

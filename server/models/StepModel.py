@@ -21,6 +21,10 @@ class StepModel(db.Model, SerializerMixin):
         db.session.add(self)
         db.session.commit()
 
+    def add_prospects(self, prospects):
+        self.prospects.extend(prospects)
+        db.session.commit()
+
     @classmethod
     def find_by_id(cls, id):
         return cls.query.get(id)
