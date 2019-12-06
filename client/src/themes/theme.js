@@ -73,7 +73,15 @@ export const theme = createMuiTheme({
       root: {
         padding: 0,
       }
-    }
+    },
+    MuiOutlinedInput: {
+      root: {
+        '&$focused $notchedOutline': {
+          borderColor: '#4FBE75',
+          borderWidth: 1,
+        },
+      }
+    },
   }
 });
 

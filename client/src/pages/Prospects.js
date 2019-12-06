@@ -83,6 +83,7 @@ const Prospects = () => {
   const [selectedProspects, handleSelectedProspects] = useState([]);
   const [importedFromTerm, handleSearchImportedFrom] = useState({id: '', name: ''});
   const [statusTerm, handleSearchStatus] = useState({id: '', name: ''});
+  const [emailTerm, handleSearchEmail] = useState('');
 
   useEffect(() => {
     getAllCampaigns();
@@ -214,8 +215,16 @@ const Prospects = () => {
     return data['Status'] === statusTerm.name;
   })
 
+   // Filter email's option
+  const filteredEmail = emailTerm === ''
+  ? filteredStatus
+  : filteredStatus.filter(data => {
+    const queryEmail = emailTerm.toLowerCase();
+    return data['Email'].includes(queryEmail);
+  })
+
   const propsForDataTable = {
-    data: filteredStatus,
+    data: filteredEmail,
     handleClickOnAllRows,
     handleClickOnRow,
     selectedProspects,
@@ -232,6 +241,8 @@ const Prospects = () => {
           handleSearchImportedFrom={handleSearchImportedFrom}
           statusTerm={statusTerm}
           handleSearchStatus={handleSearchStatus}
+          emailTerm={emailTerm}
+          handleSearchEmail={handleSearchEmail}
           > </SidePanel>
           </Box>
         </Grid>

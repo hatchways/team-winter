@@ -6,6 +6,7 @@ import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import Typography from '@material-ui/core/Typography';
 import CheckBoxIcon from '@material-ui/icons/CheckBox';
 import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
+import TextField from '@material-ui/core/TextField';
 
 import SelectFromList from './SelectFromList';
 
@@ -25,16 +26,24 @@ const useStyles = makeStyles(theme => ({
   checkbox: {
     padding: 5,
     color: "#4FBE75"
-  }
+  },
+  textField: {
+    marginTop: theme.spacing(1),
+    marginLeft: theme.spacing(1),
+    marginRight: theme.spacing(1),
+    width: 200,
+  },
 }));
 
-const ExpandPanel = ({ getData, list, actionType, handleSearchTerm, placeholderValue}) => {
+const ExpandPanel = ({ getData, list, actionType, handleSearchTerm, placeholderValue, emailTerm, handleSearchEmail}) => {
   const classes = useStyles();
   const [checked, handleCheck] = useState(false);
 
   const handleExpand = () => {
-    getData(actionType[1])
     handleCheck(!checked)
+    if (getData) {
+      getData(actionType[1])
+    }
   }
 
   const handleQueryTerm = (query) => {
@@ -42,9 +51,22 @@ const ExpandPanel = ({ getData, list, actionType, handleSearchTerm, placeholderV
 
     handleSearchTerm({id: queried[0].id, name: queried[0].name})
   }
-
   let selectFromList = null;
-  if (list.length > 0) {
+
+  if (actionType[0] === 'Email') {
+    selectFromList = (<TextField
+    className={classes.textField}
+    margin="normal"
+    variant="outlined"
+    text="text"
+    placeholder="Search by email"
+    value={emailTerm}
+    onChange={e => handleSearchEmail(e.target.value)}
+    color='red'
+  />)
+  }
+
+  if (list) {
     selectFromList = (
       <SelectFromList
         className={classes.select}
@@ -56,6 +78,7 @@ const ExpandPanel = ({ getData, list, actionType, handleSearchTerm, placeholderV
       </SelectFromList>
     )
   }
+
   return (
     <div className={classes.root}>
       <ExpansionPanel>

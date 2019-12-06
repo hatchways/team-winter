@@ -14,12 +14,12 @@ const useStyles = makeStyles(() => ({
   }
 }));
 
-const SidePanel = ({ importedFromTerm,  handleSearchImportedFrom, statusTerm, handleSearchStatus}) => {
+const SidePanel = ({ importedFromTerm,  handleSearchImportedFrom, statusTerm, handleSearchStatus, emailTerm, handleSearchEmail}) => {
   const classes = useStyles();
   const [importedFromList, handleImportedFromList] = useState([{}]);
   const [statusList, handleStatusList] = useState([{}]);
 
-  const actionType = [['Imported from', 'imported_from'], ['Status', 'status']];
+  const actionType = [['Imported from', 'imported_from'], ['Status', 'status'], ['Email', 'email']];
   
   const getImportedFromData = (action) => {
     getAllImportedFrom(action).then((data) => handleImportedFromList(data));
@@ -41,13 +41,21 @@ const SidePanel = ({ importedFromTerm,  handleSearchImportedFrom, statusTerm, ha
           >
         </ExpandPanel>
         <ExpandPanel
-        actionType={actionType[1]}
-        list={statusList}
-        handleSearchTerm={handleSearchStatus}
-        getData={getStatusData}
-        placeholderValue={statusTerm.id}
-        >
-      </ExpandPanel>
+          actionType={actionType[1]}
+          list={statusList}
+          handleSearchTerm={handleSearchStatus}
+          getData={getStatusData}
+          placeholderValue={statusTerm.id}
+          >
+        </ExpandPanel>
+        <ExpandPanel
+          actionType={actionType[2]}
+          handleEmailTerm={handleSearchEmail}
+          placeholderValue={statusTerm.id}
+          emailTerm={emailTerm}
+          handleSearchEmail={handleSearchEmail}
+          >
+        </ExpandPanel>
       <div className={classes.test}></div>
     </Paper>
   );
