@@ -177,7 +177,11 @@ const StepsDisplay = (props) => {
                                 value={step.replied} />
             </Grid>
             <Grid item sm={1}>
-              <ButtonBox step={step} idx={idx} handleOnClick={props.handleOnClick}/>
+              <ButtonBox 
+                step={step} idx={idx} 
+                handleProspectsClick={props.handleProspectsClick}
+                handleExecuteClick={props.handleExecuteClick}
+              />
             </Grid>
           </Grid>
         </Paper>
@@ -207,11 +211,13 @@ const ButtonBox = (props) => {
       <Tooltip title="Import previous step prospects" placement="top-start">
         <Button 
         className={classes.actionButton}
-        onClick={event => props.handleOnClick(event, props.step, props.idx)}
+        onClick={event => props.handleProspectsClick(event, props.step, props.idx)}
         >Prospects</Button> 
       </Tooltip> : null}
       <Tooltip title="Execute the step" placement="bottom-start">
-        <Button className={classes.actionButton} >Execute</Button>
+        <Button className={classes.actionButton} 
+        onClick={event => props.handleExecuteClick(event)}
+        >Execute</Button>
       </Tooltip>
     </Box>
   )
@@ -235,7 +241,8 @@ const CampaignSummary = (props) => {
         {/* Steps */}
         <StepsDisplay steps={props.steps}
                       openEditStepDialog={props.openEditStepDialog} 
-                      handleOnClick={props.handleOnClick}/>
+                      handleProspectsClick={props.handleProspectsClick}
+                      handleExecuteClick={props.handleExecuteClick}/>
       </Grid>
     </Fragment>
   )

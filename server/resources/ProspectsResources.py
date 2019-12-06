@@ -33,5 +33,11 @@ class InheritPreviousStepProspects(Resource):
     if not prev_step or not curr_step:
       return {'message' : 'step not found'}, 400
     try:
-      curr_step.add_prospects(prev_step.campaigns) 
-      return {'success' : True}, 200
+      curr_step.add_prospects(prev_step.prospects) 
+      return {
+        'curr_step' : curr_step.to_dict(rules = 
+                            ('-email_template.steps', '-email_template.owner', '-prospects.campaigns',
+                            '-prospects.tags', '-prospects.steps', '-prospects.owner', '-campaign'))
+      }, 200
+    except:
+      return {'message': 'Something went wrong'}, 500

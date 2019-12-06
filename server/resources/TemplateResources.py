@@ -5,8 +5,6 @@ from models.ProspectModel import ProspectModel
 from models.EmailTemplateModel import EmailTemplateModel
 from utils.RequestParserGenerator import RequestParserGenerator
 from flask_jwt_extended import jwt_required, get_jwt_identity
-# ('-email_template.steps', '-email_template.owner', '-prospects.campaigns',
-#                     '-prospects.tags', '-prospects.steps', '-campaign'))
 
 class EmailTemplates(Resource):
     @jwt_required
