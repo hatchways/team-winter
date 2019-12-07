@@ -15,7 +15,7 @@ import OutlinedButton from '../features/OutlinedButton';
 import NavBar from '../features/NavBar/MainBody';
 import UserInputContainer from '../features/UserInputContainer';
 import DataTable from '../features/DataTable';
-import AddToCampaignDialog from '../features/AddToCampaignDialog'
+import AddToCampaignDialog from '../features/AddToCampaignDialog';
 import GmailDialog from '../features/GmailDialog';
 import GmailAuthorizationHandler from '../features/GmailAuthorizationHandler';
 import { getJWT } from '../utils';
@@ -92,7 +92,7 @@ const Prospects = () => {
 
   const gmailDialogShouldOpen = () => {
     const qs = queryString.parse(window.location.search);
-    if(qs['gmail_dialog']) return true;;
+    if(qs['gmail_dialog']) return true;
     return false;
   }
 
@@ -119,9 +119,9 @@ const Prospects = () => {
             'Campaigns': prospect.campaigns,
             'Imported_from': prospect.imported_from
           }
-          return listOfProspects.push(prospectObj)
-        })
-        handleData(listOfProspects)
+          return listOfProspects.push(prospectObj);
+        });
+        handleData(listOfProspects);
       })
     .catch(err => {
       console.log(err.message);
@@ -137,7 +137,7 @@ const Prospects = () => {
     })
     .then(res => res.json())
       .then(data => {
-        handleCampaigns(data.Campaigns)
+        handleCampaigns(data.Campaigns);
     })
     .catch(err => {
       console.log(err.message);
@@ -145,8 +145,8 @@ const Prospects = () => {
   }
 
   const handleCloseDialogAndSaveProspects = () => {
-    handleDialog(false)
-    saveProspectsToCampaign()
+    handleDialog(false);
+    saveProspectsToCampaign();
   } 
 
   const saveProspectsToCampaign = () => {
@@ -204,12 +204,12 @@ const Prospects = () => {
   // Filter inported_from's option
   const filteredImportedFrom = importedFromTerm.name === ''
   ? data 
-  : data.filter(data => data['Imported_from'] === importedFromTerm.name)
+  : data.filter(data => data['Imported_from'] === importedFromTerm.name);
  
   // Filter status's option
   const filteredStatus = statusTerm.name === ''
   ? filteredImportedFrom
-  : filteredImportedFrom.filter(data => data['Status'] === statusTerm.name)
+  : filteredImportedFrom.filter(data => data['Status'] === statusTerm.name);
 
    // Filter email's option
   const filteredEmail = emailTerm === ''
