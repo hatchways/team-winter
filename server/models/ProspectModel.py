@@ -1,13 +1,12 @@
 from app import db 
-
-from . import TagModel
+from sqlalchemy_serializer import SerializerMixin
 
 prospects_tags = db.Table('prospects_tags',
     db.Column('prospect_id', db.Integer, db.ForeignKey('prospects.id')),
     db.Column('tag_id', db.Integer, db.ForeignKey('tags.id'))
 )
 
-class ProspectModel(db.Model):
+class ProspectModel(db.Model, SerializerMixin):
     __tablename__ = 'prospects'
 
     id = db.Column(db.Integer, primary_key = True)
@@ -33,7 +32,6 @@ class ProspectModel(db.Model):
     def find_by_id(cls, id):
         return cls.query.get(id)
 
-    @classmethod 
+    @classmethod
     def get_list_by_ids(cls, ids):
         return cls.query.filter(ProspectModel.id.in_(ids)).all()
-   

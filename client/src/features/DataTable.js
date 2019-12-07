@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react';
-
 import Box from '@material-ui/core/Box';
+import { Link } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -40,6 +40,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
+
 const HeaderRow = ({props}) => {
   const { handleClickOnAllRows, numSelected, data } = props
   let header = null;
@@ -49,7 +50,6 @@ const HeaderRow = ({props}) => {
     header = Object.keys(data[0]);
     rowCount = Object.keys(data).length;
   }
-
   return (
     <TableHead>
       <TableRow>
@@ -69,7 +69,7 @@ const HeaderRow = ({props}) => {
                 >
                 <CloudIcon className="fas fa-cloud" style={{color: "grey"}} />
               </TableCell>
-            } else if (headCell === 'id' || headCell === "last_imported") {
+            } else if (headCell === 'id' || headCell === 'link') {
               return null;
             } else {
               return <TableCell
@@ -87,7 +87,6 @@ const HeaderRow = ({props}) => {
 
 const DataTable = ({props}) => {
   const classes = useStyles();
-
   let { data, handleClickOnAllRows, handleClickOnRow, selectedProspects} = props;
   selectedProspects = selectedProspects || [];
   const isSelected = id => selectedProspects.indexOf(id) !== -1;
@@ -137,10 +136,12 @@ const DataTable = ({props}) => {
                 {data.map((row, idx) => {
                   const isItemSelected = isSelected(row.id);
                   const labelId = `table-checkbox-${idx}`;
+                  const url = row.link ? row.link : "#";
                   return (
                   <TableRow
                     hover
-                    onClick={event => handleClickOnRow(event, row.id)}
+                    component={Link} to={url} style={{ textDecoration: 'none' }}
+                    onClick={event => handleClickOnRow ? handleClickOnRow(event, row.id) : null}
                     role="checkbox"
                     aria-checked={isItemSelected}
                     tabIndex={-1}
@@ -157,7 +158,7 @@ const DataTable = ({props}) => {
                       </TableCell>
                       } else if (eachCell[0] === "Email") {
                         return <TableCell key={idx} component="th" id={labelId} scope="row" p={1}> {eachCell[1]}</TableCell>
-                      } else if (eachCell[0] === "id" || eachCell[0] === "last_imported") {
+                      } else if (eachCell[0] === "id" || eachCell[0] === 'link') {
                         return null;
                       } else {
                         return <TableCell key={idx} id={labelId} align="center">{eachCell[1]}</TableCell>
@@ -177,7 +178,6 @@ const DataTable = ({props}) => {
     <Fragment>
       {renderData}
     </Fragment>
-  )
+  );
 }
-
 export default DataTable;

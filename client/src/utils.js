@@ -56,8 +56,8 @@ class APIError extends Error {
    * Create an APIError
    * @param {number} statusCode - Status code returned by the API
    */
-  constructor(statusCode) {
-    super(`Error during API request. Received ${statusCode} status code.`);
+  constructor(statusCode, message) {
+    super(`Error during API request. Received ${statusCode} status code. Message: ${message}`);
   }
 }
 
