@@ -30,6 +30,9 @@ export const theme = createMuiTheme({
     MuiPaper: {
       elevation1: {
         boxShadow: 0,
+      },
+      elevation4: {
+        boxShadow: "0px 0px 0px 0px rgba(0,0,0,0.2), 0px 0px 0px 0px rgba(0,0,0,0.14), 0px 0px 2px 0px rgba(0,0,0,0.12)",
       }
     },
     MuiTabs: {
@@ -40,6 +43,43 @@ export const theme = createMuiTheme({
     MuiAvatar: {
       root: {
         padding: 10,
+      }
+    },
+    MuiExpansionPanelSummary: {
+      root: {
+        padding: "0px 15px",
+        '&$expanded': {
+          margin: 0,
+          minHeight: 10,
+        },
+      },
+      content: {
+        margin: 0,
+        '&$expanded': {
+          margin: 0,
+          minHeight: 10,
+        },
+      },
+    },
+    MuiInput: {
+      underline: {
+        borderBottom: 'none',
+        '&:after': {
+          borderBottom: 'none',
+        },
+      }
+    },
+    MuiDialogContent: {
+      root: {
+        padding: 0,
+      }
+    },
+    MuiOutlinedInput: {
+      root: {
+        '&$focused $notchedOutline': {
+          borderColor: '#4FBE75',
+          borderWidth: 1,
+        },
       }
     },
   }

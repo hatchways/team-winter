@@ -15,6 +15,7 @@ class ProspectModel(db.Model):
     name = db.Column(db.String(120))
     status = db.Column(db.String(120))
     owner_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    imported_from = db.Column(db.String(120))
     tags = db.relationship(
         'TagModel', secondary=prospects_tags, backref='prospects', lazy='select'
     )

@@ -27,11 +27,15 @@ const useStyles = makeStyles((theme) => ({
     margin: "30px 0px 0px 8px",
     overflow: 1,
   },
-  LogOutText: {
+  navTabs: {
     color: "black",
     textDecoration: "none",
     width: 90,
     padding: 15,
+  },
+  text: {
+    textDecoration: "none",
+    color: "black",
   }
 }));
 
@@ -108,10 +112,10 @@ const CustomizedTabs = () => {
     <Fragment>
     <div>
       <ItemTabs value={value} onChange={handleChange}>
-        <Link className={classes.LogOutText} to="/campaigns"> <ItemTab className={classes.littletabs} label="Campaigns" /> </Link>
-        <Link className={classes.LogOutText} to="/prospects"> <ItemTab label="Prospects" /> </Link>
-        <Link className={classes.LogOutText} to="/templates"> <ItemTab label="Templates" /> </Link>
-        <Link className={classes.LogOutText} to="/reporting"> <ItemTab label="Reporting" /> </Link>
+        <Link className={classes.navTabs} to="/campaigns"> <ItemTab className={classes.littletabs} label="Campaigns" /> </Link>
+        <Link className={classes.navTabs} to="/prospects"> <ItemTab label="Prospects" /> </Link>
+        <Link className={classes.navTabs} to="/templates"> <ItemTab label="Templates" /> </Link>
+        <Link className={classes.navTabs} to="/reporting"> <ItemTab label="Reporting" /> </Link>
       </ItemTabs>
     </div>
     <Avatar src="https://ph-files.imgix.net/84451835-127d-469b-87f0-049c838b69a3?auto=format" />
@@ -129,7 +133,7 @@ const CustomizedTabs = () => {
       onClose={handleClose}
     >
       <MenuItem onClick={handleClose}>Profile</MenuItem>
-      <MenuItem onClick={handleLogOut}><Link className={classes.LogOutText} to="/login">Logout</Link></MenuItem>
+      <MenuItem onClick={handleLogOut}><Link  className={classes.text} to="/login">Logout</Link></MenuItem>
     </Menu>
     </Fragment>
   );
