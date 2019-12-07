@@ -8,6 +8,36 @@ const validatePassword = password => {
   return password.length >= 6;
 }
 
+const getAllImportedFrom = (type) => {
+  let results = [];
+  return fetch(`/prospects`, {
+    method: 'GET',
+    headers: {
+      'Authorization': `Bearer ${getJWT()}`
+    }
+  })
+  .then(res => res.json())
+  .then(result => {
+    const queryObj = {};
+    let idx = 0;
+
+    result.Prospects.map((prospect) => {
+
+      if (!queryObj[prospect[type]]) { 
+        queryObj[prospect[type]] = {'name': prospect[type], 'id': idx};
+        idx ++;
+      } 
+    })
+    results = results.concat(Object.values(queryObj));
+  })
+  .then(() => {
+    return results;
+  })
+  .catch(err => {
+    console.log(err.message);
+  });
+}
+
 /**
  * Get the mailsender JWT from localstorage
  * @returns {string} - The JWT
@@ -61,5 +91,6 @@ const apiRequest = async (method, path, data=null) => {
 export {
   validatePassword,
   getJWT,
-  apiRequest
+  apiRequest,
+  getAllImportedFrom,
 }

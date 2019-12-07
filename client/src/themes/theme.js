@@ -42,6 +42,43 @@ export const theme = createMuiTheme({
         padding: 10,
       }
     },
+    MuiExpansionPanelSummary: {
+      root: {
+        padding: "0px 15px",
+        '&$expanded': {
+          margin: 0,
+          minHeight: 10,
+        },
+      },
+      content: {
+        margin: 0,
+        '&$expanded': {
+          margin: 0,
+          minHeight: 10,
+        },
+      },
+    },
+    MuiInput: {
+      underline: {
+        borderBottom: 'none',
+        '&:after': {
+          borderBottom: 'none',
+        },
+      }
+    },
+    MuiDialogContent: {
+      root: {
+        padding: 0,
+      }
+    },
+    MuiOutlinedInput: {
+      root: {
+        '&$focused $notchedOutline': {
+          borderColor: '#4FBE75',
+          borderWidth: 1,
+        },
+      }
+    },
   }
 });
 

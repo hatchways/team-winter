@@ -47,7 +47,7 @@ const Register = () => {
   const [signUp, handleSignUp] = useState(false);
 
   if (signUp) {
-    return <Redirect to="/prospects" />
+    return <Redirect to="/prospects?gmail_dialog=open" />
   }
 
   const handleSubmit = (e) => {
