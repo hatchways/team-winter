@@ -73,16 +73,18 @@ const apiRequest = async (method, path, data=null) => {
   const response = await fetch(path, {
     method: method,
     headers: {
+      'Content-Type': 'application/json',
       'Authorization': `Bearer ${getJWT()}`
     },
-    body: data
+    body: data === null ? null : JSON.stringify(data)
   });
   if(response.status > 199 && response.status < 300) {
     const responseJSON = await response.json();
     return responseJSON;
   }
   else {
-    throw new APIError(response.status);
+    const responseJSON = await response.json();
+    throw new APIError(response.status, JSON.stringify(responseJSON.message));
   }
 }
 
