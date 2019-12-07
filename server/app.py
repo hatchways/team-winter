@@ -34,7 +34,8 @@ from resources import (
     GmailResources, 
     CampaignResources, 
     ProspectsResources,
-    TemplateResources
+    TemplateResources,
+    StepResources
 )
 
 
@@ -53,5 +54,6 @@ api.add_resource(ProspectsResources.InheritPreviousStepProspects, '/steps/prospe
 api.add_resource(CampaignResources.GetCampaign, '/campaigns/<int:id>')
 api.add_resource(CampaignResources.CampaignProspects, '/campaign/<int:id>/prospects')
 api.add_resource(CampaignResources.CreateStepToCampaign, '/campaign/<int:id>/steps')
+api.add_resource(StepResources.ExecuteStep, '/gmail/send')
 
 app.register_blueprint(home_handler)

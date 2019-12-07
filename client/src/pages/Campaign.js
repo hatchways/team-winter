@@ -10,7 +10,7 @@ import CampaignSummary from '../features/Campaign/CampaignSummary';
 import StepDialog from '../features/Campaign/StepDialog';
 import ConfirmationDialog from '../features/ConfirmationDialog';
 import SuccessSnackbar from '../features/SuccessSnackbar';
-import { getJWT } from '../utils';
+import { apiRequest, getJWT } from '../utils';
 
 const useStyles = makeStyles( () => ({
   container: {
@@ -306,12 +306,14 @@ const Campaign = (props) => {
     event.stopPropagation();
   }
 
-  const handleExecuteStep = (event) => {
-    /**
-     * TODO: 
-     * Handle executing the step api
-     * probably send request to send email.
-     */
+  const handleExecuteStep = (event, step) => {
+    apiRequest('POST', '/gmail/send', {'step_id': step.id})
+    .then((json) => {
+      
+    })
+    .catch( (e) => {
+      console.log(e);
+    });
     event.stopPropagation();
   }
 
