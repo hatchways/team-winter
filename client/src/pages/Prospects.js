@@ -204,16 +204,12 @@ const Prospects = () => {
   // Filter inported_from's option
   const filteredImportedFrom = importedFromTerm.name === ''
   ? data 
-  : data.filter(data => {
-    return data['Imported_from'] === importedFromTerm.name;
-  })
+  : data.filter(data => data['Imported_from'] === importedFromTerm.name)
  
   // Filter status's option
   const filteredStatus = statusTerm.name === ''
   ? filteredImportedFrom
-  : filteredImportedFrom.filter(data => {
-    return data['Status'] === statusTerm.name;
-  })
+  : filteredImportedFrom.filter(data => data['Status'] === statusTerm.name)
 
    // Filter email's option
   const filteredEmail = emailTerm === ''
