@@ -31,7 +31,7 @@ Object.assign(editorTheme, {
       root: {
         border: '1px solid rgba(0, 0, 0, 0.23)',
         borderRadius: '4px',
-        minHeight: '500px'
+        minHeight: '300px'
       },
       editor: {
         padding: '0 20px 20px 20px',
@@ -58,7 +58,10 @@ const TextEditor = (props) => {
     blocksFromHTML.contentBlocks,
     blocksFromHTML.entityMap
   );
-  const initialValue = JSON.stringify(convertToRaw(initialContent));
+
+  const initialValue = initialContent.getBlockMap().size > 0 ?
+                       JSON.stringify(convertToRaw(initialContent))
+                     : JSON.stringify(convertToRaw(EditorState.createEmpty().getCurrentContent()));
 
   const insertText = (text, editorState) => {
     const currentContent = editorState.getCurrentContent();
@@ -89,8 +92,8 @@ const TextEditor = (props) => {
     });
   }
 
-  const variableControls = props.templateVariables ? makeVariableControls(props.templateVariables) : null;
-  const variableCustomControls = props.templateVariables ? makeVariableCustomControls(props.templateVariables) : null;
+  const variableControls = props.templateVariables ? makeVariableControls(props.templateVariables) : [];
+  const variableCustomControls = props.templateVariables ? makeVariableCustomControls(props.templateVariables) : [];
 
   const handleChange = (newState) => {
     props.onChange(stateToHTML(newState.getCurrentContent()));
