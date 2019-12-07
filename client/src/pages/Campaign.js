@@ -50,7 +50,7 @@ const Campaign = (props) => {
 
   const classes = useStyles();
 
-  const [campaign, setCampaign] = useState({});
+  const [campaign, setCampaign] = useState(emptyCampaign);
   const [editOpen, setEditOpen] = useState(false);
   const [editStep, setEditStep] = useState({});
   const [newOpen, setNewOpen] = useState(false);
