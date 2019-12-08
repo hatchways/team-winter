@@ -19,6 +19,7 @@ import UserInputContainer from '../features/UserInputContainer';
 import DataTable from '../features/DataTable';
 import CustomizedDialog from '../features/CustomizedDialog'
 import GmailDialog from '../features/GmailDialog';
+import GmailAuthorizationHandler from '../features/GmailAuthorizationHandler';
 import { getJWT } from '../utils';
 import SidePanel from '../features/SidePanel';
 
@@ -92,6 +93,7 @@ const Prospects = () => {
 
   const gmailDialogShouldOpen = () => {
     const qs = queryString.parse(window.location.search);
+    console.log(qs);
     if(qs['gmail_dialog']) return true;
     return false;
   }
@@ -293,7 +295,8 @@ const Prospects = () => {
           </Box>
         </Grid>
       </Grid>
-      <GmailDialog open={gmailDialogShouldOpen()} />
+      <GmailDialog open={gmailDialogShouldOpen} />
+      <GmailAuthorizationHandler />
     </Fragment>
   )
 }

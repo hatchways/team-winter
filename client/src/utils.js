@@ -28,6 +28,7 @@ class APIError extends Error {
    */
   constructor(statusCode, message) {
     super(`Error during API request. Received ${statusCode} status code. Message: ${message}`);
+    this.statusCode = statusCode;
   }
 }
 

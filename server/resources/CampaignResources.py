@@ -87,21 +87,16 @@ class GetCampaign(Resource):
             return {'message': 'You don\'t have permission to do that.'}, 403
         return {
             'campaign': {
-                    'id' : campaign.id, 
-                    'name' : campaign.name,
-                    'creation_date' : campaign.creation_date.strftime("%b %d"), 
-                    'owner_name' : campaign.owner.getName(),
-                   'prospects' : len(campaign.prospects),
-                    'steps' : [
-                        step.to_dict(rules = 
-                            ('-email_template.steps', '-email_template.owner', '-campaign')) 
-                        for step in campaign.steps
-                    ]
-                }
+                'id' : campaign.id, 
+                'name' : campaign.name,
+                'creation_date' : campaign.creation_date.strftime("%b %d"), 
+                'owner_name' : campaign.owner.getName(),
+                'prospects' : len(campaign.prospects),
+                'steps' : [
+                    step.to_dict(rules = 
+                    ('-email_template.steps', '-email_template.owner', '-campaign')) 
+                    for step in campaign.steps
+                ]
+            }
         }
-
-
-        
-
-
 

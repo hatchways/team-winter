@@ -12,6 +12,7 @@ from models.UserModel import UserModel
 
 authorize_parser = reqparse.RequestParser()
 authorize_parser.add_argument('code', location='json', required=True)
+authorize_parser.add_argument('state', location='json', required=True)
 
 CLIENTSECRETS_LOCATION = 'instance/client_secrets.json'
 REDIRECT_URI = 'http://localhost:3000/prospects'

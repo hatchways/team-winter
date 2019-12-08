@@ -10,6 +10,7 @@ import Campaign from './pages/Campaign';
 import Prospects from './pages/Prospects';
 import Templates from './pages/Templates';
 import Reporting from './pages/Reporting';
+import GmailDialog from './features/GmailDialog';
 
 import "./Main.css";
 
@@ -27,6 +28,14 @@ const Main = () => {
         <Route path="/campaigns/:id" component={Campaign} />
         <Route path="/campaigns" component={Campaigns} />
         <Route path="/campaigns/:id" component={Campaign} />
+        <Route path="/prospects/gmail" 
+          render={ props => 
+            <div>
+              <Prospects />
+              <GmailDialog open={true} />
+            </div>
+          }
+        />
         <Route path="/prospects" component={Prospects} />
         <Route path="/templates" component={Templates} />
         <Route path="/reporting" component={Reporting} />

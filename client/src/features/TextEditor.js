@@ -31,7 +31,7 @@ Object.assign(editorTheme, {
       root: {
         border: '1px solid rgba(0, 0, 0, 0.23)',
         borderRadius: '4px',
-        minHeight: '300px'
+        minHeight: '200px'
       },
       editor: {
         padding: '0 20px 20px 20px',

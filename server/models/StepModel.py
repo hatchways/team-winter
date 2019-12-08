@@ -7,7 +7,7 @@ class StepModel(db.Model, SerializerMixin):
 
     id = db.Column(db.Integer, primary_key = True)
     campaign_id = db.Column(db.Integer, db.ForeignKey('campaigns.id'))
-    email_template_id = db.Column(db.Integer, db.ForeignKey('email_templates.id'))
+    email_template_id = db.Column(db.Integer, db.ForeignKey('email_templates.id'), nullable=False)
 
     def save_to_db(self):
         db.session.add(self)

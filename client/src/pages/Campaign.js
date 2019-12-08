@@ -9,7 +9,7 @@ import NavBar from '../features/NavBar/MainBody';
 import CampaignSummary from '../features/Campaign/CampaignSummary';
 import StepDialog from '../features/Campaign/StepDialog';
 import ConfirmationDialog from '../features/ConfirmationDialog';
-import { getJWT } from '../utils';
+import { getJWT, apiRequest } from '../utils';
 
 const useStyles = makeStyles( () => ({
   container: {
@@ -21,23 +21,15 @@ const useStyles = makeStyles( () => ({
   }
 }));
 
-// sample campaign, data to be removed
+
 const emptyCampaign = {
-  id: 1,
-  title: 'My First Campaign',
-  userName: 'John Doe',
-  prospectsTotal: 234,
-  prospectsContacted: 123,
-  prospectsReplied: 34,
-  steps: [
-    {
-      id: 1,
-      templateId: 1,
-      templateName: 'First template',
-      sent: 123,
-      replied: 23
-    }
-  ],
+  id: -1,
+  title: null,
+  userName: null,
+  prospectsTotal: null,
+  prospectsContacted: null,
+  prospectsReplied: null,
+  steps: [],
 }
 
 
@@ -49,7 +41,7 @@ const Campaign = (props) => {
 
   const classes = useStyles();
 
-  const [campaign, setCampaign] = useState({});
+  const [campaign, setCampaign] = useState(emptyCampaign);
   const [editOpen, setEditOpen] = useState(false);
   const [editStep, setEditStep] = useState({});
   const [newOpen, setNewOpen] = useState(false);
@@ -70,7 +62,7 @@ const Campaign = (props) => {
   }
 
   const findTemplate = (id) => {
-    for(let template of campaign.templates) {
+    for(let template of emailTemplates) {
       if(template.id === id) return template;
     }
     return {};
@@ -107,28 +99,21 @@ const Campaign = (props) => {
     })
   }
 
-  const getCampaign = async () => {
+  const getCampaign = () => {
     const id = props.match.params.id;
-    await fetch(`/campaigns/${id}`, {
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${getJWT()}`
-      }
+    apiRequest('GET', `/campaigns/${id}`)
+    .then( json => {
+      handleCampaign(json);
     })
-    .then(res => res.json())
-      .then(data => {
-        handleCampaign(data)
-      })
-    .catch(err => {
-      console.log(err.message);
+    .catch( e => {
+      console.log(e);
     });
   }
 
-  const handleEmailTemplates = data => {
-    const emailTemplatesData = data.email_templates;
-    const emailTemplates = [];
-    for(let emailTemplate of emailTemplatesData) {
-      emailTemplates.push({
+  const handleEmailTemplates = templates => {
+    const newEmailTemplates = [];
+    for(let emailTemplate of templates) {
+      newEmailTemplates.push({
         id : emailTemplate.id,
         name : emailTemplate.name,
         type : emailTemplate.type,
@@ -136,22 +121,16 @@ const Campaign = (props) => {
         body : emailTemplate.body
       })
     }
-    setEmailTemplates(emailTemplates);
+    setEmailTemplates(newEmailTemplates);
   }
 
   const getEmailTemplates = async () => {
-    await fetch('/email_templates', {
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${getJWT()}`
-      }
+    apiRequest('GET', '/templates')
+    .then( json => {
+      handleEmailTemplates(json['templates']);
     })
-    .then(res => res.json())
-      .then(data => {
-        handleEmailTemplates(data)
-      })
-    .catch(err => {
-      console.log(err.message);
+    .catch( e => {
+      console.log(e.message);
     });
   }
 
@@ -210,9 +189,17 @@ const Campaign = (props) => {
      * delete step with id=editStep.id
      */
   }
+
+  const handleNewTemplate = (template) => {
+    const newEmailTemplates = [...emailTemplates];
+    newEmailTemplates.push(template);
+    setEmailTemplates(newEmailTemplates);
+  }
+
 //---------------Edit Step-----------------------//
   const handleEditOpen = (idx) => {
     setEditStep(campaign.steps[idx]);
+    console.log(campaign.steps[idx]);
     setEditOpen(true);
   }
 
@@ -272,7 +259,8 @@ const Campaign = (props) => {
                     setStep={handleSetEditStep}
                     delete={true}
                     onDeleteClick={handleDelete}
-                    templates={emailTemplates} />
+                    templates={emailTemplates}
+                    onNewTemplate={handleNewTemplate} />
         {/* New step dialog */}
         <StepDialog title="New Step"
                     open={newOpen}
@@ -282,8 +270,8 @@ const Campaign = (props) => {
                     delete={false}
                     // setStep={handleSetNewStep}
                     setTemplateId={setTemplateId}
-                    
-                    templates={emailTemplates} />
+                    templates={emailTemplates}
+                    onNewTemplate={handleNewTemplate} />
         <Button onClick={handleNewOpen} className={classes.mt1b3} variant="outlined">Add Step</Button>
         <ConfirmationDialog open={confirmOpen}
                             onClose={confirmClose}

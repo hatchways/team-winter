@@ -13,7 +13,6 @@ import MailIcon from '@material-ui/icons/Mail';
 import CustomizedButton from '../CustomizedButton';
 
 
-
 const useStyles = makeStyles( () => ({
   mt1: {
     marginTop: '1rem'
