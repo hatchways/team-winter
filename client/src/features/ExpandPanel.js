@@ -62,7 +62,6 @@ const ExpandPanel = ({ getData, list, actionType, handleSearchTerm, placeholderV
     placeholder="Search by email"
     value={emailTerm}
     onChange={e => handleSearchEmail(e.target.value)}
-    color='red'
   />)
   }
 
