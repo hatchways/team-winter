@@ -1,72 +1,62 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import ExpandPanel from './ExpandPanel';
 
-import { getJWT } from '../utils';
+import { getAllImportedFrom } from '../utils';
 
 const useStyles = makeStyles(() => ({
   root: {
-    width: "250px",
-    height: "880px",
   },
   test:{
-    height: 150,
+    height: 320,
   }
 }));
 
-const SidePanel = ({ handleSearch }) => {
+const SidePanel = ({ importedFromTerm,  handleSearchImportedFrom, statusTerm, handleSearchStatus, emailTerm, handleSearchEmail}) => {
   const classes = useStyles();
-  const [importedFromList, handleImportedFrom] = useState([{}]);
-  const [placeholderValue, handlePlaceHolder] = useState('')
+  const [importedFromList, handleImportedFromList] = useState([{}]);
+  const [statusList, handleStatusList] = useState([{}]);
 
-  console.log('sidepanel', importedFromList)
-  const actionType1 = 'Imported from : ';
-
-  const getAllImportedFrom = () => {
-    fetch(`/prospects`, {
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${getJWT()}`
-      }
-    })
-    .then(res => res.json())
-      .then(result => {
-        const importedFromObj = {};
-        let idx = 0;
-
-        result.Prospects.map((prospect) => {
-          if (!importedFromObj[prospect.imported_from]) {
-            importedFromObj[prospect.imported_from] = {'name': prospect.imported_from, 'id': idx};
-            idx ++;
-          } 
-        })
-        handleImportedFrom(Object.values(importedFromObj));
-      })
-    .catch(err => {
-      console.log(err.message);
-    });
+  const actionType = [['Imported from', 'imported_from'], ['Status', 'status'], ['Email', 'email']];
+  
+  const getImportedFromData = (action) => {
+    getAllImportedFrom(action).then((data) => handleImportedFromList(data));
   }
 
-  const handleQueryTerm = (query) => {
-    const queried = importedFromList.filter(each => (each.id === query))
-    handleSearch(queried[0].name)
-    handlePlaceHolder(queried[0].id)
+  const getStatusData = (action) => {
+    getAllImportedFrom(action).then((data) => handleStatusList(data));
   }
 
   return (
     <Paper className={classes.root}>
     <div className={classes.test}></div>
-      <ExpandPanel
-        actionType={actionType1}
-        importedFromList={importedFromList}
-        handleSearch={handleSearch}
-        getAllImportedFrom={getAllImportedFrom}
-        placeholderValue={placeholderValue}
-        handleQueryTerm={handleQueryTerm}
-        >
-      </ExpandPanel>
+        <ExpandPanel
+          actionType={actionType[0]}
+          list={importedFromList}
+          handleSearchTerm={handleSearchImportedFrom}
+          getData={getImportedFromData}
+          placeholderValue={importedFromTerm.id}
+          >
+        </ExpandPanel>
+        <ExpandPanel
+          actionType={actionType[1]}
+          list={statusList}
+          handleSearchTerm={handleSearchStatus}
+          getData={getStatusData}
+          placeholderValue={statusTerm.id}
+          >
+        </ExpandPanel>
+        <ExpandPanel
+          actionType={actionType[2]}
+          handleEmailTerm={handleSearchEmail}
+          placeholderValue={statusTerm.id}
+          emailTerm={emailTerm}
+          handleSearchEmail={handleSearchEmail}
+          >
+        </ExpandPanel>
+      <div className={classes.test}></div>
     </Paper>
   );
 }

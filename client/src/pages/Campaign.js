@@ -4,12 +4,12 @@ import {
   Container,
   Button
  } from '@material-ui/core';
-
 import NavBar from '../features/NavBar/MainBody';
 import CampaignSummary from '../features/Campaign/CampaignSummary';
 import StepDialog from '../features/Campaign/StepDialog';
 import ConfirmationDialog from '../features/ConfirmationDialog';
 import { getJWT, apiRequest } from '../utils';
+import SuccessSnackbar from '../features/SuccessSnackbar';
 
 const useStyles = makeStyles( () => ({
   container: {
@@ -48,6 +48,7 @@ const Campaign = (props) => {
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [templateId, setTemplateId] = useState(0);
   const [emailTemplates, setEmailTemplates] = useState([{}]);
+  const [success, setSuccess] = useState(false);
 
   useEffect( () => {
     getCampaign();
@@ -69,12 +70,23 @@ const Campaign = (props) => {
   }
 
   const createStepObject = stepData => {
+    const prospects = [];
+    for (let prospect of stepData.prospects) {
+      prospects.push(
+        {
+          id : prospect.id,
+        email : prospect.email,
+        owner : prospect.name,
+        status : prospect.status,  
+      })
+    } 
     return {
       id : stepData.id,
       templateId : stepData.email_template.id,
       templateName : stepData.email_template.name,
       sent : 100,
-      replied : 25
+      replied : 25,
+      prospects : prospects
     }
   }
 
@@ -97,6 +109,7 @@ const Campaign = (props) => {
         prospectsReplied : 10,
         steps : steps
     })
+    console.log(steps);
   }
 
   const getCampaign = () => {
@@ -237,6 +250,56 @@ const Campaign = (props) => {
     setConfirmOpen(false);
   }
 
+  const handleSuccessClose = () => {
+    setSuccess(false);
+  }
+
+  const mergeStepProspects = (prevStep, currStep) => {
+    const prevProspects = prevStep.prospects;
+    const currProspects = currStep.prospects;
+    const combineProspects = [...prevProspects, ...currProspects];
+    const uniqueProspects = combineProspects.filter(
+      (prospect, idx) => combineProspects.indexOf(prospect) === idx);
+    currStep.prospects = uniqueProspects;
+    console.log(currStep);
+  }
+
+  const handleImportProspects = (event, currStep, idx) => {
+    console.log(currStep);
+    const prevStep = campaign.steps[idx-1];
+    const data = {
+      'prev_step_id' : prevStep.id,
+      'curr_step_id' : currStep.id
+    }
+    fetch(`/steps/prospects`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json', 
+        'Authorization': `Bearer ${getJWT()}`
+      },
+      body: JSON.stringify(data)
+    })
+    .then(res => {
+      if(res.ok) {
+        mergeStepProspects(prevStep, currStep);
+        setSuccess(true);
+      }
+    })
+    .catch(err => {
+      console.log(err.message);
+    });
+
+    event.stopPropagation();
+  }
+
+  const handleExecuteStep = (event) => {
+    /**
+     * TODO: 
+     * Handle executing the step api
+     * probably send request to send email.
+     */
+    event.stopPropagation();
+  }
 
   return (
     <Fragment>
@@ -249,6 +312,8 @@ const Campaign = (props) => {
                          contacted={campaign.prospectsContacted}
                          replied={campaign.prospectsReplied}
                          steps={campaign.steps}
+                         handleProspectsClick={handleImportProspects}
+                         handleExecuteClick={handleExecuteStep}
                          openEditStepDialog={handleEditOpen} />
         {/* Edit dialog */}
         <StepDialog title="Edit Step"
@@ -273,6 +338,7 @@ const Campaign = (props) => {
                     templates={emailTemplates}
                     onNewTemplate={handleNewTemplate} />
         <Button onClick={handleNewOpen} className={classes.mt1b3} variant="outlined">Add Step</Button>
+        <SuccessSnackbar open={success} onClose={handleSuccessClose}/>
         <ConfirmationDialog open={confirmOpen}
                             onClose={confirmClose}
                             onConfirm={deleteStep} />

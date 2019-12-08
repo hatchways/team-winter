@@ -69,7 +69,7 @@ const HeaderRow = ({props}) => {
                 >
                 <CloudIcon className="fas fa-cloud" style={{color: "grey"}} />
               </TableCell>
-            } else if (headCell === 'id' || headCell === 'link'|| headCell === "last_imported") {
+            } else if (headCell === 'id' || headCell === 'link') {
               return null;
             } else {
               return <TableCell
@@ -109,7 +109,7 @@ const DataTable = ({props}) => {
         src="https://assets.materialup.com/uploads/77a5d214-0a8a-4444-a523-db0c4e97b9c0/preview.jpg"
         >
       </img>
-    </Box>
+    </Box> 
   )
 
   if (data === undefined) {
@@ -147,7 +147,7 @@ const DataTable = ({props}) => {
                     tabIndex={-1}
                     key={idx}
                     selected={isItemSelected}
-                    >
+                    > 
                     {Object.entries(row).map((eachCell, idx )=> {
                       if (eachCell[0] === "check") {
                         return <TableCell padding="checkbox" key={idx}>
@@ -158,7 +158,7 @@ const DataTable = ({props}) => {
                       </TableCell>
                       } else if (eachCell[0] === "Email") {
                         return <TableCell key={idx} component="th" id={labelId} scope="row" p={1}> {eachCell[1]}</TableCell>
-                      } else if (eachCell[0] === "id" || eachCell[0] === 'link' || eachCell[0] === "last_imported") {
+                      } else if (eachCell[0] === "id" || eachCell[0] === 'link') {
                         return null;
                       } else {
                         return <TableCell key={idx} id={labelId} align="center">{eachCell[1]}</TableCell>

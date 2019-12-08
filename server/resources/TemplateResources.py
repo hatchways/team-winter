@@ -68,6 +68,12 @@ class Templates(Resource, SerializerMixin):
         return {
             'templates': [ t.to_dict(rules=('-owner', '-campaign', '-steps')) for t in current_user.templates.all() ]
         }, 200
+      
+#       'email_templates': [
+#                     template.to_dict(rules=('-steps.email_template', '-steps.campaign', '-owner',
+#                                             '-steps.prospects'))
+#                     for template in email_templates
+#                 ]
 
     @jwt_required
     def post(self):
@@ -83,7 +89,8 @@ class Templates(Resource, SerializerMixin):
             )
             template.save_to_db()
             return {
-                'template': template.to_dict(rules=('-owner', '-campaign', '-steps'))
+                'template':  template.to_dict(rules=('-steps.email_template', '-steps.campaign', '-owner',
+                                            '-steps.prospects'))
             }, 200
         except ValueError as e:
             return {

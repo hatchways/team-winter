@@ -1,5 +1,3 @@
-
-
 import React, { Fragment, useState, useEffect } from 'react';
 
 import Typography from '@material-ui/core/Typography';
@@ -17,7 +15,7 @@ import OutlinedButton from '../features/OutlinedButton';
 import NavBar from '../features/NavBar/MainBody';
 import UserInputContainer from '../features/UserInputContainer';
 import DataTable from '../features/DataTable';
-import CustomizedDialog from '../features/CustomizedDialog'
+import AddToCampaignDialog from '../features/AddToCampaignDialog';
 import GmailDialog from '../features/GmailDialog';
 import GmailAuthorizationHandler from '../features/GmailAuthorizationHandler';
 import { getJWT } from '../utils';
@@ -76,20 +74,21 @@ const useStyles = makeStyles((theme) => ({
 
 const Prospects = () => {
   const classes = useStyles();
-  const actionType = 'Add to Campaign'
+  const actionType = ['Add to Campaign']
 
   const [data, handleData] = useState([{}]);
-  const [filteredData, handlefilteredData] = useState([{}]);
   const [dialog, handleDialog] = useState(null);
   const [listOfCampaigns, handleCampaigns] = useState(null);
   const [campaignId, setCampaignId] = useState('');
   const [selectedProspects, handleSelectedProspects] = useState([]);
+  const [importedFromTerm, handleSearchImportedFrom] = useState({id: '', name: ''});
+  const [statusTerm, handleSearchStatus] = useState({id: '', name: ''});
+  const [emailTerm, handleSearchEmail] = useState('');
 
   useEffect(() => {
     getAllCampaigns();
     getAllProspects();
-  }, [])
-
+  },[])
 
   const gmailDialogShouldOpen = () => {
     const qs = queryString.parse(window.location.search);
@@ -116,24 +115,18 @@ const Prospects = () => {
             'check': 'check',
             'Email': prospect.email,
             cloudIcon,
-            'Status': 'working',
+            'Status': prospect.status,
             'Owner': prospect.name,
             'Campaigns': prospect.campaigns,
-            'Last Contacted': prospect.lastContacted,
-            'Emails...': prospect.emails,
-            'imported_from': prospect.imported_from
+            'Imported_from': prospect.imported_from
           }
-          return listOfProspects.push(prospectObj)
-        })
-        handleData(listOfProspects)
+          return listOfProspects.push(prospectObj);
+        });
+        handleData(listOfProspects);
       })
     .catch(err => {
       console.log(err.message);
     });
-  }
-
-  const handleSearch = () => {
-    
   }
 
   const getAllCampaigns = () => {
@@ -145,7 +138,7 @@ const Prospects = () => {
     })
     .then(res => res.json())
       .then(data => {
-        handleCampaigns(data.Campaigns)
+        handleCampaigns(data.Campaigns);
     })
     .catch(err => {
       console.log(err.message);
@@ -153,9 +146,9 @@ const Prospects = () => {
   }
 
   const handleCloseDialogAndSaveProspects = () => {
-    handleDialog(false)
-    saveProspectsToCampaign()
-  }
+    handleDialog(false);
+    saveProspectsToCampaign();
+  } 
 
   const saveProspectsToCampaign = () => {
     const data = {
@@ -209,14 +202,26 @@ const Prospects = () => {
     handleSelectedProspects(newSelected);
   };
 
-  let listOfProspects = data;
+  // Filter inported_from's option
+  const filteredImportedFrom = importedFromTerm.name === ''
+  ? data 
+  : data.filter(data => data['Imported_from'] === importedFromTerm.name);
+ 
+  // Filter status's option
+  const filteredStatus = statusTerm.name === ''
+  ? filteredImportedFrom
+  : filteredImportedFrom.filter(data => data['Status'] === statusTerm.name);
 
-  if (filteredData.length > 1) {
-    listOfProspects = filteredData
-  }
+   // Filter email's option
+  const filteredEmail = emailTerm === ''
+  ? filteredStatus
+  : filteredStatus.filter(data => {
+    const queryEmail = emailTerm.toLowerCase();
+    return data['Email'].includes(queryEmail);
+  })
 
   const propsForDataTable = {
-    data: listOfProspects,
+    data: filteredEmail,
     handleClickOnAllRows,
     handleClickOnRow,
     selectedProspects,
@@ -225,14 +230,21 @@ const Prospects = () => {
   return (
     <Fragment>
       <NavBar />
-      <Grid container>
-        <Grid item xs={2} id='sidePanel'>
+      <Grid container id="container">
+        <Grid item lg={2} id='sidePanel' className="halfContainer">
           <Box>
-          <SidePanel handleSearch={handleSearch}> </SidePanel>
+          <SidePanel
+          importedFromTerm={importedFromTerm}
+          handleSearchImportedFrom={handleSearchImportedFrom}
+          statusTerm={statusTerm}
+          handleSearchStatus={handleSearchStatus}
+          emailTerm={emailTerm}
+          handleSearchEmail={handleSearchEmail}
+          > </SidePanel>
           </Box>
         </Grid>
-        <Grid item xs={10}>
-          <Box id='ContainerWrapper'  display="flex" flexDirection="row" justifyContent="center">
+        <Grid item lg={10} className="halfContainer">
+          <Box id='ContainerWrapper' display="flex" flexDirection="row" justifyContent="center">
             <Box id="FeatureContainerAndDataTable" display="flex" flexDirection="column" width='100%'>
               <Box id="FeaturesContainer">
                   <Box
@@ -251,7 +263,7 @@ const Prospects = () => {
                     </Box>
                   </Box>
                     {dialog === true &&
-                      <CustomizedDialog
+                      <AddToCampaignDialog
                       actionType={actionType}
                       dataList={listOfCampaigns}
                       setValue={setCampaignId}
@@ -270,7 +282,7 @@ const Prospects = () => {
                     <OutlinedButton className={classes.importButton}> Imports </OutlinedButton>
                   </Box>
                   <Box pl={1}>
-                    <CustomizedButton
+                    <CustomizedButton 
                       className={classes.newProspectButton}>
                       Add New Prospect
                       <div className={classes.seperationLine}></div>
@@ -284,10 +296,7 @@ const Prospects = () => {
               <Box display="flex" justifyContent="center" id="DataTable" >
               <Box className={classes.tableContainer}>
                 <UserInputContainer className={classes.prospectList}>
-                  <DataTable
-                    props={propsForDataTable}
-                    >
-                  </DataTable>
+                  <DataTable props={propsForDataTable}></DataTable>
                 </UserInputContainer>
             </Box>
               </Box>

@@ -33,7 +33,12 @@ const useStyles = makeStyles( () => ({
   },
   newButton: {
     display: 'block',
-    margin: '0 auto'
+    margin: '0 auto 20px'
+  },
+  content: {
+    margin: '0 auto',
+    width: '500px',
+    maxWidth: '90%'
   }
 }));
 
@@ -119,8 +124,9 @@ const StepDialog = (props) => {
   return (
     <Dialog aria-labelledby="edit-step" 
             open={props.open}
-            onClose={props.onClose} >
-      <DialogContent>
+            onClose={props.onClose}
+            maxWidth="sm" >
+      <DialogContent className={classes.content}>
         <DialogTitle>
           {props.title}
         </DialogTitle>

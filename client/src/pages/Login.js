@@ -35,7 +35,7 @@ const Login = () => {
   const [login, handleLogin] = useState(false);
 
   if (login) {
-    return <Redirect to="/prospects" />
+    return <Redirect to="/prospects?gmail_dialog=open" />
   }
   
   const handleSubmit = (e) => {
