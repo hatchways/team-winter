@@ -56,16 +56,13 @@ class Templates(Resource):
     @jwt_required
     def get(self):
         current_user = UserModel.find_by_id(get_jwt_identity())
-        templates = [ serializableTemplate(t) for t in current_user.templates.all() ]
-        return {
-            'templates': templates
-        }, 200
-      
-#       'email_templates': [
-#                     template.to_dict(rules=('-steps.email_template', '-steps.campaign', '-owner',
-#                                             '-steps.prospects'))
-#                     for template in email_templates
-#                 ]
+        email_templates = current_user.templates
+        return {'email_templates': [
+                    template.to_dict(rules=('-steps.email_template', '-steps.campaign', '-owner',
+                                            '-steps.prospects'))
+                    for template in email_templates
+                ]
+            }, 200
 
     @jwt_required
     def post(self):

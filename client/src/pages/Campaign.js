@@ -2,8 +2,7 @@ import React, { Fragment, useState, useEffect } from 'react';
 import { 
   makeStyles,
   Container,
-  Button,
-  Snackbar
+  Button
  } from '@material-ui/core';
 import NavBar from '../features/NavBar/MainBody';
 import CampaignSummary from '../features/Campaign/CampaignSummary';
@@ -72,7 +71,7 @@ const Campaign = (props) => {
   }
 
   const findTemplate = (id) => {
-    for(let template of campaign.templates) {
+    for(let template of emailTemplates) {
       if(template.id === id) return template;
     }
     return {};
@@ -154,7 +153,7 @@ const Campaign = (props) => {
   }
 
   const getEmailTemplates = async () => {
-    await fetch('/email_templates', {
+    await fetch('/templates', {
       method: 'GET',
       headers: {
         'Authorization': `Bearer ${getJWT()}`
@@ -346,9 +345,7 @@ const Campaign = (props) => {
                     open={newOpen}
                     onClose={handleNewClose}
                     onSave={handleNewSave}
-                    // step={newStep}
                     delete={false}
-                    // setStep={handleSetNewStep}
                     setTemplateId={setTemplateId}
                     
                     templates={emailTemplates} />

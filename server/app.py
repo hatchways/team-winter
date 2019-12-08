@@ -9,13 +9,10 @@ from api.home_handler import home_handler
 
 
 app = Flask(__name__, instance_relative_config=True)
-CORS(app)
-api = Api(app)
-
 app.config.from_object('config.default')
-
 app.config.from_pyfile('config.py')
 
+CORS(app)
 api = Api(app)
 db = SQLAlchemy(app) 
 jwt = JWTManager(app)

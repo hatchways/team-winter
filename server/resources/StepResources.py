@@ -16,6 +16,10 @@ from email.mime.text import MIMEText
 from apiclient.discovery import build
 from apiclient import errors
 
+from rq import Queue, Connection
+from config.default import REDIS_URL
+import redis
+
 reqParserGen = RequestParserGenerator()
 stepParser = reqParserGen.getParser('step_id')
 
@@ -80,17 +84,20 @@ class ExecuteStep(Resource):
         user = UserModel.find_by_id(get_jwt_identity())
         step = StepModel.find_by_id(data['step_id'])
         email_template = step.email_template
-        message = create_message(
-            user.gmail_address,
-            'fovimo2502@mailhub.pro', # temporary email
-            email_template.subject,
-            email_template.body
-        )
-        print(message)
-        sent_message = send_message(
-            get_gmail_service(get_stored_credentials(user.id)),
-            "me",
-            message
-        )
-        print(sent_message)
+        gmail_service = get_gmail_service(get_stored_credentials(user.id))
+        for i in range(1):
+            message = create_message(
+                user.gmail_address,
+                'jaxip22311@quick-mail.cc', 
+                email_template.subject,
+                email_template.body
+            )
+            with Connection(redis.from_url(REDIS_URL)):
+                q = Queue()
+                q.enqueue(
+                    send_message,  
+                    gmail_service,
+                    "me",
+                    message
+                )
         return 200
