@@ -11,7 +11,6 @@ import MailIcon from '@material-ui/icons/Mail';
 import FlashOnIcon from '@material-ui/icons/FlashOn';
 
 import CustomizedButton from '../features/CustomizedButton';
-import OutlinedButton from '../features/OutlinedButton';
 import NavBar from '../features/NavBar/MainBody';
 import UserInputContainer from '../features/UserInputContainer';
 import DataTable from '../features/DataTable';
@@ -20,13 +19,9 @@ import GmailDialog from '../features/GmailDialog';
 import GmailAuthorizationHandler from '../features/GmailAuthorizationHandler';
 import { getJWT } from '../utils';
 import SidePanel from '../features/SidePanel';
+import ProspectsUpload from '../features/ProspectsUpload';
 
 const useStyles = makeStyles((theme) => ({
-  importButton: {
-    backgroundColor: "#EDECF2",
-    width: 150,
-    height: 50,
-  },
   newProspectButton: {
     width: 210,
     fontSize: 14,
@@ -230,7 +225,7 @@ const Prospects = () => {
     <Fragment>
       <NavBar />
       <Grid container id="container">
-        <Grid item lg={2} id='sidePanel' className="halfContainer">
+        <Grid item lg={2} sm={12} id='sidePanel' className="halfContainer">
           <Box>
           <SidePanel
           importedFromTerm={importedFromTerm}
@@ -242,7 +237,7 @@ const Prospects = () => {
           > </SidePanel>
           </Box>
         </Grid>
-        <Grid item lg={10} className="halfContainer">
+        <Grid item lg={10} sm={12} className="halfContainer">
           <Box id='ContainerWrapper' display="flex" flexDirection="row" justifyContent="center">
             <Box id="FeatureContainerAndDataTable" display="flex" flexDirection="column" width='100%'>
               <Box id="FeaturesContainer">
@@ -278,7 +273,7 @@ const Prospects = () => {
                     <MailIcon fontSize="small" style={{color: "grey"}} />
                   </Box>
                   <Box pl={2}>
-                    <OutlinedButton className={classes.importButton}> Imports </OutlinedButton>
+                    <ProspectsUpload  getAllProspects={getAllProspects}/> 
                   </Box>
                   <Box pl={1}>
                     <CustomizedButton 
