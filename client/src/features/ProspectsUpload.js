@@ -149,6 +149,7 @@ function ProspectsUpload({ getAllProspects }) {
       data.push({
         'email': prospect[emailColumn],
         'name': prospect[NameColumn],
+        'status': 'open',
         'imported_from': ImportedFromField,
       });
     }
@@ -159,12 +160,12 @@ function ProspectsUpload({ getAllProspects }) {
   }
 
   const uploadProspects = async () => {
-    console.log('prospects  :')
+    // console.log('prospects  :')
     const prospectsToUpload = formatProspects(prospects, NameColumn, emailColumn);
-    console.log(JSON.stringify(prospectsToUpload));
-    console.log('name column: ' + NameColumn);
-    console.log('email column: ' + emailColumn);
-    console.log(getJWT());
+    // console.log(JSON.stringify(prospectsToUpload));
+    // console.log('name column: ' + NameColumn);
+    // console.log('email column: ' + emailColumn);
+    // console.log(getJWT());
 
     try {
       const response = await fetch(UPLOAD_URL, {
@@ -181,6 +182,7 @@ function ProspectsUpload({ getAllProspects }) {
         console.log('Uploaded Prospects');
         getAllProspects();
         handleModalClose();
+        handleImportedFromField('');
         setSnackbarOpen(true);
       }
     } catch (error) {
@@ -289,7 +291,7 @@ function ProspectsUpload({ getAllProspects }) {
               margin="normal"
               variant="outlined"
               text="text"
-              placeholder="Save prospects under ..."
+              placeholder="Save as ..."
               value={ImportedFromField}
               onChange={e => handleImportedFromField(e.target.value)}
             />
