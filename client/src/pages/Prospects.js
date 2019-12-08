@@ -132,7 +132,7 @@ const Prospects = () => {
     })
     .then(res => res.json())
       .then(data => {
-        handleCampaigns(data.Campaigns)
+        handleCampaigns(data.campaigns)
     })
     .catch(err => {
       console.log(err.message);
@@ -211,7 +211,7 @@ const Prospects = () => {
   ? filteredStatus
   : filteredStatus.filter(data => {
     const queryEmail = emailTerm.toLowerCase();
-    return data['Email'].includes(queryEmail);
+    return data['Email'].toLowerCase().includes(queryEmail);
   })
 
   const propsForDataTable = {
