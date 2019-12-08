@@ -66,11 +66,6 @@ export const theme = createMuiTheme({
         },
       }
     },
-    MuiDialogContent: {
-      root: {
-        padding: 0,
-      }
-    },
     MuiOutlinedInput: {
       root: {
         '&$focused $notchedOutline': {
@@ -79,6 +74,29 @@ export const theme = createMuiTheme({
         },
       }
     },
+    MuiDialogContent: {
+      root: {
+        padding: 30,
+      },
+    },
+    MuiDialogTitle: {
+      root: {
+        padding: "20px 0px",
+      },
+    },
+    MuiButton: {
+      textPrimary: {
+        color: '#2AA897',
+      }
+    },
+    MuiInputLabel: { 
+      root: { 
+        color: '#004d40',
+        "&$focused": { 
+          color: '#004d40'
+        }
+      }
+    }
   }
 });
 
