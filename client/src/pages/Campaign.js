@@ -49,7 +49,7 @@ const Campaign = (props) => {
 
   const classes = useStyles();
 
-  const [campaign, setCampaign] = useState(emptyCampaign);
+  const [campaign, setCampaign] = useState({});
   const [editOpen, setEditOpen] = useState(false);
   const [editStep, setEditStep] = useState({});
   const [newOpen, setNewOpen] = useState(false);
@@ -271,14 +271,14 @@ const Campaign = (props) => {
     const prevProspects = prevStep.prospects;
     const currProspects = currStep.prospects;
     const combineProspects = [...prevProspects, ...currProspects];
+    console.log(combineProspects)
     const uniqueProspects = combineProspects.filter(
-      (prospect, idx) => combineProspects.indexOf(prospect) === idx);
+      (prospect, idx) => combineProspects.map(obj => obj.id).indexOf(prospect.id) === idx);
+    console.log(uniqueProspects)
     currStep.prospects = uniqueProspects;
-    console.log(currStep);
   }
 
   const handleImportProspects = (event, currStep, idx) => {
-    console.log(currStep);
     const prevStep = campaign.steps[idx-1];
     const data = {
       'prev_step_id' : prevStep.id,

@@ -149,6 +149,7 @@ const StepsDisplay = (props) => {
   const classes = useStyles();
 
   return (
+    props.steps ? 
     props.steps.map( (step, idx) => {
       return (
         <Paper key={idx} className={classes.stepPaper} onClick={() => props.openEditStepDialog(idx)} >
@@ -162,10 +163,17 @@ const StepsDisplay = (props) => {
             <Grid item sm={1}>
               <MailIcon className={classes.mailIcon} />
             </Grid>
-            <Grid item sm={3}>
+            <Grid item sm={2}>
               <Typography>{step.templateName}</Typography>
             </Grid>
             <Grid item sm={2}>
+              <StatisticDisplay label="Prospects"
+                                value={step.prospects.length} />
+            </Grid>
+            <Grid item sm={1}>
+              <VerticalDivider step={true} />
+            </Grid>
+            <Grid item sm={1}>
               <StatisticDisplay label="Sent"
                                 value={step.sent} />
             </Grid>
@@ -176,7 +184,7 @@ const StepsDisplay = (props) => {
               <StatisticDisplay label="Replied"
                                 value={step.replied} />
             </Grid>
-            <Grid item sm={2}>
+            <Grid item sm={1}>
               <ButtonBox 
                 step={step} idx={idx} 
                 handleProspectsClick={props.handleProspectsClick}
@@ -187,7 +195,7 @@ const StepsDisplay = (props) => {
         </Paper>
       )
     })
-  )
+  : null)
 }
 
 const StatisticDisplay = (props) => {

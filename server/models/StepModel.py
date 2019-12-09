@@ -11,8 +11,8 @@ class StepModel(db.Model, SerializerMixin):
     # serialize_rules = ('-email_template.steps', '-campaign')
 
     id = db.Column(db.Integer, primary_key = True)
-    campaign_id = db.Column(db.Integer, db.ForeignKey('campaigns.id'), nullable=False)
-    email_template_id = db.Column(db.Integer, db.ForeignKey('email_templates.id'), nullable=False)
+    campaign_id = db.Column(db.Integer, db.ForeignKey('campaigns.id'))
+    email_template_id = db.Column(db.Integer, db.ForeignKey('email_templates.id'))
     prospects = db.relationship(
         'ProspectModel', secondary=steps_prospects, backref='steps', lazy='select'
     )
