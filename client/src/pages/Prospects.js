@@ -1,7 +1,7 @@
 import React, { Fragment, useState, useEffect } from 'react';
+import { makeStyles } from '@material-ui/core/styles';
 
 import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
 import queryString from 'query-string';
 import Grid from '@material-ui/core/Grid';
@@ -20,9 +20,9 @@ import DataTable from '../features/DataTable';
 import AddToCampaignDialog from '../features/AddToCampaignDialog'
 import GmailDialog from '../features/GmailDialog';
 import GmailAuthorizationHandler from '../features/GmailAuthorizationHandler';
-import { getJWT } from '../utils';
 import SidePanel from '../features/SidePanel';
 import ProspectsUpload from '../features/ProspectsUpload';
+import { apiRequest } from '../utils';
 
 const useStyles = makeStyles((theme) => ({
   newProspectButton: {
@@ -97,51 +97,39 @@ const Prospects = () => {
   }
 
   const getAllProspects = () => {
-    fetch(`/prospects`, {
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${getJWT()}`
-      }
-    })
-    .then(res => res.json())
-      .then(result => {
-        const listOfProspects = [];
-        const cloudIcon = <CloudIcon className="fas fa-cloud" style={{color: "grey"}} />
+    apiRequest('GET', `/prospects`)
+    .then( result => {
+      const listOfProspects = [];
+      const cloudIcon = <CloudIcon className="fas fa-cloud" style={{color: "grey"}} />
 
-        result.Prospects.map(prospect => {
-          const prospectObj = {
-            'id': prospect.id,
-            'check': 'check',
-            'Email': prospect.email,
-            cloudIcon,
-            'Status': prospect.status,
-            'Owner': prospect.name,
-            'Campaigns': prospect.campaigns,
-            'Imported_from': prospect.imported_from
-          }
-          return listOfProspects.push(prospectObj)
-        })
-        handleData(listOfProspects)
+      result.Prospects.map(prospect => {
+        const prospectObj = {
+          'id': prospect.id,
+          'check': 'check',
+          'Email': prospect.email,
+          cloudIcon,
+          'Status': prospect.status,
+          'Owner': prospect.name,
+          'Campaigns': prospect.campaigns,
+          'Imported_from': prospect.imported_from
+        }
+        return listOfProspects.push(prospectObj)
       })
-    .catch(err => {
-      console.log(err.message);
-    });
+      handleData(listOfProspects)
+    })
+    .catch( e => {
+      console.log(e);
+    })
   }
 
   const getAllCampaigns = () => {
-    fetch(`/campaigns`, {
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${getJWT()}`
-      }
+    apiRequest('GET', `/campaigns`)
+    .then( result => {
+      handleCampaigns(result.campaigns)
     })
-    .then(res => res.json())
-      .then(data => {
-        handleCampaigns(data.campaigns)
+    .catch( e => {
+      console.log(e);
     })
-    .catch(err => {
-      console.log(err.message);
-    });
   }
 
   const handleCloseDialogAndSaveProspects = () => {
@@ -154,21 +142,13 @@ const Prospects = () => {
       "prospect_ids": selectedProspects,
     };
 
-    fetch(`/campaign/${campaignId}/prospects`, {
-      method: "POST",
-      headers: {
-        'Authorization': `Bearer ${getJWT()}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data)
+    apiRequest('POST', `/campaign/${campaignId}/prospects`, data)
+    .then( data => {
+      setSnackbarOpen(true);
+      setAddToCampaignStatus(data.message);
     })
-    .then(res => res.json())
-      .then(data => {
-        setSnackbarOpen(true);
-        setAddToCampaignStatus(data.message);
-    })
-    .catch(err => {
-      console.log(err.message);
+    .catch( e => {
+      console.log(e.message);
     });
   }
 

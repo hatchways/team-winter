@@ -1,5 +1,6 @@
 import React, { useState, Fragment }  from "react";
 import { Redirect } from "react-router-dom";
+
 import { makeStyles } from '@material-ui/core/styles';
 import { ValidatorForm } from 'react-material-ui-form-validator';
 import { Typography , Grid} from "@material-ui/core";
@@ -9,6 +10,7 @@ import CustomizedButton from '../features/CustomizedButton';
 import UserInputContainer from '../features/UserInputContainer';
 import NavBar from '../features/NavBar/MainBody'
 import ErrorSnackbar from '../features/ErrorSnackbar';
+import { apiRequest } from '../utils';
  
 const useStyles = makeStyles( () => ({
   textField: {
@@ -53,25 +55,13 @@ const Login = () => {
       password,
     };
 
-    fetch("http://localhost:5000/login", {
-      method: "POST",
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data)
+    apiRequest('POST', `/login`, data)
+    .then( data => {
+      localStorage.setItem("mailsender_token", data.access_token);
+      handleLogin(true);
     })
-      
-    .then(res => res.json())
-      .then(data => {
-      if (!data.access_token) {
-        handleSnackBar(data.message)
-      } else {
-        localStorage.setItem("mailsender_token", data.access_token);
-        handleLogin(true);
-      }
-    })
-    .catch(err => {
-      console.log(err.message);
+    .catch( e => {
+      handleSnackBar(e.message.split('Message:')[1])
     });
   }
 

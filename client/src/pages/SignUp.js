@@ -10,6 +10,7 @@ import CustomizedButton from '../features/CustomizedButton';
 import UserInputContainer from '../features/UserInputContainer';
 import NavBar from '../features/NavBar/MainBody'
 import ErrorSnackbar from '../features/ErrorSnackbar';
+import { apiRequest } from '../utils';
 
 const useStyles = makeStyles(theme => ({
   signUpText: {
@@ -71,26 +72,13 @@ const Register = () => {
       last_name: lastName,
     };
 
-    fetch("http://localhost:5000/register", {
-      method: "POST",
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-      },
-      body: JSON.stringify(data)
+    apiRequest('POST', `/register`, data)
+    .then( data => {
+      localStorage.setItem("mailsender_token", data.access_token);
+      handleSignUp(true)
     })
-      
-    .then(res => res.json())
-      .then(data => {
-      if (!data.access_token) {
-        handleSnackBar(data.message)
-      } else {
-        localStorage.setItem("mailsender_token", data.access_token);
-        handleSignUp(true)
-      }
-    })
-    .catch(err => {
-      console.log(err.message);
+    .catch( e => {
+      handleSnackBar(e.message.split('Message:')[1])
     });
   }
 
