@@ -93,7 +93,7 @@ const Register = () => {
       console.log(err.message);
     });
   }
-  
+
   const handleSnackBar = (message) => {
     setErrorMessage(message);
     setError(true);
@@ -112,48 +112,49 @@ const Register = () => {
           className={classes.form}
         > 
           <TextField
+            required
             error={!submit ? false : firstName.length > 0 ? false : true }
             label="First name"
             value={firstName}
             onChange={e => handleFirstName(e.target.value)}
-            helperText="*required"
             className={classes.nameField}
             margin="normal"
             variant="outlined"
           />
           <TextField
+            required
             error={!submit ? false : lastName.length > 0 ? false : true }
             label="Last name"
             value={lastName}
             onChange={e => handleLastName(e.target.value)}
-            helperText="*required"
             className={classes.nameField}
             margin="normal"
             variant="outlined"
           />
           <TextField
+            required
             error={!submit ? false : email.length > 0 ? false : true }
             type="email"
             label="Email"
             value={email}
             onChange={e => handleEmail(e.target.value)}
-            helperText="*required"
             className={classes.otherField}
             margin="normal"
             variant="outlined"
           />
         <TextField
+            required
             error={!submit ? false : password.length >= 6 ? false : true }
             type="password"
-            label="Password"
+            label="Password min. 6 characters"
             value={password}
             onChange={e => handlePassword(e.target.value)}
-            helperText="*min. 6 characters"
             className={classes.otherField}
             margin="normal"
             variant="outlined"
           />
           <TextField
+            required
             error={!submit ? false : password === repeatPassword && repeatPassword.length > 0 ? false : true }
             type="password"
             label="Repeat password"

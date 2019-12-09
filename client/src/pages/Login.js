@@ -90,23 +90,23 @@ const Login = () => {
           onSubmit={handleSubmit}
         >
           <TextField
+            required
             error={!submit ? false : email.length > 0 ? false : true}
             type="email"
             label="Email"
             value={email}
             onChange={e => handleEmail(e.target.value)}
-            helperText="*required"
             className={classes.textField}
             margin="normal"
             variant="outlined"
           />
           <TextField
+            required
             error={!submit ? false : password.length >= 6 ? false : true }
             type="password"
-            label="Password"
+            label="Password min. 6 characters"
             value={password}
             onChange={e => handlePassword(e.target.value)}
-            helperText="*min. 6 characters"
             className={classes.textField}
             margin="normal"
             variant="outlined"
