@@ -91,9 +91,9 @@ export const theme = createMuiTheme({
     },
     MuiInputLabel: { 
       root: { 
-        color: '#004d40',
+        color: 'black',
         "&$focused": { 
-          color: '#004d40'
+          color: '#388e3c',
         }
       }
     }
