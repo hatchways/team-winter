@@ -19,8 +19,7 @@ import Loading from '../features/Loading';
 import ErrorMessage from '../features/ErrorMessage';
 import CustomizedButton from '../features/CustomizedButton';
 import ConfirmationDialog from '../features/ConfirmationDialog';
-
-
+import ErrorDialog from '../features/ErrorDialog';
 
 const useStyles = makeStyles( (theme) => ({
   
@@ -160,12 +159,20 @@ const Templates = (props) => {
   const [error, setError] = useState(false);
   const [toDelete, setToDelete] = useState(null);
   const [confirmationOpen, setConfirmationOpen] = useState(false);
+  const [errorOpen, setErrorOpen] = useState(false);
 
   useEffect( (props) => {
 
     getTemplates();
 
   }, []);
+
+  const findTemplateIndex = template => {
+    for(let i=0; i<templates.length; i++) {
+      if(templates[i].id === template.id) return i;
+    }
+    return -1;
+  }
 
   const getTemplates = async () => {
     apiRequest('GET', '/templates')
@@ -193,7 +200,7 @@ const Templates = (props) => {
       .then( (json) => {
         console.log(json);
         setDialogOpen(false);
-        getTemplates();
+        updateTemplate(json.template);
       }).catch( (e) => {
         console.log(e);
       });
@@ -205,7 +212,7 @@ const Templates = (props) => {
       .then( (json) => {
         console.log(json);
         setDialogOpen(false);
-        getTemplates();
+        addTemplate(json.template);
       }).catch( (e) => {
         console.log(e);
       });
@@ -239,15 +246,42 @@ const Templates = (props) => {
     console.log(toDelete);
     apiRequest('DELETE', `/templates/${toDelete.id}`, toDelete)
     .then( (json) => {
-      console.log(json);
       setConfirmationOpen(false);
+      removeTemplate(toDelete);
       setToDelete(null);
-      getTemplates();
     })
+    .catch( e => {
+      console.log(e);
+      if(e.statusCode === 409) {
+        setErrorOpen(true);
+      }
+    });
   }
 
   const closeConfirmationDialog = () => {
     setConfirmationOpen(false);
+  }
+
+  const addTemplate = template => {
+    setTemplates([...templates, template]);
+  }
+
+  const removeTemplate = template => {
+    const idx = findTemplateIndex(template);
+    const newTemplates = [...templates];
+    newTemplates.splice(idx, 1);
+    setTemplates(newTemplates);
+  }
+
+  const updateTemplate = template => {
+    const idx = findTemplateIndex(template);
+    const newTemplates = [...templates];
+    newTemplates.splice(idx, 1, template);
+    setTemplates(newTemplates);
+  }
+
+  const closeErrorDialog = () => {
+    setErrorOpen(false);
   }
 
   if(fetching) {
@@ -306,6 +340,8 @@ const Templates = (props) => {
       <ConfirmationDialog open={confirmationOpen}
                           onConfirm={confirmDelete}
                           onClose={closeConfirmationDialog} />
+      <ErrorDialog open={errorOpen}
+                   onClose={closeErrorDialog} />
     </Fragment>
   )
 }

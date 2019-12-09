@@ -138,7 +138,7 @@ const Campaign = (props) => {
   }
 
   const handleEmailTemplates = data => {
-    const emailTemplatesData = data.email_templates;
+    const emailTemplatesData = data['templates'];
     const emailTemplates = [];
     for(let emailTemplate of emailTemplatesData) {
       emailTemplates.push({

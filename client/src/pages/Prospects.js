@@ -92,6 +92,7 @@ const Prospects = () => {
 
   const gmailDialogShouldOpen = () => {
     const qs = queryString.parse(window.location.search);
+    console.log(qs);
     if(qs['gmail_dialog']) return true;
     return false;
   }
@@ -303,8 +304,8 @@ const Prospects = () => {
           </Box>
         </Grid>
       </Grid>
-      <GmailDialog open={gmailDialogShouldOpen()} /> 
-      <GmailAuthorizationHandler/>
+      <GmailDialog open={gmailDialogShouldOpen} />
+      <GmailAuthorizationHandler />
     </Fragment>
   )
 }

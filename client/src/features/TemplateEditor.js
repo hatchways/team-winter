@@ -44,9 +44,24 @@ class TemplateEditor extends Component {
   shouldComponentUpdate(nextProps, nextState) {
     return (this.props.template.id !== nextProps.template.id ||
             this.state.nameError !== nextState.nameError || 
+            this.state.name !== nextState.name ||
+            this.state.type !== nextState.type || 
+            this.state.subject !== nextState.subject ||
             this.props.variables !== nextProps.variables || 
             this.state.typeEror !== nextState.typeEror || 
             this.state.subjectError !== nextState.subjectError);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      name: nextProps.template.name,
+      type: nextProps.template.type === undefined ? 'initial' : nextProps.template.type,
+      subject: nextProps.template.subject,
+      body: nextProps.template.body === undefined ? '' : nextProps.template.body,
+      nameError: false,
+      typeError: false,
+      subjectError: false
+    });
   }
 
   handleNameChange(event) {
@@ -98,37 +113,37 @@ class TemplateEditor extends Component {
       <Fragment>
         {/* Template name */}
         <TextField id="template-name" 
-                  defaultValue={this.props.template.name}
-                  label="Name" 
-                  variant="outlined" 
-                  className={classes.inputField} 
-                  onChange={this.handleNameChange}
-                  fullWidth
-                  required
-                  error={this.state.nameError}
-                  helperText={this.state.nameError ? "Name is required" : null} />
+                   value={this.state.name }
+                   label="Name" 
+                   variant="outlined" 
+                   className={classes.inputField} 
+                   onChange={ (e) => this.handleNameChange(e) }
+                   fullWidth
+                   required
+                   error={this.state.nameError}
+                   helperText={this.state.nameError ? "Name is required" : null} />
         {/* Template type */}
         <TextField id="template-type"
-                  select fullWidth
-                  label="Type"
-                  className={classes.inputField}
-                  defaultValue={this.props.template.type ? this.props.template.type : 'initial'}
-                  onChange={this.handleTypeChange}
-                  margin="normal"
-                  variant="outlined"
-                  required
-                  error={this.state.typeError}
-                  helperText={this.state.typeError ? "Type is required" : null} >
+                   select fullWidth
+                   label="Type"
+                   className={classes.inputField}
+                   value={this.state.type}
+                   onChange={ (e) => this.handleTypeChange(e)}
+                   margin="normal"
+                   variant="outlined"
+                   required
+                   error={this.state.typeError}
+                   helperText={this.state.typeError ? "Type is required" : null} >
           <MenuItem key={'initial'} value={'initial'}>Initial Contact</MenuItem>
           <MenuItem key={'reply'} value={'reply'}>Reply</MenuItem>
         </TextField>
         {/* Subject */}
         <TextField id="template-subject" 
-                   defaultValue={this.props.template.subject}
+                   value={this.state.subject}
                    label="Subject" 
                    variant="outlined" 
                    className={classes.inputField} 
-                   onChange={this.handleSubjectChange}
+                   onChange={ (e) => this.handleSubjectChange(e)}
                    fullWidth
                    required
                    error={this.state.subjectError}
@@ -138,11 +153,11 @@ class TemplateEditor extends Component {
                     onChange={this.handleEditorChange}
                     templateVariables={this.props.variables} />
         <Button variant="contained" 
-                size="large" 
+                size="medim" 
                 color="primary" 
                 className={classes.saveButton}
                 onClick={this.handleSave} >
-          Save
+          Save Template
         </Button>
       </Fragment>
     )

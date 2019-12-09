@@ -99,8 +99,3 @@ class GetCampaign(Resource):
                 }
         }, 200 
 
-
-        
-
-
-
