@@ -8,6 +8,7 @@ import TextField from '@material-ui/core/TextField';
 import CustomizedButton from '../features/CustomizedButton';
 import UserInputContainer from '../features/UserInputContainer';
 import NavBar from '../features/NavBar/MainBody'
+import ErrorSnackbar from '../features/ErrorSnackbar';
  
 const useStyles = makeStyles( () => ({
   textField: {
@@ -33,6 +34,8 @@ const Login = () => {
   const [password, handlePassword] = useState("");
   const [submit, didSubmit] = useState(false);
   const [login, handleLogin] = useState(false);
+  const [error, setError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState();
 
   if (login) {
     return <Redirect to="/prospects?gmail_dialog=open" />
@@ -61,7 +64,7 @@ const Login = () => {
     .then(res => res.json())
       .then(data => {
       if (!data.access_token) {
-        alert(data.message);
+        handleSnackBar(data.message)
       } else {
         localStorage.setItem("mailsender_token", data.access_token);
         handleLogin(true);
@@ -71,9 +74,15 @@ const Login = () => {
       console.log(err.message);
     });
   }
+
+  const handleSnackBar = (message) => {
+    setErrorMessage(message);
+    setError(true);
+  }
   
   return (
     <Fragment>
+      <ErrorSnackbar open={error} message={errorMessage}/>
       <NavBar />
       <UserInputContainer maxWidth="sm">
         <Typography className={classes.loginText}>Login</Typography>

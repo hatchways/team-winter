@@ -1,5 +1,6 @@
 import React, { useState, Fragment }  from "react";
 import { Redirect } from "react-router-dom";
+
 import { makeStyles } from '@material-ui/core/styles';
 import { ValidatorForm } from 'react-material-ui-form-validator';
 import { Typography , Grid} from "@material-ui/core";
@@ -8,6 +9,7 @@ import TextField from '@material-ui/core/TextField';
 import CustomizedButton from '../features/CustomizedButton';
 import UserInputContainer from '../features/UserInputContainer';
 import NavBar from '../features/NavBar/MainBody'
+import ErrorSnackbar from '../features/ErrorSnackbar';
 
 const useStyles = makeStyles(theme => ({
   signUpText: {
@@ -45,6 +47,8 @@ const Register = () => {
   const [repeatPassword, handleRepeatPassword] = useState("");
   const [submit, didSubmit] = useState(false);
   const [signUp, handleSignUp] = useState(false);
+  const [error, setError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState();
 
   if (signUp) {
     return <Redirect to="/prospects?gmail_dialog=open" />
@@ -79,20 +83,25 @@ const Register = () => {
     .then(res => res.json())
       .then(data => {
       if (!data.access_token) {
-        alert(data.message);
+        handleSnackBar(data.message)
       } else {
         localStorage.setItem("mailsender_token", data.access_token);
         handleSignUp(true)
-        alert(data.message);
       }
     })
     .catch(err => {
       console.log(err.message);
     });
   }
+  
+  const handleSnackBar = (message) => {
+    setErrorMessage(message);
+    setError(true);
+  }
 
   return (
     <Fragment>
+      <ErrorSnackbar open={error} message={errorMessage}/>
       <NavBar />
       <UserInputContainer classes={{
         root: classes.container
