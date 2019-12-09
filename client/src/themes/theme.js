@@ -64,6 +64,9 @@ export const theme = createMuiTheme({
         '&:after': {
           borderBottom: 'none',
         },
+        '&:before': {
+          borderBottom: 'none',
+        },
       }
     },
     MuiOutlinedInput: {
