@@ -242,6 +242,7 @@ const Prospects = () => {
         <Grid item lg={2} sm={12} id='sidePanel' className="halfContainer">
           <Box>
           <SidePanel
+          getAllProspects={getAllProspects}
           importedFromTerm={importedFromTerm}
           handleSearchImportedFrom={handleSearchImportedFrom}
           statusTerm={statusTerm}

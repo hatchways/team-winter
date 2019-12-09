@@ -14,7 +14,7 @@ const useStyles = makeStyles(() => ({
   }
 }));
 
-const SidePanel = ({ importedFromTerm,  handleSearchImportedFrom, statusTerm, handleSearchStatus, emailTerm, handleSearchEmail}) => {
+const SidePanel = ({ importedFromTerm,  handleSearchImportedFrom, statusTerm, handleSearchStatus, emailTerm, handleSearchEmail, getAllProspects}) => {
   const classes = useStyles();
   const [importedFromList, handleImportedFromList] = useState([{}]);
   const [statusList, handleStatusList] = useState([{}]);
@@ -33,6 +33,7 @@ const SidePanel = ({ importedFromTerm,  handleSearchImportedFrom, statusTerm, ha
     <Paper className={classes.root}>
     <div className={classes.test}></div>
         <ExpandPanel
+          getAllProspects={getAllProspects}
           actionType={actionType[0]}
           list={importedFromList}
           handleSearchTerm={handleSearchImportedFrom}
@@ -41,6 +42,7 @@ const SidePanel = ({ importedFromTerm,  handleSearchImportedFrom, statusTerm, ha
           >
         </ExpandPanel>
         <ExpandPanel
+          getAllProspects={getAllProspects}
           actionType={actionType[1]}
           list={statusList}
           handleSearchTerm={handleSearchStatus}
