@@ -51,7 +51,10 @@ class UpdateStep(Resource):
             return {
                 'message': 'You don\'t own that step'
             }, 401
-        step.email_template_id = new_template_id
+        template = template.find_by_id(template_id)
+        if template.owner_id != get_jwt_identity():
+            return {'message': 'You don\'t have permission to do that.'}, 403
+        step.email_template_id = template.id
         step.update()
         return {
             'step': step.to_dict(rules = 
