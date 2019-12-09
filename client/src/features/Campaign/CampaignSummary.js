@@ -162,7 +162,7 @@ const StepsDisplay = (props) => {
             <Grid item sm={1}>
               <MailIcon className={classes.mailIcon} />
             </Grid>
-            <Grid item sm={4}>
+            <Grid item sm={3}>
               <Typography>{step.templateName}</Typography>
             </Grid>
             <Grid item sm={2}>
@@ -176,7 +176,7 @@ const StepsDisplay = (props) => {
               <StatisticDisplay label="Replied"
                                 value={step.replied} />
             </Grid>
-            <Grid item sm={1}>
+            <Grid item sm={2}>
               <ButtonBox 
                 step={step} idx={idx} 
                 handleProspectsClick={props.handleProspectsClick}
@@ -216,7 +216,7 @@ const ButtonBox = (props) => {
       </Tooltip> : null}
       <Tooltip title="Execute the step" placement="bottom-start">
         <Button className={classes.actionButton} 
-        onClick={event => props.handleExecuteClick(event)}
+        onClick={event => props.handleExecuteClick(event, props.step)}
         >Execute</Button>
       </Tooltip>
     </Box>

@@ -66,11 +66,6 @@ export const theme = createMuiTheme({
         },
       }
     },
-    MuiDialogContent: {
-      root: {
-        padding: 0,
-      }
-    },
     MuiOutlinedInput: {
       root: {
         '&$focused $notchedOutline': {

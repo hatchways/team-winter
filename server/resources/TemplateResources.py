@@ -18,7 +18,7 @@ class TemplatesById(Resource, SerializerMixin):
         current_user = UserModel.find_by_id(get_jwt_identity())
         template = current_user.templates.filter_by(id=id).first()
         return {
-            'template': template.to_dict(rules=('-owner', '-campaign'))
+            'template': template.to_dict(rules=('-owner', '-campaign', '-steps'))
         }, 200
 
     @jwt_required
@@ -68,12 +68,6 @@ class Templates(Resource, SerializerMixin):
         return {
             'templates': [ t.to_dict(rules=('-owner', '-campaign', '-steps')) for t in current_user.templates.all() ]
         }, 200
-      
-#       'email_templates': [
-#                     template.to_dict(rules=('-steps.email_template', '-steps.campaign', '-owner',
-#                                             '-steps.prospects'))
-#                     for template in email_templates
-#                 ]
 
     @jwt_required
     def post(self):
