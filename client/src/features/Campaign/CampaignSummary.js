@@ -216,7 +216,7 @@ const ButtonBox = (props) => {
       </Tooltip> : null}
       <Tooltip title="Execute the step" placement="bottom-start">
         <Button className={classes.actionButton} 
-        onClick={event => props.handleExecuteClick(event)}
+        onClick={event => props.handleExecuteClick(event, props.step)}
         >Execute</Button>
       </Tooltip>
     </Box>
