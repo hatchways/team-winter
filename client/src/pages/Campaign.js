@@ -190,9 +190,9 @@ const Campaign = (props) => {
   const addNewStep = async () => {
     const id = campaign.id;
     const data = {
-      id : templateId
+      template_id : templateId
     }
-    await fetch(`/campaign/${id}/steps`, {
+    await fetch(`/campaigns/${id}/steps`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json', 
