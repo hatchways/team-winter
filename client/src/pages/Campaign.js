@@ -176,11 +176,15 @@ const Campaign = (props) => {
     campaign.steps[idx].templateName = findTemplate(step.templateId).name;
     setCampaign(campaign);
     
-    /** 
-     * TODO:
-     * update server
-     * update template_id on step with id=step.id
-     */
+    console.log(step);
+
+    apiRequest('PUT', `/steps/${step.id}`, {'template_id': step.templateId})
+    .then( json => {
+      console.log(json);
+    })
+    .catch( e => {
+      console.log(e);
+    });
   }
 
   const addNewStep = async () => {
@@ -217,11 +221,13 @@ const Campaign = (props) => {
     campaign.steps.splice(idx, 1);
     setCampaign(campaign);
 
-    /**
-     * TODO:
-     * update server
-     * delete step with id=editStep.id
-     */
+    apiRequest('DELETE', `/steps/${editStep.id}`)
+    .then( json => {
+      console.log(json);
+    })
+    .catch( e => {
+      console.log(e);
+    });
   }
 //---------------Edit Step-----------------------//
   const handleEditOpen = (idx) => {

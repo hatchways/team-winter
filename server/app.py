@@ -50,7 +50,9 @@ api.add_resource(ProspectsResources.UploadProspects, '/prospects/upload')
 api.add_resource(ProspectsResources.InheritPreviousStepProspects, '/steps/prospects')
 api.add_resource(CampaignResources.GetCampaign, '/campaigns/<int:id>')
 api.add_resource(CampaignResources.CampaignProspects, '/campaign/<int:id>/prospects')
-api.add_resource(CampaignResources.CreateStepToCampaign, '/campaign/<int:id>/steps')
 api.add_resource(StepResources.ExecuteStep, '/gmail/send')
+api.add_resource(StepResources.CreateStep, '/campaigns/<int:id>/steps', endpoint='steps')
+api.add_resource(StepResources.UpdateStep, '/steps/<int:id>', endpoint='step')
+
 
 app.register_blueprint(home_handler)
