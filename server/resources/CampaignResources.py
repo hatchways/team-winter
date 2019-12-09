@@ -70,6 +70,10 @@ class CreateStepToCampaign(Resource):
             }, 201
         except:
             return {'message': 'Something went wrong'}, 500
+    
+    # @jwt_required
+    # def put(self, id):
+
 
 class GetCampaign(Resource):
     @jwt_required

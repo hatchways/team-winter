@@ -2,15 +2,14 @@ import React, { Fragment, useState, useEffect } from 'react';
 import { 
   makeStyles,
   Container,
-  Button,
-  Snackbar
+  Button
  } from '@material-ui/core';
 import NavBar from '../features/NavBar/MainBody';
 import CampaignSummary from '../features/Campaign/CampaignSummary';
 import StepDialog from '../features/Campaign/StepDialog';
 import ConfirmationDialog from '../features/ConfirmationDialog';
 import SuccessSnackbar from '../features/SuccessSnackbar';
-import { getJWT } from '../utils';
+import { apiRequest, getJWT } from '../utils';
 
 const useStyles = makeStyles( () => ({
   container: {
@@ -50,7 +49,7 @@ const Campaign = (props) => {
 
   const classes = useStyles();
 
-  const [campaign, setCampaign] = useState({});
+  const [campaign, setCampaign] = useState(emptyCampaign);
   const [editOpen, setEditOpen] = useState(false);
   const [editStep, setEditStep] = useState({});
   const [newOpen, setNewOpen] = useState(false);
@@ -72,7 +71,7 @@ const Campaign = (props) => {
   }
 
   const findTemplate = (id) => {
-    for(let template of campaign.templates) {
+    for(let template of emailTemplates) {
       if(template.id === id) return template;
     }
     return {};
@@ -154,7 +153,7 @@ const Campaign = (props) => {
   }
 
   const getEmailTemplates = async () => {
-    await fetch('/email_templates', {
+    await fetch('/templates', {
       method: 'GET',
       headers: {
         'Authorization': `Bearer ${getJWT()}`
@@ -306,12 +305,14 @@ const Campaign = (props) => {
     event.stopPropagation();
   }
 
-  const handleExecuteStep = (event) => {
-    /**
-     * TODO: 
-     * Handle executing the step api
-     * probably send request to send email.
-     */
+  const handleExecuteStep = (event, step) => {
+    apiRequest('POST', '/gmail/send', {'step_id': step.id})
+    .then((json) => {
+      
+    })
+    .catch( (e) => {
+      console.log(e);
+    });
     event.stopPropagation();
   }
 
@@ -344,9 +345,7 @@ const Campaign = (props) => {
                     open={newOpen}
                     onClose={handleNewClose}
                     onSave={handleNewSave}
-                    // step={newStep}
                     delete={false}
-                    // setStep={handleSetNewStep}
                     setTemplateId={setTemplateId}
                     
                     templates={emailTemplates} />
