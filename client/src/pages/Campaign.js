@@ -188,27 +188,16 @@ const Campaign = (props) => {
   }
 
   const addNewStep = async () => {
-    const id = campaign.id;
-    const data = {
-      template_id : templateId
-    }
-    await fetch(`/campaigns/${id}/steps`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json', 
-        'Authorization': `Bearer ${getJWT()}`
-      },
-      body: JSON.stringify(data)
+    apiRequest('POST', `/campaigns/${campaign.id}/steps`, {'template_id': templateId})
+    .then( json => {
+      console.log(json);
+      const step = createStepObject(json.step);
+      const newCampaign = Object.assign({}, campaign);
+      newCampaign.steps.push(step);
+      setCampaign(newCampaign);
     })
-    .then(res => res.json())
-      .then(data => createStepObject(data.step))
-        .then(step => {
-          const newCampaign = Object.assign({}, campaign);
-          newCampaign.steps.push(step);
-          setCampaign(newCampaign);
-        })
-    .catch(err => {
-      console.log(err.message);
+    .catch( e => {
+      console.log(e);
     });
   }
 

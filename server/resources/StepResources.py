@@ -13,7 +13,7 @@ execute_parser = reqParserGen.getParser('step_id')
 create_parser = reqParserGen.getParser('template_id')
 update_parser = reqParserGen.getParser('template_id')
 
-class CreateStep(Resource):
+class Step(Resource):
     @jwt_required 
     def post(self, id):
         data = create_parser.parse_args()
@@ -40,7 +40,6 @@ class CreateStep(Resource):
         except:
             return {'message': 'Something went wrong'}, 500
 
-class UpdateStep(Resource):
     @jwt_required
     def put(self, id):
         """Update a step"""
@@ -51,7 +50,7 @@ class UpdateStep(Resource):
             return {
                 'message': 'You don\'t own that step'
             }, 401
-        template = template.find_by_id(template_id)
+        template = EmailTemplateModel.find_by_id(new_template_id)
         if template.owner_id != get_jwt_identity():
             return {'message': 'You don\'t have permission to do that.'}, 403
         step.email_template_id = template.id
