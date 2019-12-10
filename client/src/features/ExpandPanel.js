@@ -35,7 +35,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const ExpandPanel = ({ getData, list, actionType, handleSearchTerm, placeholderValue, emailTerm, handleSearchEmail, getAllProspects}) => {
+const ExpandPanel = ({ getData, list, actionType, handleSearchTerm, placeholderValue, emailTerm, handleSearchEmail}) => {
   const classes = useStyles();
   const [checked, handleCheck] = useState(false);
 
@@ -46,7 +46,7 @@ const ExpandPanel = ({ getData, list, actionType, handleSearchTerm, placeholderV
         getData(actionType[1])
       }
     } else {
-      handleCheck(false); 
+      handleCheck(false);
       if (actionType[0] === 'Email') {
         handleSearchEmail('');
       } else {
@@ -55,7 +55,7 @@ const ExpandPanel = ({ getData, list, actionType, handleSearchTerm, placeholderV
       }
     }
   }
-  
+
 
   const handleQueryTerm = (query) => {
     const queried = list.filter(each => (each.id === query))

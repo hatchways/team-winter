@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
@@ -20,7 +20,7 @@ const SidePanel = ({ importedFromTerm,  handleSearchImportedFrom, statusTerm, ha
   const [statusList, handleStatusList] = useState([{}]);
 
   const actionType = [['Imported from', 'imported_from'], ['Status', 'status'], ['Email', 'email']];
-  
+
   const getImportedFromData = (action) => {
     getAllImportedFrom(action).then((data) => handleImportedFromList(data));
   }
@@ -33,7 +33,6 @@ const SidePanel = ({ importedFromTerm,  handleSearchImportedFrom, statusTerm, ha
     <Paper className={classes.root}>
     <div className={classes.test}></div>
         <ExpandPanel
-          getAllProspects={getAllProspects}
           actionType={actionType[0]}
           list={importedFromList}
           handleSearchTerm={handleSearchImportedFrom}

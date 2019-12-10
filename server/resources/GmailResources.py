@@ -53,7 +53,7 @@ def get_stored_credentials(user_id):
     if user.gmail_credentials is None:
         return None
     credentials = OAuth2Credentials.from_json(user.gmail_credentials)
-    if credentials.access_token_expired():
+    if credentials.access_token_expired:
         credentials.refresh(httplib2.Http())
         # update db with refreshed token
         user.gmail_credentials = credentials.to_json()

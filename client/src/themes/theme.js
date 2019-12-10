@@ -8,7 +8,7 @@ export const theme = createMuiTheme({
     secondary: {
       main: "#4FBE75",
     },
-  }, 
+  },
   typography: {
     fontFamily: '"Roboto"'
   },
@@ -95,16 +95,13 @@ export const theme = createMuiTheme({
         color: '#2AA897',
       }
     },
-    MuiInputLabel: { 
-      root: { 
+    MuiInputLabel: {
+      root: {
         color: 'black',
-        "&$focused": { 
+        "&$focused": {
           color: '#388e3c',
         }
       }
     }
   }
 });
-
-
-

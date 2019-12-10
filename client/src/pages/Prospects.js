@@ -133,9 +133,9 @@ const Prospects = () => {
   }
 
   const handleCloseDialogAndSaveProspects = () => {
-    handleDialog(false)
-    saveProspectsToCampaign()
-  } 
+    handleDialog(false);
+    saveProspectsToCampaign();
+  }
 
   const saveProspectsToCampaign = () => {
     const data = {
@@ -192,13 +192,13 @@ const Prospects = () => {
 
   // Filter inported_from's option
   const filteredImportedFrom = importedFromTerm.name === ''
-  ? data 
+  ? data
   : data.filter(data => data['Imported_from'] === importedFromTerm.name)
- 
+
   // Filter status's option
   const filteredStatus = statusTerm.name === ''
   ? filteredImportedFrom
-  : filteredImportedFrom.filter(data => data['Status'] === statusTerm.name)
+  : filteredImportedFrom.filter(data => data['Status'] === statusTerm.name);
 
    // Filter email's option
   const filteredEmail = emailTerm === ''
@@ -268,10 +268,10 @@ const Prospects = () => {
                     <MailIcon fontSize="small" style={{color: "grey"}} />
                   </Box>
                   <Box pl={2}>
-                    <ProspectsUpload  getAllProspects={getAllProspects}/> 
+                    <ProspectsUpload  getAllProspects={getAllProspects}/>
                   </Box>
                   <Box pl={1}>
-                    <CustomizedButton 
+                    <CustomizedButton
                       className={classes.newProspectButton}>
                       Add New Prospect
                       <div className={classes.seperationLine}></div>
@@ -293,7 +293,7 @@ const Prospects = () => {
           </Box>
         </Grid>
       </Grid>
-      <GmailDialog open={gmailDialogShouldOpen()} /> 
+      <GmailDialog open={gmailDialogShouldOpen()} />
       <GmailAuthorizationHandler/>
       <Snackbar
         anchorOrigin={{
@@ -311,7 +311,7 @@ const Prospects = () => {
           <IconButton
             key="close"
             aria-label="close"
-            color="inherit" 
+            color="inherit"
             onClick={handleSnackbarClose}
           >
             <CloseIcon />
