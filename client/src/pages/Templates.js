@@ -161,7 +161,7 @@ const Templates = (props) => {
   const [confirmationOpen, setConfirmationOpen] = useState(false);
   const [errorOpen, setErrorOpen] = useState(false);
 
-  const variables = ['name', 'from_name'];
+  const variables = ['name', 'from_first_name'];
 
   useEffect( (props) => {
 

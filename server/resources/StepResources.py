@@ -4,7 +4,8 @@ from models.StepModel import StepModel
 from utils.RequestParserGenerator import RequestParserGenerator
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from .GmailResources import get_stored_credentials
-from utils.EmailHelper import send_emails
+from utils.EmailSender import send_emails
+from utils.MessageConverter import convertAllMessages
 
 reqParserGen = RequestParserGenerator()
 stepParser = reqParserGen.getParser('step_id')
@@ -20,6 +21,6 @@ class ExecuteStep(Resource):
         step = StepModel.find_by_id(data['step_id'])
         template = step.template
         credentials = get_stored_credentials(user.id)
-        prospect_emails = [prospect.email for prospect in step.prospects]
-        send_emails(user.gmail_address, prospect_emails, template.subject, template.body, credentials)
+        prospects = convertAllMessages(user, step.prospects, template)
+        send_emails(user.gmail_address, prospects, template.subject, credentials)
         return 200
