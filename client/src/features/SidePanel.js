@@ -31,8 +31,9 @@ const SidePanel = ({ importedFromTerm,  handleSearchImportedFrom, statusTerm, ha
 
   return (
     <Paper className={classes.root}>
-    <div className={classes.test}></div>
+      <div className={classes.test}></div>
         <ExpandPanel
+          getAllProspects={getAllProspects}
           actionType={actionType[0]}
           list={importedFromList}
           handleSearchTerm={handleSearchImportedFrom}

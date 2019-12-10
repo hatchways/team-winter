@@ -10,7 +10,6 @@ import TextField from '@material-ui/core/TextField';
 
 import SelectFromList from './SelectFromList';
 
-
 const useStyles = makeStyles(theme => ({
   root: {
     width: '100%',
@@ -32,10 +31,11 @@ const useStyles = makeStyles(theme => ({
     marginLeft: theme.spacing(1),
     marginRight: theme.spacing(1),
     width: 200,
+    minWidth: 80,
   },
 }));
 
-const ExpandPanel = ({ getData, list, actionType, handleSearchTerm, placeholderValue, emailTerm, handleSearchEmail}) => {
+const ExpandPanel = ({ getData, list, actionType, handleSearchTerm, placeholderValue, emailTerm, handleSearchEmail, getAllProspects}) => {
   const classes = useStyles();
   const [checked, handleCheck] = useState(false);
 

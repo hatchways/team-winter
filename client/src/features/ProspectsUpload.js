@@ -96,9 +96,9 @@ class ColumnSelector extends Component {
         if(val === event.target.value) return 'None';
         return val;
       });
-      console.log(newValues); 
       newValues[column] = event.target.value;
       this.props.onChange(newValues);
+      console.log(newValues)
       return {
         values: newValues
       }
@@ -135,7 +135,7 @@ function ProspectsUpload({ getAllProspects }) {
   const [modalContent, setModalContent] = useState("empty");
   const [prospects, setProspects] = useState([]);
   const [NameColumn, setNameColumn] = useState(0); 
-  const [emailColumn, setEmailColumn] = useState(2);
+  const [emailColumn, setEmailColumn] = useState(1);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [ImportedFromField, handleImportedFromField] = useState('');
 
@@ -166,6 +166,7 @@ function ProspectsUpload({ getAllProspects }) {
     // console.log('name column: ' + NameColumn);
     // console.log('email column: ' + emailColumn);
     // console.log(getJWT());
+
 
     try {
       const response = await fetch(UPLOAD_URL, {
