@@ -50,7 +50,7 @@ const useStyles = makeStyles((theme) => ({
   prospectList: {
     overflow: "auto",
     width: "100%",
-    height: 600,
+    height: 665,
     marginTop: 0,
     [theme.breakpoints.down("lg")]: {
       paddingLeft: 12,
@@ -219,7 +219,7 @@ const Prospects = () => {
     <Fragment>
       <NavBar />
       <Grid container id="container">
-        <Grid item lg={2} sm={12} id='sidePanel' className="halfContainer">
+        <Grid item lg={2} sm={2} xs={12} id='sidePanel' className="half_container">
           <Box>
           <SidePanel
           getAllProspects={getAllProspects}
@@ -232,14 +232,14 @@ const Prospects = () => {
           > </SidePanel>
           </Box>
         </Grid>
-        <Grid item lg={10} sm={12} className="halfContainer">
+        <Grid item lg={10} sm={10} xs={12} className="half_container">
           <Box id='ContainerWrapper' display="flex" flexDirection="row" justifyContent="center">
             <Box id="FeatureContainerAndDataTable" display="flex" flexDirection="column" width='100%'>
               <Box id="FeaturesContainer">
                   <Box
                   className={classes.featuresContainer}
                   display="flex">
-                  <Box flexGrow={1}>
+                  <Box flexGrow={2}>
                     <Box className={classes.titleContainer}>
                       <Typography variant="h5"> Prospects </Typography>
                     </Box>
