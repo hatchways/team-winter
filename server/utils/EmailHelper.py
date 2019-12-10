@@ -35,7 +35,7 @@ def create_and_send_message(sender, to, subject, message_text, credentials):
 def send_emails(sender, prospect_emails, subject, body, credentials):
     print(prospect_emails)
     with redis.from_url(REDIS_URL) as conn:
-        q = Queue('create-task', connection=conn)
+        q = Queue('task', connection=conn)
         q.enqueue(
             enqueue_message,
             sender,

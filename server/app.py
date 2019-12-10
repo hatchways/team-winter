@@ -24,7 +24,7 @@ from models import (
     TagModel, 
     CampaignModel, 
     StepModel, 
-    EmailTemplateModel
+    TemplateModel
 )
 from resources import (
     UserResources, 

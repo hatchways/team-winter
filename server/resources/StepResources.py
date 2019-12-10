@@ -18,7 +18,7 @@ class ExecuteStep(Resource):
         data = stepParser.parse_args()
         user = UserModel.find_by_id(get_jwt_identity())
         step = StepModel.find_by_id(data['step_id'])
-        template = step.email_template
+        template = step.template
         credentials = get_stored_credentials(user.id)
         prospect_emails = [prospect.email for prospect in step.prospects]
         send_emails(user.gmail_address, prospect_emails, template.subject, template.body, credentials)

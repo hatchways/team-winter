@@ -56,7 +56,7 @@ const StepDialog = (props) => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   useEffect( () => {
-    if(props.step !== undefined) getTemplate(props.step.templateId);
+    if(props.step !== undefined && props.open) getTemplate(props.step.templateId);
   }, [props.step, props.open]);
   
   const getTemplate = id => {
