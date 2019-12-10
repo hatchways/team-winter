@@ -350,7 +350,7 @@ const Campaign = (props) => {
                     
                     templates={emailTemplates} />
         <Button onClick={handleNewOpen} className={classes.mt1b3} variant="outlined">Add Step</Button>
-        <SuccessSnackbar open={success} onClose={handleSuccessClose}/>
+        <SuccessSnackbar open={success} onClose={handleSuccessClose} message={"Success"}/>
         <ConfirmationDialog open={confirmOpen}
                             onClose={confirmClose}
                             onConfirm={deleteStep} />
