@@ -10,7 +10,7 @@ import Avatar from '@material-ui/core/Avatar';
 import Typography from '@material-ui/core/Typography';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(({
   username: {
     color: "black",
     marginLeft: "5px",
@@ -43,7 +43,6 @@ const ItemTabs = withStyles({
   indicator: {
     display: 'flex',
     justifyContent: 'center',
-    backgroundColor: '#2AA897',
     marginBlockEnd: "66px",
     '& > div': {
       maxWidth: 50,
@@ -73,7 +72,7 @@ const ItemTab = withStyles(theme => ({
   selected: {},
 }))(props => <Tab disableRipple {...props} />);
 
-const CustomizedTabs = () => {
+const LoggedInFeatures = () => {
   const classes = useStyles();
   const [value, setValue] = useState(0);
   const [toggle, handleToggle] = useState(null);
@@ -139,4 +138,4 @@ const CustomizedTabs = () => {
   );
 }
 
-export default CustomizedTabs;
+export default LoggedInFeatures;
