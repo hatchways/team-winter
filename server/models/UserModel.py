@@ -19,7 +19,7 @@ class UserModel(db.Model):
         'CampaignModel', backref='owner', lazy = 'select'
     )
     templates = db.relationship(
-        'EmailTemplateModel', backref='owner', lazy='dynamic'
+        'TemplateModel', backref='owner', lazy='dynamic'
     )
 
     def save_to_db(self):

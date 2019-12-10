@@ -55,12 +55,12 @@ const Campaign = (props) => {
   const [newOpen, setNewOpen] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [templateId, setTemplateId] = useState(0);
-  const [emailTemplates, setEmailTemplates] = useState([{}]);
+  const [templates, setTemplates] = useState([{}]);
   const [success, setSuccess] = useState(false);
 
   useEffect( () => {
     getCampaign();
-    getEmailTemplates();
+    getTemplates();
   }, []);
 
   const findStepIndex = (step) => {
@@ -71,7 +71,7 @@ const Campaign = (props) => {
   }
 
   const findTemplate = (id) => {
-    for(let template of emailTemplates) {
+    for(let template of templates) {
       if(template.id === id) return template;
     }
     return {};
@@ -90,8 +90,8 @@ const Campaign = (props) => {
     } 
     return {
       id : stepData.id,
-      templateId : stepData.email_template.id,
-      templateName : stepData.email_template.name,
+      templateId : stepData.template.id,
+      templateName : stepData.template.name,
       sent : 100,
       replied : 25,
       prospects : prospects
@@ -122,6 +122,7 @@ const Campaign = (props) => {
 
   const getCampaign = async () => {
     const id = props.match.params.id;
+    console.log(id);
     await fetch(`/campaigns/${id}`, {
       method: 'GET',
       headers: {
@@ -137,22 +138,22 @@ const Campaign = (props) => {
     });
   }
 
-  const handleEmailTemplates = data => {
-    const emailTemplatesData = data['templates'];
-    const emailTemplates = [];
-    for(let emailTemplate of emailTemplatesData) {
-      emailTemplates.push({
-        id : emailTemplate.id,
-        name : emailTemplate.name,
-        type : emailTemplate.type,
-        subject : emailTemplate.subject,
-        body : emailTemplate.body
+  const handleTemplates = data => {
+    const templatesData = data['templates'];
+    const templates = [];
+    for(let template of templatesData) {
+      templates.push({
+        id : template.id,
+        name : template.name,
+        type : template.type,
+        subject : template.subject,
+        body : template.body
       })
     }
-    setEmailTemplates(emailTemplates);
+    setTemplates(templates);
   }
 
-  const getEmailTemplates = async () => {
+  const getTemplates = async () => {
     await fetch('/templates', {
       method: 'GET',
       headers: {
@@ -161,7 +162,7 @@ const Campaign = (props) => {
     })
     .then(res => res.json())
       .then(data => {
-        handleEmailTemplates(data)
+        handleTemplates(data)
       })
     .catch(err => {
       console.log(err.message);
@@ -339,7 +340,7 @@ const Campaign = (props) => {
                     setStep={handleSetEditStep}
                     delete={true}
                     onDeleteClick={handleDelete}
-                    templates={emailTemplates} />
+                    templates={templates} />
         {/* New step dialog */}
         <StepDialog title="New Step"
                     open={newOpen}
@@ -347,8 +348,7 @@ const Campaign = (props) => {
                     onSave={handleNewSave}
                     delete={false}
                     setTemplateId={setTemplateId}
-                    
-                    templates={emailTemplates} />
+                    templates={templates} />
         <Button onClick={handleNewOpen} className={classes.mt1b3} variant="outlined">Add Step</Button>
         <SuccessSnackbar open={success} onClose={handleSuccessClose} message={"Success"}/>
         <ConfirmationDialog open={confirmOpen}
