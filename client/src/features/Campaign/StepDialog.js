@@ -55,6 +55,8 @@ const StepDialog = (props) => {
   const [editorTemplate, setEditorTemplate] = useState({});
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
+  const variables = ['name', 'address'];
+
   useEffect( () => {
     if(props.step !== undefined) getTemplate(props.step.templateId);
   }, [props.step, props.open]);
@@ -163,7 +165,8 @@ const StepDialog = (props) => {
           </Grid>
         </Grid>
         <TemplateEditor template={editorTemplate}
-                        onSave={handleSaveTemplate} />
+                        onSave={handleSaveTemplate} 
+                        variables={variables}/>
       </DialogContent>
       <DialogActions>
         { props.delete ? <Button onClick={props.onDeleteClick} color="secondary" className={classes.deleteButton}>Delete</Button> : null }

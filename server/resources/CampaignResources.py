@@ -65,14 +65,11 @@ class CreateStepToCampaign(Resource):
             new_step.save_to_db()
             return {
                 'step' : new_step.to_dict(rules = 
-                    ('-email_template.steps', '-email_template.owner', '-prospects.campaigns',
-                    '-prospects.tags', '-prospects.steps', '-campaign'))
+                    ('-template.steps', '-template.owner', '-prospects.campaigns',
+                    '-prospects.tags', '-prospects.steps', '-prospects.owner', '-campaign'))
             }, 201
         except:
             return {'message': 'Something went wrong'}, 500
-    
-    # @jwt_required
-    # def put(self, id):
 
 
 class GetCampaign(Resource):

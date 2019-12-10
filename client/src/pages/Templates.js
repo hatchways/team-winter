@@ -161,6 +161,8 @@ const Templates = (props) => {
   const [confirmationOpen, setConfirmationOpen] = useState(false);
   const [errorOpen, setErrorOpen] = useState(false);
 
+  const variables = ['name', 'from_name'];
+
   useEffect( (props) => {
 
     getTemplates();
@@ -334,7 +336,8 @@ const Templates = (props) => {
               onClose={handleDialogClose} >
         <DialogContent>
           <TemplateEditor template={editorTemplate}
-                          onSave={handleSave} />
+                          onSave={handleSave}
+                          variables={variables} />
         </DialogContent>
       </Dialog>
       <ConfirmationDialog open={confirmationOpen}
