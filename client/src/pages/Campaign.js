@@ -56,7 +56,8 @@ const Campaign = (props) => {
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [templateId, setTemplateId] = useState(0);
   const [templates, setTemplates] = useState([{}]);
-  const [success, setSuccess] = useState(false);
+  const [importSuccess, setImportSuccess] = useState(false);
+  const [executeSuccess, setExecuteSuccess] = useState(false);
 
   useEffect( () => {
     getCampaign();
@@ -264,8 +265,12 @@ const Campaign = (props) => {
     setConfirmOpen(false);
   }
 
-  const handleSuccessClose = () => {
-    setSuccess(false);
+  const importSuccessClose = () => {
+    setImportSuccess(false);
+  }
+
+  const executeSuccessClose = () => {
+    setExecuteSuccess(false)
   }
 
   const mergeStepProspects = (prevStep, currStep) => {
@@ -296,7 +301,7 @@ const Campaign = (props) => {
     .then(res => {
       if(res.ok) {
         mergeStepProspects(prevStep, currStep);
-        setSuccess(true);
+        setImportSuccess(true);
       }
     })
     .catch(err => {
@@ -309,7 +314,7 @@ const Campaign = (props) => {
   const handleExecuteStep = (event, step) => {
     apiRequest('POST', '/gmail/send', {'step_id': step.id})
     .then((json) => {
-      
+      setExecuteSuccess(true);
     })
     .catch( (e) => {
       console.log(e);
@@ -350,7 +355,8 @@ const Campaign = (props) => {
                     setTemplateId={setTemplateId}
                     templates={templates} />
         <Button onClick={handleNewOpen} className={classes.mt1b3} variant="outlined">Add Step</Button>
-        <SuccessSnackbar open={success} onClose={handleSuccessClose} message={"Success"}/>
+        <SuccessSnackbar open={importSuccess} onClose={importSuccessClose} message={"Success"}/>
+        <SuccessSnackbar open={executeSuccess} onClose={executeSuccessClose} message={"Executing step..."}/>
         <ConfirmationDialog open={confirmOpen}
                             onClose={confirmClose}
                             onConfirm={deleteStep} />
