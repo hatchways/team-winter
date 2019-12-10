@@ -49,18 +49,19 @@ const Campaign = (props) => {
 
   const classes = useStyles();
 
-  const [campaign, setCampaign] = useState(emptyCampaign);
+  const [campaign, setCampaign] = useState({});
   const [editOpen, setEditOpen] = useState(false);
   const [editStep, setEditStep] = useState({});
   const [newOpen, setNewOpen] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [templateId, setTemplateId] = useState(0);
-  const [emailTemplates, setEmailTemplates] = useState([{}]);
-  const [success, setSuccess] = useState(false);
+  const [templates, setTemplates] = useState([{}]);
+  const [importSuccess, setImportSuccess] = useState(false);
+  const [executeSuccess, setExecuteSuccess] = useState(false);
 
   useEffect( () => {
     getCampaign();
-    getEmailTemplates();
+    getTemplates();
   }, []);
 
   const findStepIndex = (step) => {
@@ -71,7 +72,7 @@ const Campaign = (props) => {
   }
 
   const findTemplate = (id) => {
-    for(let template of emailTemplates) {
+    for(let template of templates) {
       if(template.id === id) return template;
     }
     return {};
@@ -90,8 +91,8 @@ const Campaign = (props) => {
     } 
     return {
       id : stepData.id,
-      templateId : stepData.email_template.id,
-      templateName : stepData.email_template.name,
+      templateId : stepData.template.id,
+      templateName : stepData.template.name,
       sent : 100,
       replied : 25,
       prospects : prospects
@@ -122,6 +123,7 @@ const Campaign = (props) => {
 
   const getCampaign = async () => {
     const id = props.match.params.id;
+    console.log(id);
     await fetch(`/campaigns/${id}`, {
       method: 'GET',
       headers: {
@@ -137,22 +139,22 @@ const Campaign = (props) => {
     });
   }
 
-  const handleEmailTemplates = data => {
-    const emailTemplatesData = data['templates'];
-    const emailTemplates = [];
-    for(let emailTemplate of emailTemplatesData) {
-      emailTemplates.push({
-        id : emailTemplate.id,
-        name : emailTemplate.name,
-        type : emailTemplate.type,
-        subject : emailTemplate.subject,
-        body : emailTemplate.body
+  const handleTemplates = data => {
+    const templatesData = data['templates'];
+    const templates = [];
+    for(let template of templatesData) {
+      templates.push({
+        id : template.id,
+        name : template.name,
+        type : template.type,
+        subject : template.subject,
+        body : template.body
       })
     }
-    setEmailTemplates(emailTemplates);
+    setTemplates(templates);
   }
 
-  const getEmailTemplates = async () => {
+  const getTemplates = async () => {
     await fetch('/templates', {
       method: 'GET',
       headers: {
@@ -161,7 +163,7 @@ const Campaign = (props) => {
     })
     .then(res => res.json())
       .then(data => {
-        handleEmailTemplates(data)
+        handleTemplates(data)
       })
     .catch(err => {
       console.log(err.message);
@@ -263,22 +265,26 @@ const Campaign = (props) => {
     setConfirmOpen(false);
   }
 
-  const handleSuccessClose = () => {
-    setSuccess(false);
+  const importSuccessClose = () => {
+    setImportSuccess(false);
+  }
+
+  const executeSuccessClose = () => {
+    setExecuteSuccess(false)
   }
 
   const mergeStepProspects = (prevStep, currStep) => {
     const prevProspects = prevStep.prospects;
     const currProspects = currStep.prospects;
     const combineProspects = [...prevProspects, ...currProspects];
+    console.log(combineProspects)
     const uniqueProspects = combineProspects.filter(
-      (prospect, idx) => combineProspects.indexOf(prospect) === idx);
+      (prospect, idx) => combineProspects.map(obj => obj.id).indexOf(prospect.id) === idx);
+    console.log(uniqueProspects)
     currStep.prospects = uniqueProspects;
-    console.log(currStep);
   }
 
   const handleImportProspects = (event, currStep, idx) => {
-    console.log(currStep);
     const prevStep = campaign.steps[idx-1];
     const data = {
       'prev_step_id' : prevStep.id,
@@ -295,7 +301,7 @@ const Campaign = (props) => {
     .then(res => {
       if(res.ok) {
         mergeStepProspects(prevStep, currStep);
-        setSuccess(true);
+        setImportSuccess(true);
       }
     })
     .catch(err => {
@@ -308,7 +314,7 @@ const Campaign = (props) => {
   const handleExecuteStep = (event, step) => {
     apiRequest('POST', '/gmail/send', {'step_id': step.id})
     .then((json) => {
-      
+      setExecuteSuccess(true);
     })
     .catch( (e) => {
       console.log(e);
@@ -339,7 +345,7 @@ const Campaign = (props) => {
                     setStep={handleSetEditStep}
                     delete={true}
                     onDeleteClick={handleDelete}
-                    templates={emailTemplates} />
+                    templates={templates} />
         {/* New step dialog */}
         <StepDialog title="New Step"
                     open={newOpen}
@@ -347,10 +353,10 @@ const Campaign = (props) => {
                     onSave={handleNewSave}
                     delete={false}
                     setTemplateId={setTemplateId}
-                    
-                    templates={emailTemplates} />
+                    templates={templates} />
         <Button onClick={handleNewOpen} className={classes.mt1b3} variant="outlined">Add Step</Button>
-        <SuccessSnackbar open={success} onClose={handleSuccessClose}/>
+        <SuccessSnackbar open={importSuccess} onClose={importSuccessClose} message={"Success"}/>
+        <SuccessSnackbar open={executeSuccess} onClose={executeSuccessClose} message={"Executing step..."}/>
         <ConfirmationDialog open={confirmOpen}
                             onClose={confirmClose}
                             onConfirm={deleteStep} />
