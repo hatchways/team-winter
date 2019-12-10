@@ -14,13 +14,13 @@ const useStyles = makeStyles(() => ({
   }
 }));
 
-const SidePanel = ({ importedFromTerm,  handleSearchImportedFrom, statusTerm, handleSearchStatus, emailTerm, handleSearchEmail}) => {
+const SidePanel = ({ importedFromTerm,  handleSearchImportedFrom, statusTerm, handleSearchStatus, emailTerm, handleSearchEmail, getAllProspects}) => {
   const classes = useStyles();
   const [importedFromList, handleImportedFromList] = useState([{}]);
   const [statusList, handleStatusList] = useState([{}]);
 
   const actionType = [['Imported from', 'imported_from'], ['Status', 'status'], ['Email', 'email']];
-  
+
   const getImportedFromData = (action) => {
     getAllImportedFrom(action).then((data) => handleImportedFromList(data));
   }
@@ -41,6 +41,7 @@ const SidePanel = ({ importedFromTerm,  handleSearchImportedFrom, statusTerm, ha
           >
         </ExpandPanel>
         <ExpandPanel
+          getAllProspects={getAllProspects}
           actionType={actionType[1]}
           list={statusList}
           handleSearchTerm={handleSearchStatus}

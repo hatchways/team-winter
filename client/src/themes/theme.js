@@ -5,7 +5,7 @@ export const theme = createMuiTheme({
     secondary: {
       main: "#008080"
     },
-  }, 
+  },
   typography: {
     fontFamily: '"Roboto"'
   },
@@ -64,6 +64,9 @@ export const theme = createMuiTheme({
         '&:after': {
           borderBottom: 'none',
         },
+        '&:before': {
+          borderBottom: 'none',
+        },
       }
     },
     MuiOutlinedInput: {
@@ -74,9 +77,28 @@ export const theme = createMuiTheme({
         },
       }
     },
+    MuiDialogContent: {
+      root: {
+        padding: 30,
+      },
+    },
+    MuiDialogTitle: {
+      root: {
+        padding: "20px 0px",
+      },
+    },
+    MuiButton: {
+      textPrimary: {
+        color: '#2AA897',
+      }
+    },
+    MuiInputLabel: {
+      root: {
+        color: 'black',
+        "&$focused": {
+          color: '#388e3c',
+        }
+      }
+    }
   }
 });
-
-
-
-

@@ -40,11 +40,22 @@ const ExpandPanel = ({ getData, list, actionType, handleSearchTerm, placeholderV
   const [checked, handleCheck] = useState(false);
 
   const handleExpand = () => {
-    handleCheck(!checked)
-    if (getData) {
-      getData(actionType[1])
+    if (checked === false) {
+      handleCheck(true);
+      if (getData) {
+        getData(actionType[1])
+      }
+    } else {
+      handleCheck(false);
+      if (actionType[0] === 'Email') {
+        handleSearchEmail('');
+      } else {
+        handleSearchTerm({id: '', name: ''});
+        getAllProspects();
+      }
     }
   }
+
 
   const handleQueryTerm = (query) => {
     const queried = list.filter(each => (each.id === query))
@@ -62,9 +73,9 @@ const ExpandPanel = ({ getData, list, actionType, handleSearchTerm, placeholderV
     placeholder="Search by email"
     value={emailTerm}
     onChange={e => handleSearchEmail(e.target.value)}
-    color='red'
   />)
   }
+
 
   if (list) {
     selectFromList = (
