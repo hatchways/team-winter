@@ -10,7 +10,7 @@ import Select from '@material-ui/core/Select';
 const useStyles = makeStyles(theme => ({
   formControl: {
     margin: "0px 25px",
-    minWidth: 180,
+    minWidth: 80,
     maxWidth: 300,
   },
 }));
