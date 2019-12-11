@@ -132,12 +132,15 @@ const Campaign = (props) => {
     });
   }
 
-  const updateStep = (step) => {
-    console.log('Update: ' + JSON.stringify(step));
+  const updateStep = () => {
     // update UI
-    const idx = findStepIndex(step);
-    campaign.steps[idx].templateId = step.templateId;
-    campaign.steps[idx].templateName = findTemplate(step.templateId).name;
+    const newStep = Object.assign({}, editStep);
+    newStep.templateId = templateId;
+    setEditStep(newStep);
+
+    const idx = findStepIndex(editStep);
+    campaign.steps[idx].templateId = editStep.templateId;
+    campaign.steps[idx].templateName = findTemplate(editStep.templateId).name;
     setCampaign(campaign);
     
     /** 
@@ -187,13 +190,13 @@ const Campaign = (props) => {
   }
 
   const handleEditSave = () => {
-    updateStep(editStep);
+    updateStep();
     setEditOpen(false);
   }
 
-  const handleSetEditStep = (newStep) => {
-    setEditStep(newStep);
-  }
+  // const handleSetEditStep = (newStep) => {
+  //   setEditStep(newStep);
+  // }
 //-----------------Create Step-----------------------//
   const handleNewOpen = () => {
     setNewOpen(true);
@@ -286,9 +289,10 @@ const Campaign = (props) => {
                     onClose={handleEditClose}
                     onSave={handleEditSave}
                     step={editStep}
-                    setStep={handleSetEditStep}
+                    // setStep={handleSetEditStep}
                     delete={true}
                     onDeleteClick={handleDelete}
+                    setTemplateId={setTemplateId}
                     templates={templates} />
         {/* New step dialog */}
         <StepDialog title="New Step"

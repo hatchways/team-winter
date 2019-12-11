@@ -55,11 +55,15 @@ const StepDialog = (props) => {
   const [editorTemplate, setEditorTemplate] = useState({});
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [onNew, setOnNew] = useState(false);
+  const [selectedId, setSelectedId] = useState(null);
 
   const variables = ['name', 'from_first_name'];
 
   useEffect( () => {
-    if(props.step !== undefined) getTemplate(props.step.templateId);
+    if(props.step !== undefined) {
+      getTemplate(props.step.templateId);
+      setSelectedId(props.step.templateId);
+    }
   }, [props.step, props.open]);
   
   const getTemplate = id => {
@@ -72,16 +76,16 @@ const StepDialog = (props) => {
     })
   }
 
-  const setTemplate = (event) => {
-    const newId = event.target.value;
-    const newStep = Object.assign({}, props.step);
-    newStep.templateId = newId;
-    props.setStep(newStep);
-  }
+  // const setTemplate = (event) => {
+  //   const newId = event.target.value;
+  //   const newStep = Object.assign({}, props.step);
+  //   newStep.templateId = newId;
+  //   props.setStep(newStep);
+  // }
 
   const handleChange = (event) => {
-    if(props.step) setTemplate(event);
-    else props.setTemplateId(event.target.value);
+    props.setTemplateId(event.target.value);
+    setSelectedId(event.target.value);
     apiRequest('GET', `/templates/${event.target.value}`)
     .then( json => {
       setEditorTemplate(json['template']);
@@ -93,7 +97,6 @@ const StepDialog = (props) => {
     apiRequest('POST', '/templates', template) :
     apiRequest('PUT', `/templates/${template.id}`, template) 
     .then( json => {
-      setTemplate()
       console.log(json);
       setSnackbarOpen(true);
       setOnNew(false);
@@ -146,7 +149,7 @@ const StepDialog = (props) => {
               <InputLabel id="template-select-label">Template</InputLabel>
               <Select labelId="template-select-label"
                       id="template-select"
-                      value= {props.step ? props.step.templateId : null} 
+                      value={selectedId}
                       onChange={handleChange}
                       className={classes.select} >
                 {
