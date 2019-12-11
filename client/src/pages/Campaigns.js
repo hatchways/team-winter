@@ -53,9 +53,7 @@ const Campaigns = () => {
     getUserCampaigns();
   }, setCampaigns);
 
-  const propsForDataTable = {
-    data: campaigns
-  }
+
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -76,7 +74,8 @@ const Campaigns = () => {
         Replies: "",
         Steps: each.steps,
         Due: "",
-        link: "/campaigns/" + each.id
+        link: "/campaigns/" + each.id,
+        arrow: 'arrow'
       }
       campaigns.push(campaign);
     }
@@ -121,7 +120,7 @@ const Campaigns = () => {
       <Box className="tagsContainer" display="flex" justifyContent="center">
       </Box>
       <UserInputContainer className={classes.campaignList}>
-        <DataTable props={propsForDataTable} ></DataTable>
+        <DataTable props={{data:campaigns}} ></DataTable>
       </UserInputContainer>
     </Fragment>
   )

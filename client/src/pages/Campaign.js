@@ -94,7 +94,6 @@ const Campaign = (props) => {
         prospectsReplied : 10,
         steps : steps
     })
-    console.log(steps);
   }
   
   const getCampaign =  () => {
