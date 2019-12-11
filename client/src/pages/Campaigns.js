@@ -51,11 +51,8 @@ const Campaigns = () => {
 
   useEffect(() => {
     getUserCampaigns();
-  }, setCampaigns);
-
-  const propsForDataTable = {
-    data: campaigns
-  }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -128,7 +125,7 @@ const Campaigns = () => {
       <Box className="tagsContainer" display="flex" justifyContent="center">
       </Box>
       <UserInputContainer className={classes.campaignList}>
-        <DataTable props={propsForDataTable} ></DataTable>
+        <DataTable data={campaigns} ></DataTable>
       </UserInputContainer>
     </Fragment>
   )
