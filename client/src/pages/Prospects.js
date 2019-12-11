@@ -208,13 +208,6 @@ const Prospects = () => {
     return data['Email'].toLowerCase().includes(queryEmail);
   })
 
-  const propsForDataTable = {
-    data: filteredEmail,
-    handleClickOnAllRows,
-    handleClickOnRow,
-    selectedProspects,
-  }
-
   return (
     <Fragment>
       <NavBar />
@@ -285,7 +278,13 @@ const Prospects = () => {
               <Box display="flex" justifyContent="center" id="DataTable" >
               <Box className={classes.tableContainer}>
                 <UserInputContainer className={classes.prospectList}>
-                  <DataTable props={propsForDataTable}></DataTable>
+                  <DataTable
+                    data={filteredEmail}
+                    handleClickOnAllRows={handleClickOnAllRows}
+                    handleClickOnRow={handleClickOnRow}
+                    selectedProspects={selectedProspects}
+                    >
+                  </DataTable>
                 </UserInputContainer>
             </Box>
               </Box>

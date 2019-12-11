@@ -46,7 +46,7 @@ const useStyles = makeStyles((theme) => ({
 const Campaigns = () => {
   const classes = useStyles();
 
-  const [open, setOpen] = useState(false); 
+  const [open, setOpen] = useState(false);
   const [campaigns, setCampaigns] = useState([{}]);
 
   useEffect(() => {
@@ -108,7 +108,7 @@ const Campaigns = () => {
             <MailIcon fontSize="2px" style={{color: "grey"}} />
           </Box>
           <Box>
-            <CustomizedButton 
+            <CustomizedButton
               className={classes.createCampaignButton}
               onClick={handleClickOpen}>
               Create Campaign
@@ -120,7 +120,7 @@ const Campaigns = () => {
       <Box className="tagsContainer" display="flex" justifyContent="center">
       </Box>
       <UserInputContainer className={classes.campaignList}>
-        <DataTable props={{data:campaigns}} ></DataTable>
+        <DataTable data={campaigns} ></DataTable>
       </UserInputContainer>
     </Fragment>
   )
