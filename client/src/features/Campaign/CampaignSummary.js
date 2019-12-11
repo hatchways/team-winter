@@ -12,10 +12,6 @@ import {
 
 import MailIcon from '@material-ui/icons/Mail';
 
-import CustomizedButton from '../CustomizedButton';
-
-
-
 const useStyles = makeStyles( () => ({
   mt1: {
     marginTop: '1rem'
@@ -78,38 +74,6 @@ const VerticalDivider = (props) => {
 
   return (
     <Divider className={props.step ? classes.stepVerticalDivider : classes.verticalDivider} orientation="vertical" />
-  )
-
-}
-
-const CampaignHeader = (props) => {
-
-  const classes = useStyles();
-
-  return (
-    <Grid container item
-          direction="row"
-          justify="space-between"
-          alignItems="center" >
-      <Grid container item
-            direction="column"
-            justify="center"
-            alignItems="flex-start"
-            xs={12}
-            sm={8} >
-        <Grid item>
-          <Typography variant="h4">{props.title}</Typography>
-        </Grid>
-        <Grid item>
-          <Typography component="p">by {props.userName}</Typography>
-        </Grid>
-      </Grid>
-      <Grid item
-            xs={12}
-            sm={4} >
-        <CustomizedButton className={classes.addProspectsButton}>Add Prospects</CustomizedButton>
-      </Grid>
-    </Grid>
   )
 
 }
@@ -231,9 +195,6 @@ const CampaignSummary = (props) => {
             direction="column"
             justify="flex-start"
             alignItems="stretch" >
-        {/* Campaign name and controls */}
-        <CampaignHeader title={props.title}
-                        userName={props.userName} />
         {/* Campaign Data */}
         <CampaignDataDisplay prospects={props.prospects} 
                              contacted={props.contacted}
