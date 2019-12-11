@@ -32,29 +32,27 @@ def create_and_send_message(sender, to, subject, message_text, credentials):
         print('An error occurred: %s' % e)
 
 
-def send_emails(sender, prospect_emails, subject, body, credentials):
-    print(prospect_emails)
+def send_emails(sender, prospects, subject, credentials):
     with redis.from_url(REDIS_URL) as conn:
         q = Queue('task', connection=conn)
         q.enqueue(
             enqueue_message,
             sender,
-            prospect_emails,
+            prospects,
             subject,
-            body,
             credentials
         )
 
-def enqueue_message(sender, to_addresses, subject, body, credentials):
+def enqueue_message(sender, prospects, subject, credentials):
     with redis.from_url(REDIS_URL) as conn:
         q = Queue('emails', connection=conn)
-        for to_address in to_addresses:
+        for prospect in prospects:
             q.enqueue(
                 create_and_send_message,
                 sender,
-                to_address,
+                prospect['email'],
                 subject,
-                body,
+                prospect['message'],
                 credentials
             )
     return 200

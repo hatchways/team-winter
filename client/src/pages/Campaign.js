@@ -9,7 +9,7 @@ import CampaignSummary from '../features/Campaign/CampaignSummary';
 import StepDialog from '../features/Campaign/StepDialog';
 import ConfirmationDialog from '../features/ConfirmationDialog';
 import SuccessSnackbar from '../features/SuccessSnackbar';
-import { apiRequest, getJWT } from '../utils';
+import { apiRequest } from '../utils';
 
 const useStyles = makeStyles( () => ({
   container: {
@@ -20,30 +20,6 @@ const useStyles = makeStyles( () => ({
     marginBottom: '3rem'
   }
 }));
-
-// sample campaign, data to be removed
-const emptyCampaign = {
-  id: 1,
-  title: 'My First Campaign',
-  userName: 'John Doe',
-  prospectsTotal: 234,
-  prospectsContacted: 123,
-  prospectsReplied: 34,
-  steps: [
-    {
-      id: 1,
-      templateId: 1,
-      templateName: 'First template',
-      sent: 123,
-      replied: 23
-    }
-  ],
-}
-
-
-const emptyStep = {
-  templateId: ''
-}
 
 const Campaign = (props) => {
 
@@ -118,22 +94,14 @@ const Campaign = (props) => {
         prospectsReplied : 10,
         steps : steps
     })
-    console.log(steps);
   }
-
-  const getCampaign = async () => {
+  
+  const getCampaign =  () => {
     const id = props.match.params.id;
-    console.log(id);
-    await fetch(`/campaigns/${id}`, {
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${getJWT()}`
-      }
+    apiRequest('GET', `/campaigns/${id}`)
+    .then(data => {
+      handleCampaign(data)
     })
-    .then(res => res.json())
-      .then(data => {
-        handleCampaign(data)
-      })
     .catch(err => {
       console.log(err.message);
     });
@@ -154,17 +122,11 @@ const Campaign = (props) => {
     setTemplates(templates);
   }
 
-  const getTemplates = async () => {
-    await fetch('/templates', {
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${getJWT()}`
-      }
+  const getTemplates = () => {
+    apiRequest('GET', '/templates')
+    .then(data => {
+      handleTemplates(data)
     })
-    .then(res => res.json())
-      .then(data => {
-        handleTemplates(data)
-      })
     .catch(err => {
       console.log(err.message);
     });
@@ -185,22 +147,11 @@ const Campaign = (props) => {
      */
   }
 
-  const addNewStep = async () => {
+  const addNewStep = () => {
     const id = campaign.id;
-    const data = {
-      id : templateId
-    }
-    await fetch(`/campaign/${id}/steps`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json', 
-        'Authorization': `Bearer ${getJWT()}`
-      },
-      body: JSON.stringify(data)
-    })
-    .then(res => res.json())
-      .then(data => createStepObject(data.step))
-        .then(step => {
+    apiRequest('POST', `/campaign/${id}/steps`, {id : templateId})
+    .then(data => createStepObject(data.step))
+      .then(step => {
           const newCampaign = Object.assign({}, campaign);
           newCampaign.steps.push(step);
           setCampaign(newCampaign);
@@ -290,16 +241,9 @@ const Campaign = (props) => {
       'prev_step_id' : prevStep.id,
       'curr_step_id' : currStep.id
     }
-    fetch(`/steps/prospects`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json', 
-        'Authorization': `Bearer ${getJWT()}`
-      },
-      body: JSON.stringify(data)
-    })
+    apiRequest('POST', `/steps/prospects`, data)
     .then(res => {
-      if(res.ok) {
+      if(res) {
         mergeStepProspects(prevStep, currStep);
         setImportSuccess(true);
       }

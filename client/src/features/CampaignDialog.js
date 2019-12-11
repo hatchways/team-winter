@@ -5,7 +5,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
-import { getJWT } from '../utils';
+import { apiRequest } from '../utils';
 
 
 export default function CampaignDialog(props) {
@@ -28,29 +28,16 @@ export default function CampaignDialog(props) {
     onClose();
   }
   
-  const handleCreate = async () => {
+  const handleCreate = () => {
   
-    const data = {
-      'name': name
-    };
-      
-    
-    await fetch('/campaigns', {
-        method: 'POST',  
-        headers: {
-          'Content-Type': 'application/json', 
-          'Authorization': `Bearer ${getJWT()}`
-        },
-        body: JSON.stringify(data)
+    apiRequest('POST', '/campaigns', {'name' : name})
+      .then(data => {
+        onCreate(data.campaign);
       })
-      .then(res => res.json())
-        .then(data => {
-          onCreate(data.campaign);
-        })
-      .catch(err => {
-        console.log(err.message);
-      });
-    } 
+    .catch(err => {
+      console.log(err.message);
+    });
+  } 
    
   
   return (
