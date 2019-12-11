@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Fragment } from 'react';
+import React, { Fragment } from 'react';
 
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
@@ -18,20 +18,20 @@ const useStyles = makeStyles(() => ({
     padding: 10,
   },
   activeButton: {
-    margin: 20,
+    margin: "10px 20px",
     width: 170,
     height: 40,
     justifyContent: "flex-start",
     borderRadius: 10,
   },
   unactiveButton: {
-    margin: "20px 50px",
-    width: 170,
+    margin: "10px 50px",
+    width: 100,
     height: 40,
     justifyContent: "flex-start",
     '&:hover': {
       background: "none"
-    }
+    },
   }
 }));
 
