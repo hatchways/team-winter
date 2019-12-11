@@ -97,7 +97,8 @@ const Campaign = (props) => {
   }, []);
 
   const getAllProspects = () => {
-    apiRequest('GET', `/prospects`)
+    const campaignId = props.match.params.id;
+    apiRequest('GET', `/campaign/${campaignId}/prospects`)
     .then( result => {
       const listOfProspects = [];
       const cloudIcon = <CloudIcon className="fas fa-cloud" style={{color: "grey"}} />
@@ -473,7 +474,7 @@ const Campaign = (props) => {
 
   return (
     <Fragment>
-      <NavBar />
+      <NavBar userName={campaign.userName}/>
       <Grid container className={classes.sidePanelContainer}>
         <Grid item lg={2} sm={12} xs={12} id='sidePanel' className="half_container">
           <CampaignSidePanel
