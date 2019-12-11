@@ -10,7 +10,7 @@ import NavBar from '../features/NavBar/MainBody';
 import UserInputContainer from '../features/UserInputContainer';
 import DataTable from '../features/DataTable';
 import CampaignDialog from '../features/CampaignDialog';
-import { getJWT } from '../utils';
+import { apiRequest } from '../utils';
 
 const useStyles = makeStyles((theme) => ({
   createCampaignButton: {
@@ -83,16 +83,9 @@ const Campaigns = () => {
     setCampaigns(campaigns);
   }
 
-  const getUserCampaigns = async () => {
-
-    await fetch('/campaigns', {
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${getJWT()}`
-      }
-    })
-    .then(res => res.json())
-      .then(data => {handleCampaigns(data)})
+  const getUserCampaigns = () => {
+    apiRequest('GET', '/campaigns')
+      .then(data => handleCampaigns(data))
     .catch(err => {
       console.log(err.message);
     });
