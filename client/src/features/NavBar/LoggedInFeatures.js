@@ -72,7 +72,8 @@ const ItemTab = withStyles(theme => ({
   selected: {},
 }))(props => <Tab disableRipple {...props} />);
 
-const LoggedInFeatures = () => {
+const LoggedInFeatures = ({ userName }) => {
+
   const classes = useStyles();
   const [value, setValue] = useState(0);
   const [toggle, handleToggle] = useState(null);
@@ -119,7 +120,7 @@ const LoggedInFeatures = () => {
     </div>
     <Avatar src="https://ph-files.imgix.net/84451835-127d-469b-87f0-049c838b69a3?auto=format" />
     <Typography  className={classes.username} >
-      Hatchways
+      {userName ? userName: 'Hatchways'}
     </Typography>
     <Button className={classes.toggleButton} onClick={handleClick}>
     <ArrowDropDownIcon fontSize="small" style={{color: "grey"}} pt={3} />
