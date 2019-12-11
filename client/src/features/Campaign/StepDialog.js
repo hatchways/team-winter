@@ -54,6 +54,7 @@ const StepDialog = (props) => {
 
   const [editorTemplate, setEditorTemplate] = useState({});
   const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [onNew, setOnNew] = useState(false);
 
   const variables = ['name', 'from_first_name'];
 
@@ -88,10 +89,14 @@ const StepDialog = (props) => {
   }
 
   const handleSaveTemplate = (template) => {
-    apiRequest('PUT', `/templates/${template.id}`, template)
+    onNew ?
+    apiRequest('POST', '/templates', template) :
+    apiRequest('PUT', `/templates/${template.id}`, template) 
     .then( json => {
+      setTemplate()
       console.log(json);
       setSnackbarOpen(true);
+      setOnNew(false);
     })
     .catch( e => {
       console.log(e);
@@ -113,14 +118,15 @@ const StepDialog = (props) => {
   }
 
   const newTemplate = () => {
-    apiRequest('POST', '/templates', emptyTemplate)
-    .then( json => {
-      setEditorTemplate(json.template);
-      props.onNewTemplate(json.template);
-    })
-    .catch( e => {
-      console.log(e);
-    });
+    // apiRequest('POST', '/templates', emptyTemplate)
+    // .then( json => {
+      setEditorTemplate(emptyTemplate);
+      setOnNew(true);
+    //   // props.onNewTemplate(json.template);
+    // })
+    // .catch( e => {
+    //   console.log(e);
+    // });
   }
 
   return (
@@ -140,8 +146,7 @@ const StepDialog = (props) => {
               <InputLabel id="template-select-label">Template</InputLabel>
               <Select labelId="template-select-label"
                       id="template-select"
-                      value= {props.step ? props.step.templateId : null}
-                      onChange={e => props.step ? setTemplate(e) : props.setTemplateId(e.target.value)} 
+                      value= {props.step ? props.step.templateId : null} 
                       onChange={handleChange}
                       className={classes.select} >
                 {

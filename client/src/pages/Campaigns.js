@@ -74,8 +74,7 @@ const Campaigns = () => {
         Replies: "",
         Steps: each.steps,
         Due: "",
-        link: "/campaigns/" + each.id,
-        arrow: 'arrow'
+        link: "/campaigns/" + each.id
       }
       campaigns.push(campaign);
     }
