@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
     borderRight: "2px solid #EDECF2 "
   },
   selected: {
-    backgroundColor: "#2AA897",
+    background: "linear-gradient(45deg, #2AA897 20%, #4FBE75 80%)",
     height: 60,
   }
 }))
