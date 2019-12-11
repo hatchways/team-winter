@@ -12,7 +12,7 @@ campaignProspectsParser = reqParserGen.getParser(["prospect_ids"])
 campaignStepsParser = reqParserGen.getParser("id")
 
 
-class CampaignProspects(Resource):
+class CampaignProspects(Resource):   #<<<<
     @jwt_required
     def get(self, id):
         current_campaign = CampaignModel.find_by_id(id)
@@ -22,7 +22,14 @@ class CampaignProspects(Resource):
             return {'message': 'You don\'t have permission to do that.'}, 403
         prospects = []
         for prospect in current_campaign.prospects:
-            prospects.append({'id' : prospect.id, 'name' : prospect.name})
+            prospects.append({
+                'id' : prospect.id,
+                'email': prospect.email,
+                'name' : prospect.name,
+                'status' : prospect.status,
+                'imported_from': prospect.imported_from,
+                'campaigns': len(prospect.campaigns),
+                })
         steps = []
         for step in current_campaign.steps:
             steps.append({'id' : step.id, 'email_template_id' : step.email_template.id})
