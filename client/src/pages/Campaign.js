@@ -16,6 +16,7 @@ import ConfirmationDialog from '../features/ConfirmationDialog';
 import SuccessSnackbar from '../features/SuccessSnackbar';
 import CampaignSidePanel from '../features/CampaignSidePanel';
 import CampaignHeader from '../features/Campaign/CampaignHeader';
+import StepsTabs from '../features/StepsTabs';
 import { apiRequest, getJWT } from '../utils';
 
 const useStyles = makeStyles((theme) => ({
@@ -384,7 +385,6 @@ const Campaign = (props) => {
     setCurrentView('prospects')
   }
 
-
   //handle select all row on DataTable.js
   const handleClickOnAllRows = event => {
     if (event.target.checked) {
@@ -460,6 +460,7 @@ const Campaign = (props) => {
   if (currentView === 'prospects') {
     display = (
       <Fragment>
+        <StepsTabs steps={campaign.steps}/>
         <UserInputContainer className={classes.prospectList}>
           <DataTable
             data={prospects}
