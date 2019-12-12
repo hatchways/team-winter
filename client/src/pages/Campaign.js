@@ -210,25 +210,29 @@ const Campaign = (props) => {
     campaign.steps[idx].templateId = editStep.templateId;
     campaign.steps[idx].templateName = findTemplate(editStep.templateId).name;
     setCampaign(campaign);
+    
+    console.log(step);
 
-    /**
-     * TODO:
-     * update server
-     * update template_id on step with id=step.id
-     */
+    apiRequest('PUT', `/steps/${step.id}`, {'template_id': step.templateId})
+    .then( json => {
+      console.log(json);
+    })
+    .catch( e => {
+      console.log(e);
+    });
   }
 
   const addNewStep = () => {
-    const id = campaign.id;
-    apiRequest('POST', `/campaign/${id}/steps`, {id : templateId})
-    .then(data => createStepObject(data.step))
-      .then(step => {
-          const newCampaign = Object.assign({}, campaign);
-          newCampaign.steps.push(step);
-          setCampaign(newCampaign);
-        })
-    .catch(err => {
-      console.log(err.message);
+    apiRequest('POST', `/campaigns/${campaign.id}/steps`, {'template_id': templateId})
+    .then( json => {
+      console.log(json);
+      const step = createStepObject(json.step);
+      const newCampaign = Object.assign({}, campaign);
+      newCampaign.steps.push(step);
+      setCampaign(newCampaign);
+    })
+    .catch( e => {
+      console.log(e);
     });
   }
 
@@ -241,11 +245,13 @@ const Campaign = (props) => {
     campaign.steps.splice(idx, 1);
     setCampaign(campaign);
 
-    /**
-     * TODO:
-     * update server
-     * delete step with id=editStep.id
-     */
+    apiRequest('DELETE', `/steps/${editStep.id}`)
+    .then( json => {
+      console.log(json);
+    })
+    .catch( e => {
+      console.log(e);
+    });
   }
   const updateTemplate = (oldTemplate, newTemplate) => {
     const idx = findTemplateIndex(oldTemplate); 
