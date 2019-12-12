@@ -13,6 +13,7 @@ reqParserGen = RequestParserGenerator()
 execute_parser = reqParserGen.getParser('step_id')
 create_parser = reqParserGen.getParser('template_id')
 update_parser = reqParserGen.getParser('template_id')
+step_parser = reqParserGen.getParser('step_id')
 
 class Step(Resource):
     @jwt_required 
@@ -36,7 +37,7 @@ class Step(Resource):
             return {
                 'step' : new_step.to_dict(rules = 
                     ('-template.steps', '-template.owner', '-prospects.campaigns',
-                    '-prospects.tags', '-prospects.steps', '-campaign'))
+                    '-prospects.tags', '-prospects.steps', '-prospects.owner', '-campaign'))
             }, 201
         except:
             return {'message': 'Something went wrong'}, 500
@@ -60,7 +61,7 @@ class Step(Resource):
         return {
             'step': step.to_dict(rules = 
                     ('-template.steps', '-template.owner', '-prospects.campaigns',
-                    '-prospects.tags', '-prospects.steps', '-campaign'))
+                    '-prospects.tags', '-prospects.steps', '-prospects.owner', '-campaign'))
         }, 200
 
     @jwt_required
@@ -82,7 +83,7 @@ class ExecuteStep(Resource):
     @jwt_required
     def post(self):
         """ Sending email using Gmail API"""
-        data = stepParser.parse_args()
+        data = step_parser.parse_args()
         user = UserModel.find_by_id(get_jwt_identity())
         step = StepModel.find_by_id(data['step_id'])
         template = step.template

@@ -1,5 +1,6 @@
 from flask_restful import Resource, reqparse
 from models.ProspectModel import ProspectModel
+from models.CampaignModel import CampaignModel
 from models.StepModel import StepModel
 from utils.RequestParserGenerator import RequestParserGenerator
 import json
@@ -28,12 +29,18 @@ class InheritPreviousStepProspects(Resource):
   @jwt_required
   def post(self):
     data = stepProspectsParser.parse_args()
-    prev_step = StepModel.find_by_id(data['prev_step_id'])
     curr_step = StepModel.find_by_id(data['curr_step_id'])
-    if not prev_step or not curr_step:
-      return {'message' : 'step not found'}, 400
+    prev_step = ""
+    if data['prev_step_id'] == "0": 
+      prev_step = CampaignModel.find_by_id(curr_step.campaign.id)
+    else:
+      prev_step = StepModel.find_by_id(data['prev_step_id'])
+      if not prev_step or not curr_step:
+        return {'message' : 'step not found'}, 400
+    
     try:
       curr_step.add_prospects(prev_step.prospects) 
+      
       return {
         'curr_step' : curr_step.to_dict(rules = 
                             ('-template.steps', '-template.owner', '-prospects.campaigns',

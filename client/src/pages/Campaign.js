@@ -252,10 +252,7 @@ const Campaign = (props) => {
   }
   const updateTemplate = (oldTemplate, newTemplate) => {
     const idx = findTemplateIndex(oldTemplate); 
-    // templates[idx].id = newTemplate.id;
-    // templates[idx].name = newTemplate.name;
     templates[idx] = newTemplate;
-    setTemplates(templates);
   }
 
 //---------------Edit Step-----------------------//
@@ -303,29 +300,25 @@ const Campaign = (props) => {
     setExecuteSuccess(false)
   }
 
-  const mergeStepProspects = (prevStep, currStep) => {
+  const mergeStepProspects = (prevStep, currStep, idx) => {
     const prevProspects = prevStep.prospects;
     const currProspects = currStep.prospects;
     const combineProspects = [...prevProspects, ...currProspects];
-    console.log(combineProspects)
     const uniqueProspects = combineProspects.filter(
       (prospect, idx) => combineProspects.map(obj => obj.id).indexOf(prospect.id) === idx);
-    console.log(uniqueProspects)
     currStep.prospects = uniqueProspects;
   }
 
   const handleImportProspects = (event, currStep, idx) => {
-    const prevStep = campaign.steps[idx-1];
+    const prevStep = idx ? campaign.steps[idx-1] : campaign;
     const data = {
-      'prev_step_id' : prevStep.id,
+      'prev_step_id' : idx ? prevStep.id : 0,
       'curr_step_id' : currStep.id
     }
     apiRequest('POST', `/steps/prospects`, data)
     .then(res => {
-      if(res) {
-        mergeStepProspects(prevStep, currStep);
+        mergeStepProspects(prevStep, currStep, idx);
         setImportSuccess(true);
-      }
     })
     .catch(err => {
       console.log(err.message);
