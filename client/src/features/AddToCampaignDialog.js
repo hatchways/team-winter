@@ -21,9 +21,8 @@ const DialogContent = withStyles(theme => ({
 }))(MuiDialogContent);
 
 
-const AddToCampaignDialog = (
-  { handleCloseDialogAndSaveProspects, dialog, handleDialog, actionType ,dataList, setValue, currentValue }
-  ) => {
+const AddToCampaignDialog = (props) => {
+  const { handleCloseDialogAndSaveProspects, dialog, handleDialog, actionType ,dataList, setValue, currentValue } = props;
 
   return (
     <div>

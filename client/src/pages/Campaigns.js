@@ -51,7 +51,7 @@ const Campaigns = () => {
 
   useEffect(() => {
     getUserCampaigns();
-  }, setCampaigns);
+  }, [getUserCampaigns]);
 
 
 
@@ -89,8 +89,6 @@ const Campaigns = () => {
       console.log(err.message);
     });
   }
-
-
 
 
   return (

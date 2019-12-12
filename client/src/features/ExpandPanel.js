@@ -35,7 +35,8 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const ExpandPanel = ({ getData, list, actionType, handleSearchTerm, placeholderValue, emailTerm, handleSearchEmail, getAllProspects}) => {
+const ExpandPanel = (props) => {
+  const { getData, list, actionType, handleSearchTerm, placeholderValue, emailTerm, handleSearchEmail, getAllProspects} = props;
   const classes = useStyles();
   const [checked, handleCheck] = useState(false);
 

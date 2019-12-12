@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import { makeStyles, Grid, Typography } from '@material-ui/core';
 
 import CustomizedButton from '../CustomizedButton';
