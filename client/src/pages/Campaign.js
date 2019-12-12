@@ -1,24 +1,53 @@
 import React, { Fragment, useState, useEffect } from 'react';
-import { 
+import {
   makeStyles,
   Container,
   Button
  } from '@material-ui/core';
+import Grid from '@material-ui/core/Grid';
+import CloudIcon from '@material-ui/icons/Cloud';
+
 import NavBar from '../features/NavBar/MainBody';
 import CampaignSummary from '../features/Campaign/CampaignSummary';
+import UserInputContainer from '../features/UserInputContainer';
+import DataTable from '../features/DataTable';
 import StepDialog from '../features/Campaign/StepDialog';
 import ConfirmationDialog from '../features/ConfirmationDialog';
 import SuccessSnackbar from '../features/SuccessSnackbar';
-import { apiRequest } from '../utils';
+import CampaignSidePanel from '../features/CampaignSidePanel';
+import CampaignHeader from '../features/Campaign/CampaignHeader';
+import StepsTabs from '../features/StepsTabs';
+import { apiRequest, getJWT } from '../utils';
 
-const useStyles = makeStyles( () => ({
+const useStyles = makeStyles((theme) => ({
   container: {
     marginTop: '100px'
   },
   mt1b3: {
     marginTop: '1rem',
     marginBottom: '3rem'
-  }
+  },
+  sidePanelContainer: {
+    height: '100%'
+  },
+  prospectList: {
+    overflow: "auto",
+    width: "100%",
+    height: 500,
+    marginTop: 0,
+    [theme.breakpoints.down("lg")]: {
+      paddingLeft: 12,
+      paddingRight: 15,
+    },
+    [theme.breakpoints.down("md")]: {
+      paddingLeft: 10,
+      paddingRight: 10,
+    },
+    [theme.breakpoints.down("sm")]: {
+      paddingLeft: 5,
+      paddingRight: 5,
+    }
+  },
 }));
 
 const Campaign = (props) => {
@@ -34,12 +63,43 @@ const Campaign = (props) => {
   const [templates, setTemplates] = useState([{}]);
   const [importSuccess, setImportSuccess] = useState(false);
   const [executeSuccess, setExecuteSuccess] = useState(false);
+  const [currentView, setCurrentView] = useState('summary');
+  const [selectedProspects, handleSelectedProspects] = useState([]);
+  const [prospects, handleProspects] = useState([{}]);
 
   useEffect( () => {
     getCampaign();
     getTemplates();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    getAllProspects();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const getAllProspects = () => {
+    const campaignId = props.match.params.id;
+    apiRequest('GET', `/campaign/${campaignId}/prospects`)
+    .then( result => {
+      const listOfProspects = [];
+      const cloudIcon = <CloudIcon className="fas fa-cloud" style={{color: "grey"}} />
+
+      result.Prospects.map(prospect => {
+        const prospectObj = {
+          'id': prospect.id,
+          'check': 'check',
+          'Email': prospect.email,
+          cloudIcon,
+          'Status': prospect.status,
+          'Owner': prospect.name,
+          'Campaigns': prospect.campaigns,
+          'Imported_from': prospect.imported_from
+        }
+        return listOfProspects.push(prospectObj)
+      })
+      handleProspects(listOfProspects)
+    })
+    .catch( e => {
+      console.log(e);
+    })
+  }
 
   const findStepIndex = (step) => {
     for(let i=0; i<campaign.steps.length; i++) {
@@ -70,9 +130,9 @@ const Campaign = (props) => {
           id : prospect.id,
         email : prospect.email,
         owner : prospect.name,
-        status : prospect.status,  
+        status : prospect.status,
       })
-    } 
+    }
     return {
       id : stepData.id,
       templateId : stepData.template.id,
@@ -103,7 +163,7 @@ const Campaign = (props) => {
         steps : steps
     })
   }
-  
+
   const getCampaign =  () => {
     const id = props.match.params.id;
     apiRequest('GET', `/campaigns/${id}`)
@@ -150,8 +210,8 @@ const Campaign = (props) => {
     campaign.steps[idx].templateId = editStep.templateId;
     campaign.steps[idx].templateName = findTemplate(editStep.templateId).name;
     setCampaign(campaign);
-    
-    /** 
+
+    /**
      * TODO:
      * update server
      * update template_id on step with id=step.id
@@ -187,7 +247,6 @@ const Campaign = (props) => {
      * delete step with id=editStep.id
      */
   }
-
   const updateTemplate = (oldTemplate, newTemplate) => {
     const idx = findTemplateIndex(oldTemplate);
     templates[idx] = newTemplate;
@@ -284,51 +343,128 @@ const Campaign = (props) => {
     event.stopPropagation();
   }
 
-  return (
-    <Fragment>
-      <NavBar />
-      <Container className={classes.container}>
+  const setCurrentViewToSummary = () => {
+    setCurrentView('summary')
+  }
+
+  const setCurrentViewToProspects = () => {
+    setCurrentView('prospects')
+  }
+
+  //handle select all row on DataTable.js
+  const handleClickOnAllRows = event => {
+    if (event.target.checked) {
+      const newSelecteds = prospects.map(n => n.id);
+      handleSelectedProspects(newSelecteds);
+      return;
+    }
+    handleSelectedProspects([]);
+  };
+
+  //handle select one row on DataTable.js
+  const handleClickOnRow = (event, id) => {
+    const selectedIndex = selectedProspects.indexOf(id);
+    let newSelected = [];
+
+    if (selectedIndex === -1) {
+      newSelected = newSelected.concat(selectedProspects, id);
+    } else if (selectedIndex === 0) {
+      newSelected = newSelected.concat(selectedProspects.slice(1));
+    } else if (selectedIndex === selectedProspects.length - 1) {
+      newSelected = newSelected.concat(selectedProspects.slice(0, -1));
+    } else if (selectedIndex > 0) {
+      newSelected = newSelected.concat(
+        selectedProspects.slice(0, selectedIndex),
+        selectedProspects.slice(selectedIndex + 1),
+      );
+    }
+    handleSelectedProspects(newSelected);
+  };
+
+  let display = null;
+
+  if (currentView === 'summary') {
+    display = (
+      <Fragment>
         {/* Page headings, campaign summary, and steps display */}
         <CampaignSummary title={campaign.title}
-                         userName={campaign.userName}
-                         prospects={campaign.prospectsTotal}
-                         contacted={campaign.prospectsContacted}
-                         replied={campaign.prospectsReplied}
-                         steps={campaign.steps}
-                         handleProspectsClick={handleImportProspects}
-                         handleExecuteClick={handleExecuteStep}
-                         openEditStepDialog={handleEditOpen} />
+          userName={campaign.userName}
+          prospects={campaign.prospectsTotal}
+          contacted={campaign.prospectsContacted}
+          replied={campaign.prospectsReplied}
+          steps={campaign.steps}
+          handleProspectsClick={handleImportProspects}
+          handleExecuteClick={handleExecuteStep}
+          openEditStepDialog={handleEditOpen} />
         {/* Edit dialog */}
         <StepDialog title="Edit Step"
-                    open={editOpen}
-                    onClose={handleEditClose}
-                    onSave={handleEditSave}
-                    step={editStep}
-                    delete={true}
-                    findTemplate={findTemplate}
-                    updateTemplate={updateTemplate}
-                    onDeleteClick={handleDelete}
-                    setTemplateId={setTemplateId}
-                    setTemplates={setTemplates}
-                    templates={templates} />
+          open={editOpen}
+          onClose={handleEditClose}
+          onSave={handleEditSave}
+          step={editStep}
+          delete={true}
+          findTemplate={findTemplate}
+          updateTemplate={updateTemplate}
+          onDeleteClick={handleDelete}
+          setTemplateId={setTemplateId}
+          setTemplates={setTemplates}
+          templates={templates} />
         {/* New step dialog */}
         <StepDialog title="New Step"
-                    open={newOpen}
-                    onClose={handleNewClose}
-                    onSave={handleNewSave}
-                    delete={false}
-                    findTemplate={findTemplate}
-                    updateTemplate={updateTemplate}
-                    setTemplateId={setTemplateId}
-                    setTemplates={setTemplates}
-                    templates={templates} />
+          open={newOpen}
+          onClose={handleNewClose}
+          onSave={handleNewSave}
+          delete={false}
+          findTemplate={findTemplate}
+          updateTemplate={updateTemplate}
+          setTemplateId={setTemplateId}
+          setTemplates={setTemplates}
+          templates={templates} />
         <Button onClick={handleNewOpen} className={classes.mt1b3} variant="outlined">Add Step</Button>
         <SuccessSnackbar open={importSuccess} onClose={importSuccessClose} message={"Success"}/>
         <SuccessSnackbar open={executeSuccess} onClose={executeSuccessClose} message={"Executing step..."}/>
         <ConfirmationDialog open={confirmOpen}
-                            onClose={confirmClose}
-                            onConfirm={deleteStep} />
-      </Container>
+          onClose={confirmClose}
+          onConfirm={deleteStep} />
+      </Fragment>
+    )
+  }
+
+  if (currentView === 'prospects') {
+    display = (
+      <Fragment>
+        <StepsTabs steps={campaign.steps}/>
+        <UserInputContainer className={classes.prospectList}>
+          <DataTable
+            data={prospects}
+            handleClickOnAllRows={handleClickOnAllRows}
+            handleClickOnRow={handleClickOnRow}
+            selectedProspects={selectedProspects}
+            ></DataTable>
+        </UserInputContainer>
+      </Fragment>
+    )
+  }
+
+  return (
+    <Fragment>
+      <NavBar userName={campaign.userName}/>
+      <Grid container className={classes.sidePanelContainer}>
+        <Grid item lg={2} sm={12} xs={12} id='sidePanel' className="half_container">
+          <CampaignSidePanel
+            currentView={currentView}
+            setCurrentViewToSummary={setCurrentViewToSummary}
+            setCurrentViewToProspects={setCurrentViewToProspects}
+            >
+          </CampaignSidePanel>
+        </Grid>
+        <Grid item lg={10} sm={12} xs={12} className="half_container">
+          <Container className={classes.container}>
+          <CampaignHeader title={campaign.title} userName={campaign.userName}/>
+            {display}
+          </Container>
+        </Grid>
+      </Grid>
     </Fragment>
   )
 }

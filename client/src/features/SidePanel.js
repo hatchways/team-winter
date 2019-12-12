@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
@@ -8,13 +8,13 @@ import { getAllImportedFrom } from '../utils';
 
 const useStyles = makeStyles(() => ({
   root: {
+    height: "900px",
+    paddingTop: "200px",
   },
-  test:{
-    height: 320,
-  }
 }));
 
-const SidePanel = ({ importedFromTerm,  handleSearchImportedFrom, statusTerm, handleSearchStatus, emailTerm, handleSearchEmail, getAllProspects}) => {
+const SidePanel = (props) => {
+  const { importedFromTerm,  handleSearchImportedFrom, statusTerm, handleSearchStatus, emailTerm, handleSearchEmail, getAllProspects} = props;
   const classes = useStyles();
   const [importedFromList, handleImportedFromList] = useState([{}]);
   const [statusList, handleStatusList] = useState([{}]);
@@ -31,7 +31,6 @@ const SidePanel = ({ importedFromTerm,  handleSearchImportedFrom, statusTerm, ha
 
   return (
     <Paper className={classes.root}>
-      <div className={classes.test}></div>
         <ExpandPanel
           getAllProspects={getAllProspects}
           actionType={actionType[0]}
@@ -58,7 +57,6 @@ const SidePanel = ({ importedFromTerm,  handleSearchImportedFrom, statusTerm, ha
           handleSearchEmail={handleSearchEmail}
           >
         </ExpandPanel>
-      <div className={classes.test}></div>
     </Paper>
   );
 }

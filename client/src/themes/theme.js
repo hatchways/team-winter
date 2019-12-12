@@ -102,6 +102,13 @@ export const theme = createMuiTheme({
           color: '#388e3c',
         }
       }
+    },
+    MuiSelect: {
+      select: {
+        "&:focus": {
+          background: "none"
+        }
+      }
     }
   }
 });

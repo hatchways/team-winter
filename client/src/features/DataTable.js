@@ -85,9 +85,9 @@ const HeaderRow = ({props}) => {
   );
 }
 
-const DataTable = ({props}) => {
-  const classes = useStyles();
+const DataTable = (props) => {
   let { data, handleClickOnAllRows, handleClickOnRow, selectedProspects} = props;
+  const classes = useStyles();
   selectedProspects = selectedProspects || [];
   const isSelected = id => selectedProspects.indexOf(id) !== -1;
 
