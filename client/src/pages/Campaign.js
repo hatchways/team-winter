@@ -202,8 +202,8 @@ const Campaign = (props) => {
 
   const updateStep = () => {
     // update UI
+    editStep.templateId = templateId;
     const newStep = Object.assign({}, editStep);
-    newStep.templateId = templateId;
     setEditStep(newStep);
 
     const idx = findStepIndex(editStep);
@@ -248,7 +248,7 @@ const Campaign = (props) => {
      */
   }
   const updateTemplate = (oldTemplate, newTemplate) => {
-    const idx = findTemplateIndex(oldTemplate);
+    const idx = findTemplateIndex(oldTemplate); 
     templates[idx] = newTemplate;
     setTemplates(templates);
   }
