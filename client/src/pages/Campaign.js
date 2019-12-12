@@ -72,6 +72,19 @@ const Campaign = (props) => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const getSteps = (prospect) => {
+    const listOfSteps = {0: true};
+
+    if (prospect.steps.length === 0) {
+      return listOfSteps;
+    } else {
+      for (let i = 0; i < prospect.steps.length; i += 1) {
+        listOfSteps[prospect.steps[0].id] = true;
+      }
+    }
+    return listOfSteps;
+  }
+
   const getAllProspects = () => {
     const campaignId = props.match.params.id;
     apiRequest('GET', `/campaign/${campaignId}/prospects`)
@@ -80,6 +93,7 @@ const Campaign = (props) => {
       const cloudIcon = <CloudIcon className="fas fa-cloud" style={{color: "grey"}} />
 
       result.Prospects.map(prospect => {
+        const steps = getSteps(prospect)
         const prospectObj = {
           'id': prospect.id,
           'check': 'check',
@@ -88,7 +102,8 @@ const Campaign = (props) => {
           'Status': prospect.status,
           'Owner': prospect.name,
           'Campaigns': prospect.campaigns,
-          'Imported_from': prospect.imported_from
+          'Imported_from': prospect.imported_from,
+          'steps': steps
         }
         return listOfProspects.push(prospectObj)
       })
@@ -424,7 +439,6 @@ const Campaign = (props) => {
       </Fragment>
     )
   }
-  console.log('data', prospects)
 
   if (currentView === 'prospects') {
     display = (
