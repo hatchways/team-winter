@@ -26,10 +26,11 @@ const MenuProps = {
   },
 };
 
-const SelectFromList = ({ dataList, actionType, setValue, currentValue }) => {
+const SelectFromList = (props) => {
+  let { dataList, actionType, setValue, currentValue } = props;
   const classes = useStyles();
 
-  if (dataList === undefined) {
+  if (!dataList) {
     dataList = [];
   }
 

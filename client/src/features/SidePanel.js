@@ -13,7 +13,8 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const SidePanel = ({ importedFromTerm,  handleSearchImportedFrom, statusTerm, handleSearchStatus, emailTerm, handleSearchEmail, getAllProspects}) => {
+const SidePanel = (props) => {
+  const { importedFromTerm,  handleSearchImportedFrom, statusTerm, handleSearchStatus, emailTerm, handleSearchEmail, getAllProspects} = props;
   const classes = useStyles();
   const [importedFromList, handleImportedFromList] = useState([{}]);
   const [statusList, handleStatusList] = useState([{}]);

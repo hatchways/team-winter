@@ -72,8 +72,8 @@ const ItemTab = withStyles(theme => ({
   selected: {},
 }))(props => <Tab disableRipple {...props} />);
 
-const LoggedInFeatures = ({ userName }) => {
-
+const LoggedInFeatures = (props) => {
+  const { userName } = props;
   const classes = useStyles();
   const [value, setValue] = useState(0);
   const [toggle, handleToggle] = useState(null);

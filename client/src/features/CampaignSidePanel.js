@@ -35,7 +35,8 @@ const useStyles = makeStyles(() => ({
   }
 }));
 
-const CampaignSidePanel = ({currentView, setCurrentViewToSummary, setCurrentViewToProspects}) => {
+const CampaignSidePanel = (props) => {
+  const {currentView, setCurrentViewToSummary, setCurrentViewToProspects} = props;
   const classes = useStyles();
 
   let display = null;
