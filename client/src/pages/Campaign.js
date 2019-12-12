@@ -38,6 +38,7 @@ const Campaign = (props) => {
   useEffect( () => {
     getCampaign();
     getTemplates();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const findStepIndex = (step) => {
@@ -52,6 +53,13 @@ const Campaign = (props) => {
       if(template.id === id) return template;
     }
     return {};
+  }
+
+  const findTemplateIndex = (template) => {
+    for(let i=0; i<templates.length; i++) {
+      if(templates[i].id === template.id) return i;
+    }
+    return -1;
   }
 
   const createStepObject = stepData => {
@@ -179,6 +187,13 @@ const Campaign = (props) => {
      * delete step with id=editStep.id
      */
   }
+
+  const updateTemplate = (oldTemplate, newTemplate) => {
+    const idx = findTemplateIndex(oldTemplate);
+    templates[idx] = newTemplate;
+    setTemplates(templates);
+  }
+
 //---------------Edit Step-----------------------//
   const handleEditOpen = (idx) => {
     setEditStep(campaign.steps[idx]);
@@ -289,10 +304,12 @@ const Campaign = (props) => {
                     onClose={handleEditClose}
                     onSave={handleEditSave}
                     step={editStep}
-                    // setStep={handleSetEditStep}
                     delete={true}
+                    findTemplate={findTemplate}
+                    updateTemplate={updateTemplate}
                     onDeleteClick={handleDelete}
                     setTemplateId={setTemplateId}
+                    setTemplates={setTemplates}
                     templates={templates} />
         {/* New step dialog */}
         <StepDialog title="New Step"
@@ -300,7 +317,10 @@ const Campaign = (props) => {
                     onClose={handleNewClose}
                     onSave={handleNewSave}
                     delete={false}
+                    findTemplate={findTemplate}
+                    updateTemplate={updateTemplate}
                     setTemplateId={setTemplateId}
+                    setTemplates={setTemplates}
                     templates={templates} />
         <Button onClick={handleNewOpen} className={classes.mt1b3} variant="outlined">Add Step</Button>
         <SuccessSnackbar open={importSuccess} onClose={importSuccessClose} message={"Success"}/>

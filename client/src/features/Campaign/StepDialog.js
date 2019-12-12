@@ -60,48 +60,38 @@ const StepDialog = (props) => {
   const variables = ['name', 'from_first_name'];
 
   useEffect( () => {
-    if(props.step !== undefined) {
-      getTemplate(props.step.templateId);
-      setSelectedId(props.step.templateId);
-    }
+    if(props.step !== undefined) setTemplate(props.step.templateId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.step, props.open]);
   
-  const getTemplate = id => {
-    apiRequest('GET', `/templates/${id}`)
-    .then( json => {
-      setEditorTemplate(json.template);
-    })
-    .catch( e => {
-      console.log(e);
-    })
+  const setTemplate = id => {
+    const template = props.findTemplate(id);
+    setSelectedId(id);
+    setEditorTemplate(template);
   }
-
-  // const setTemplate = (event) => {
-  //   const newId = event.target.value;
-  //   const newStep = Object.assign({}, props.step);
-  //   newStep.templateId = newId;
-  //   props.setStep(newStep);
-  // }
 
   const handleChange = (event) => {
     props.setTemplateId(event.target.value);
-    setSelectedId(event.target.value);
-    apiRequest('GET', `/templates/${event.target.value}`)
-    .then( json => {
-      setEditorTemplate(json['template']);
-    });
+    setTemplate(event.target.value);
   }
 
   const handleSaveTemplate = (template) => {
-    onNew ?
+    (onNew ? 
     apiRequest('POST', '/templates', template) :
-    apiRequest('PUT', `/templates/${template.id}`, template) 
-    .then( json => {
-      console.log(json);
+    apiRequest('PUT', `/templates/${template.id}`, template))
+    .then(json => {
       setSnackbarOpen(true);
-      setOnNew(false);
+      if(!onNew) {
+        props.updateTemplate(template, json.template);
+      }
+      else {
+        props.templates.push(json.template);
+        setOnNew(false);
+      };
+      props.setTemplateId(json.template.id);
+      setTemplate(json.template.id);
     })
-    .catch( e => {
+    .catch( (e) => {
       console.log(e);
     });
   }
@@ -117,19 +107,13 @@ const StepDialog = (props) => {
 
   const handleSave = () => {
     setEditorTemplate({});
+    setSelectedId(null);
     props.onSave();
   }
 
   const newTemplate = () => {
-    // apiRequest('POST', '/templates', emptyTemplate)
-    // .then( json => {
       setEditorTemplate(emptyTemplate);
       setOnNew(true);
-    //   // props.onNewTemplate(json.template);
-    // })
-    // .catch( e => {
-    //   console.log(e);
-    // });
   }
 
   return (
