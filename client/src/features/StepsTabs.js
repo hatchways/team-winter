@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Tabs, Tab } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -27,15 +27,12 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const StepsTabs = (props) => {
-  const { steps } = props;
+  const { value, setValue, selected, steps, handleCurrentStepId } = props;
   const classes = useStyles();
-  const [selected, setSelected] = useState(0);
-  const [value, setValue] = useState(0);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
-
 
   return (
     <Grid container alignItems="center" className={classes.root}>
@@ -50,14 +47,14 @@ const StepsTabs = (props) => {
           className={(0 === selected) ? classes.selected : classes.tab}
           key={0}
           label={"All"}
-          onClick={() => setSelected(0)}
+          onClick={() => handleCurrentStepId(0)}
         />
-        {steps.map((tab, idx) => (
+        {steps.map((step, idx) => (
           <Tab
             className={(idx + 1 === selected) ? classes.selected : classes.tab}
             key={idx + 1}
             label={`Step ${ idx + 1 }`}
-            onClick={() => setSelected(idx + 1)}
+            onClick={() => handleCurrentStepId(idx + 1, step)}
             />
         ))}
       </Tabs>
