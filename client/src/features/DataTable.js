@@ -41,7 +41,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 
-const HeaderRow = ({props}) => {
+const HeaderRow = (props) => {
   const { handleClickOnAllRows, numSelected, data } = props
   let header = null;
   let rowCount = null;
@@ -86,16 +86,10 @@ const HeaderRow = ({props}) => {
 }
 
 const DataTable = (props) => {
-  let { data, handleClickOnAllRows, handleClickOnRow, selectedProspects} = props;
+  let { data, handleClickOnAllRows, handleClickOnRow, selectedProspects } = props;
   const classes = useStyles();
   selectedProspects = selectedProspects || [];
   const isSelected = id => selectedProspects.indexOf(id) !== -1;
-
-  const tableProps = {
-    data,
-    numSelected: selectedProspects.length,
-    handleClickOnAllRows,
-  }
 
   let renderData = null;
 
@@ -129,8 +123,9 @@ const DataTable = (props) => {
               aria-label="table"
               >
               <HeaderRow
-                  classes={classes}
-                  props={tableProps}
+                  data={data}
+                  numSelected={selectedProspects.length}
+                  handleClickOnAllRows={handleClickOnAllRows}
                 />
               <TableBody>
                 {data.map((row, idx) => {
