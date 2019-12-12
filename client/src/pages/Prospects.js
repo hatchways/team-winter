@@ -177,9 +177,8 @@ const Prospects = () => {
 
   //handle select all row on DataTable.js
   const handleClickOnAllRows = event => {
-    
     if (event.target.checked) {
-      if (filteredData.length > 0) {
+      if (filteredData[0].id) {
         const newSelecteds = filteredData.map(n => n.id);
         handleSelectedProspects(newSelecteds);
         return;
