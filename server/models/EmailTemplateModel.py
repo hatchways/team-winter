@@ -16,7 +16,7 @@ class EmailTemplateModel(db.Model, SerializerMixin):
     name = db.Column(db.String(120))
     type = db.Column(db.String(120))
     subject = db.Column(db.String(120))
-    body = db.Column(db.VARCHAR(500)) 
+    body = db.Column(db.VARCHAR(2000)) 
     owner_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     date_created = db.Column(db.DateTime, default=datetime.datetime.utcnow)
     steps = db.relationship(

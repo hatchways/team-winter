@@ -15,17 +15,9 @@ app.config.from_pyfile('config.py')
 CORS(app)
 api = Api(app)
 db = SQLAlchemy(app) 
-jwt = JWTManager(app)
+jwt = JWTManager(app)  
 
 
-from models import (
-    UserModel, 
-    ProspectModel,
-    TagModel, 
-    CampaignModel, 
-    StepModel, 
-    EmailTemplateModel
-)
 from resources import (
     UserResources, 
     GmailResources, 
@@ -35,6 +27,11 @@ from resources import (
     StepResources
 )
 
+from models.TaskModels import EmailTaskModel
+
+@app.before_first_request
+def restart_incomplete_tasks:
+    EmailTaskModel.restart_all_incomplete()
 
 
 api.add_resource(UserResources.UserRegister, '/register')

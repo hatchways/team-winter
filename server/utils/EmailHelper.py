@@ -5,18 +5,52 @@ from email.mime.base import MIMEBase
 from email.mime.text import MIMEText
 from apiclient.discovery import build
 from apiclient import errors
-from rq import Queue
-from config.default import REDIS_URL
+from rq import (
+    Queue,
+    get_current_job
+)
+from config.default import (
+    REDIS_URL,
+    DATABASE_URL
+)
 import redis
+import psycopg2
 
-    
+class Message(object):
+    def __init__(
+        self,
+        to_address,
+        from_address,
+        subject,
+        body,
+        credentials,
+        campaign_id,
+        thread_id
+    ):
+        self.to_address = to_address
+        self.from_address = from_address
+        self.subject = subject
+        self.body = body
+        self.credentials = credentials
+        self.campaign_id = campaign_id
+        self.thread_id = thread_id
 
-def create_and_send_message(sender, to, subject, message_text, credentials):
-    message = MIMEText(message_text)
-    message['to'] = to
-    message['from'] = sender
-    message['subject'] = subject
-    encoded_message= base64.urlsafe_b64encode(message.as_bytes())
+class EmailJob(object):
+    def __init__(
+        id,
+        user_id,
+        step_id,
+        
+    ):
+
+
+
+def create_and_send_message(message):
+    msg = MIMEText(message.body)
+    msg['to'] = message.to_address
+    msg['from'] = message.from_address
+    msg['subject'] = message.subject
+    encoded_message= base64.urlsafe_b64encode(msg.as_bytes())
     raw_msg =  {'raw' : encoded_message.decode()}
 
     service = build(
@@ -25,36 +59,38 @@ def create_and_send_message(sender, to, subject, message_text, credentials):
     )
 
     try:
-        message = service.users().messages().send(userId='me', body=raw_msg).execute()
-        print('Message Id: %s' % message['id'])
-        return message
+        message_body = {'raw': raw_msg}
+        if message.thread_id is not None:
+            message_body['threadId'] = message.thread_id
+        returned_message = service.users().messages().send(userId='me', body=message_body).execute()
+        add_thread_to_db(returned_message, message.campaign_id)
+        complete_email_job(get_current_job())
+        print('Sent. Message Id: %s' % returned_message['id'])
     except (errors.HttpError, errors.Error) as e:
         print('An error occurred: %s' % e)
 
+def send_email(message):
+    conn = redis.from_url(REDIS_URL)
+    q = Queue('create-task', connection=conn)
+    job = q.enqueue(
+        create_and_send_message,
+        message
+    )
+    return job
 
-def send_emails(sender, prospect_emails, subject, body, credentials):
-    print(prospect_emails)
-    with redis.from_url(REDIS_URL) as conn:
-        q = Queue('create-task', connection=conn)
-        q.enqueue(
-            enqueue_message,
-            sender,
-            prospect_emails,
-            subject,
-            body,
-            credentials
-        )
+def add_thread_to_db(message):
+    conn = psycopg2.connect(DATABASE_URL)
+    cur = conn.cursor()
+    cur.execute("""
+    INSERT INTO threads
+    """,
+    ())
+    pass
 
-def enqueue_message(sender, to_addresses, subject, body, credentials):
-    with redis.from_url(REDIS_URL) as conn:
-        q = Queue('emails', connection=conn)
-        for to_address in to_addresses:
-            q.enqueue(
-                create_and_send_message,
-                sender,
-                to_address,
-                subject,
-                body,
-                credentials
-            )
-    return 200
+def complete_email_job(job):
+    conn = psycopg2.connect(DATABASE_URL)
+    cur = conn.cursor()
+    cur.execute("""
+    
+    """,
+    ())
