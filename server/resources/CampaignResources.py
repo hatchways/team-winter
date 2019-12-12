@@ -3,6 +3,7 @@ from models.StepModel import StepModel
 from models.CampaignModel import CampaignModel
 from models.ProspectModel import ProspectModel
 from models.TemplateModel import TemplateModel
+from models.ThreadModel import ThreadModel
 from utils.RequestParserGenerator import RequestParserGenerator
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
@@ -109,3 +110,18 @@ class GetCampaign(Resource):
         except:
             return {'message': 'Something went wrong'}, 500
 
+
+class CampaignReplies(Resource):
+    @jwt_required
+    def get(self, id):
+        """Return the number of emails that have been replied to for this campaign"""
+        user_id = get_jwt_identity()
+        campaign = CampaignModel.filter_by(id=id)
+        if campaign.owner != user_id:
+            return {
+                'message': 'you don\'t own that campaign'
+            }, 401
+        replied = ThreadModel.filter_by(campaign_id=id).filter_by(replied_to=True).count()
+        return {
+            'replied': replied
+        }, 200

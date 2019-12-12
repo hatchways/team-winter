@@ -11,18 +11,13 @@ from utils.EmailSender import (
 )
 from utils.MessageConverter import replaceVariables
 
-reqParserGen = RequestParserGenerator()
-stepParser = reqParserGen.getParser('step_id')
-
-
 
 class ExecuteStep(Resource):
     @jwt_required
     def post(self):
-        """ Sending email using Gmail API"""
-        data = stepParser.parse_args()
+        """Sending email using Gmail API"""
         user = UserModel.find_by_id(get_jwt_identity())
-        step = StepModel.find_by_id(data['step_id'])
+        step = StepModel.find_by_id(id)
         if step.campaign.owner.id != user.id:
             return {
                 'message': 'you can\'t execute that step'
@@ -53,3 +48,19 @@ class ExecuteStep(Resource):
             subject         = step.template.subject,
             body            = step.template.body)
         return 200
+
+
+class Sent(Resource):
+    @jwt_required
+    def get(self, id):
+        """Return the number of emails sent in this step"""
+        user_id = get_jwt_identity()
+        step = StepModel.find_by_id(id)
+        if step.campaign.owner.id != user.id:
+            return {
+                'message': 'you don\'t own that step'
+            }, 401
+        num_sent = EmailTaskModel.filter_by(step_id=id).count()
+        return {
+            'sent': num_sent
+        }, 200
