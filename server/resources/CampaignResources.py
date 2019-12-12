@@ -2,7 +2,7 @@ from flask_restful import Resource
 from models.StepModel import StepModel
 from models.CampaignModel import CampaignModel
 from models.ProspectModel import ProspectModel
-from models.EmailTemplateModel import EmailTemplateModel
+from models.TemplateModel import TemplateModel
 from utils.RequestParserGenerator import RequestParserGenerator
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
@@ -12,7 +12,7 @@ campaignProspectsParser = reqParserGen.getParser(["prospect_ids"])
 campaignStepsParser = reqParserGen.getParser("id")
 
 
-class CampaignProspects(Resource):
+class CampaignProspects(Resource):   #<<<<
     @jwt_required
     def get(self, id):
         current_campaign = CampaignModel.find_by_id(id)
@@ -22,10 +22,17 @@ class CampaignProspects(Resource):
             return {'message': 'You don\'t have permission to do that.'}, 403
         prospects = []
         for prospect in current_campaign.prospects:
-            prospects.append({'id' : prospect.id, 'name' : prospect.name})
+            prospects.append({
+                'id' : prospect.id,
+                'email': prospect.email,
+                'name' : prospect.name,
+                'status' : prospect.status,
+                'imported_from': prospect.imported_from,
+                'campaigns': len(prospect.campaigns),
+                })
         steps = []
         for step in current_campaign.steps:
-            steps.append({'id' : step.id, 'email_template_id' : step.email_template.id})
+            steps.append({'id' : step.id, 'template_id' : step.template.id})
         return {
             'Campaign' : current_campaign.name,
             'Prospects' : prospects,
@@ -46,7 +53,34 @@ class CampaignProspects(Resource):
                 }, 200
         except:
             return {'message': 'Something went wrong'}, 500
-            
+
+class CreateStepToCampaign(Resource):
+    @jwt_required 
+    def post(self, id):
+        data = campaignStepsParser.parse_args()
+        campaign = CampaignModel.find_by_id(id)
+        template_id = data['id']
+        if not campaign:
+            return {'message': 'Campaign {} doesn\'t exist'.format(id)}, 400
+        if campaign.owner_id != get_jwt_identity():
+            return {'message': 'You don\'t have permission to do that.'}, 403
+        new_step = StepModel(
+            campaign_id = id,
+            template_id = template_id 
+        )
+        try:
+            new_step.save_to_db()
+            return {
+                'step' : new_step.to_dict(rules = 
+                    ('-template.steps', '-template.owner', '-prospects.campaigns',
+                    '-prospects.tags', '-prospects.steps', '-campaign'))
+            }, 201
+        except:
+            return {'message': 'Something went wrong'}, 500
+    
+    # @jwt_required
+    # def put(self, id):
+
 
 class GetCampaign(Resource):
     @jwt_required
@@ -56,7 +90,8 @@ class GetCampaign(Resource):
             return {'message': 'Campaign {} doesn\'t exist'.format(id)}, 400
         if campaign.owner_id != get_jwt_identity():
             return {'message': 'You don\'t have permission to do that.'}, 403
-        return {
+        try:
+            return {
             'campaign': {
                     'id' : campaign.id, 
                     'name' : campaign.name,
@@ -65,10 +100,12 @@ class GetCampaign(Resource):
                     'prospects' : len(campaign.prospects),
                     'steps' : [
                         step.to_dict(rules = 
-                            ('-email_template.steps', '-email_template.owner', '-prospects.campaigns',
+                            ('-template.steps', '-template.owner', '-prospects.campaigns',
                             '-prospects.tags', '-prospects.steps', '-prospects.owner', '-campaign')) 
                         for step in campaign.steps
                     ]
                 }
-        }, 200 
+            }, 200 
+        except:
+            return {'message': 'Something went wrong'}, 500
 

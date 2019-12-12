@@ -1,7 +1,7 @@
 import React, { Fragment, useState, useEffect } from 'react';
+import { makeStyles } from '@material-ui/core/styles';
 
 import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
 import queryString from 'query-string';
 import Grid from '@material-ui/core/Grid';
@@ -9,24 +9,22 @@ import CloudIcon from '@material-ui/icons/Cloud';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import MailIcon from '@material-ui/icons/Mail';
 import FlashOnIcon from '@material-ui/icons/FlashOn';
+import Snackbar from '@material-ui/core/Snackbar';
+import IconButton from '@material-ui/core/IconButton';
+import CloseIcon from '@material-ui/icons/Close';
 
 import CustomizedButton from '../features/CustomizedButton';
-import OutlinedButton from '../features/OutlinedButton';
 import NavBar from '../features/NavBar/MainBody';
 import UserInputContainer from '../features/UserInputContainer';
 import DataTable from '../features/DataTable';
-import AddToCampaignDialog from '../features/AddToCampaignDialog';
+import AddToCampaignDialog from '../features/AddToCampaignDialog'
 import GmailDialog from '../features/GmailDialog';
 import GmailAuthorizationHandler from '../features/GmailAuthorizationHandler';
-import { getJWT } from '../utils';
 import SidePanel from '../features/SidePanel';
+import ProspectsUpload from '../features/ProspectsUpload';
+import { apiRequest } from '../utils';
 
 const useStyles = makeStyles((theme) => ({
-  importButton: {
-    backgroundColor: "#EDECF2",
-    width: 150,
-    height: 50,
-  },
   newProspectButton: {
     width: 210,
     fontSize: 14,
@@ -52,7 +50,7 @@ const useStyles = makeStyles((theme) => ({
   prospectList: {
     overflow: "auto",
     width: "100%",
-    height: 600,
+    height: 665,
     marginTop: 0,
     [theme.breakpoints.down("lg")]: {
       paddingLeft: 12,
@@ -84,6 +82,8 @@ const Prospects = () => {
   const [importedFromTerm, handleSearchImportedFrom] = useState({id: '', name: ''});
   const [statusTerm, handleSearchStatus] = useState({id: '', name: ''});
   const [emailTerm, handleSearchEmail] = useState('');
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [addToCampaignStatus, setAddToCampaignStatus] = useState('');
 
   useEffect(() => {
     getAllCampaigns();
@@ -92,83 +92,63 @@ const Prospects = () => {
 
   const gmailDialogShouldOpen = () => {
     const qs = queryString.parse(window.location.search);
-    console.log(qs);
-    if(qs['gmail_dialog']) return true;
+    if(qs['gmail_dialog']) return true;;
     return false;
   }
 
   const getAllProspects = () => {
-    fetch(`/prospects`, {
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${getJWT()}`
-      }
-    })
-    .then(res => res.json())
-      .then(result => {
-        const listOfProspects = [];
-        const cloudIcon = <CloudIcon className="fas fa-cloud" style={{color: "grey"}} />
+    apiRequest('GET', `/prospects`)
+    .then( result => {
+      const listOfProspects = [];
+      const cloudIcon = <CloudIcon className="fas fa-cloud" style={{color: "grey"}} />
 
-        result.Prospects.map(prospect => {
-          const prospectObj = {
-            'id': prospect.id,
-            'check': 'check',
-            'Email': prospect.email,
-            cloudIcon,
-            'Status': prospect.status,
-            'Owner': prospect.name,
-            'Campaigns': prospect.campaigns,
-            'Imported_from': prospect.imported_from
-          }
-          return listOfProspects.push(prospectObj);
-        });
-        handleData(listOfProspects);
+      result.Prospects.map(prospect => {
+        const prospectObj = {
+          'id': prospect.id,
+          'check': 'check',
+          'Email': prospect.email,
+          cloudIcon,
+          'Status': prospect.status,
+          'Owner': prospect.name,
+          'Campaigns': prospect.campaigns,
+          'Imported_from': prospect.imported_from
+        }
+        return listOfProspects.push(prospectObj)
       })
-    .catch(err => {
-      console.log(err.message);
-    });
+      handleData(listOfProspects)
+    })
+    .catch( e => {
+      console.log(e);
+    })
   }
 
   const getAllCampaigns = () => {
-    fetch(`/campaigns`, {
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${getJWT()}`
-      }
+    apiRequest('GET', `/campaigns`)
+    .then( result => {
+      handleCampaigns(result.campaigns)
     })
-    .then(res => res.json())
-      .then(data => {
-        handleCampaigns(data.Campaigns);
+    .catch( e => {
+      console.log(e);
     })
-    .catch(err => {
-      console.log(err.message);
-    });
   }
 
   const handleCloseDialogAndSaveProspects = () => {
     handleDialog(false);
     saveProspectsToCampaign();
-  } 
+  }
 
   const saveProspectsToCampaign = () => {
     const data = {
       "prospect_ids": selectedProspects,
     };
 
-    fetch(`/campaign/${campaignId}/prospects`, {
-      method: "POST",
-      headers: {
-        'Authorization': `Bearer ${getJWT()}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data)
+    apiRequest('POST', `/campaign/${campaignId}/prospects`, data)
+    .then( data => {
+      setSnackbarOpen(true);
+      setAddToCampaignStatus(data.message);
     })
-    .then(res => res.json())
-      .then(data => {
-        console.log(data.message);
-    })
-    .catch(err => {
-      console.log(err.message);
+    .catch( e => {
+      console.log(e.message);
     });
   }
 
@@ -202,11 +182,19 @@ const Prospects = () => {
     handleSelectedProspects(newSelected);
   };
 
+  const handleSnackbarClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setSnackbarOpen(false);
+  };
+
   // Filter inported_from's option
   const filteredImportedFrom = importedFromTerm.name === ''
-  ? data 
-  : data.filter(data => data['Imported_from'] === importedFromTerm.name);
- 
+  ? data
+  : data.filter(data => data['Imported_from'] === importedFromTerm.name)
+
   // Filter status's option
   const filteredStatus = statusTerm.name === ''
   ? filteredImportedFrom
@@ -217,23 +205,17 @@ const Prospects = () => {
   ? filteredStatus
   : filteredStatus.filter(data => {
     const queryEmail = emailTerm.toLowerCase();
-    return data['Email'].includes(queryEmail);
+    return data['Email'].toLowerCase().includes(queryEmail);
   })
-
-  const propsForDataTable = {
-    data: filteredEmail,
-    handleClickOnAllRows,
-    handleClickOnRow,
-    selectedProspects,
-  }
 
   return (
     <Fragment>
       <NavBar />
       <Grid container id="container">
-        <Grid item lg={2} id='sidePanel' className="halfContainer">
+        <Grid item lg={2} sm={2} xs={12} id='sidePanel' className="half_container">
           <Box>
           <SidePanel
+          getAllProspects={getAllProspects}
           importedFromTerm={importedFromTerm}
           handleSearchImportedFrom={handleSearchImportedFrom}
           statusTerm={statusTerm}
@@ -243,14 +225,14 @@ const Prospects = () => {
           > </SidePanel>
           </Box>
         </Grid>
-        <Grid item lg={10} className="halfContainer">
+        <Grid item lg={10} sm={10} xs={12} className="half_container">
           <Box id='ContainerWrapper' display="flex" flexDirection="row" justifyContent="center">
             <Box id="FeatureContainerAndDataTable" display="flex" flexDirection="column" width='100%'>
               <Box id="FeaturesContainer">
                   <Box
                   className={classes.featuresContainer}
                   display="flex">
-                  <Box flexGrow={1}>
+                  <Box flexGrow={2}>
                     <Box className={classes.titleContainer}>
                       <Typography variant="h5"> Prospects </Typography>
                     </Box>
@@ -279,10 +261,10 @@ const Prospects = () => {
                     <MailIcon fontSize="small" style={{color: "grey"}} />
                   </Box>
                   <Box pl={2}>
-                    <OutlinedButton className={classes.importButton}> Imports </OutlinedButton>
+                    <ProspectsUpload  getAllProspects={getAllProspects}/>
                   </Box>
                   <Box pl={1}>
-                    <CustomizedButton 
+                    <CustomizedButton
                       className={classes.newProspectButton}>
                       Add New Prospect
                       <div className={classes.seperationLine}></div>
@@ -296,7 +278,13 @@ const Prospects = () => {
               <Box display="flex" justifyContent="center" id="DataTable" >
               <Box className={classes.tableContainer}>
                 <UserInputContainer className={classes.prospectList}>
-                  <DataTable props={propsForDataTable}></DataTable>
+                  <DataTable
+                    data={filteredEmail}
+                    handleClickOnAllRows={handleClickOnAllRows}
+                    handleClickOnRow={handleClickOnRow}
+                    selectedProspects={selectedProspects}
+                    >
+                  </DataTable>
                 </UserInputContainer>
             </Box>
               </Box>
@@ -304,8 +292,31 @@ const Prospects = () => {
           </Box>
         </Grid>
       </Grid>
-      <GmailDialog open={gmailDialogShouldOpen} />
-      <GmailAuthorizationHandler />
+      <GmailDialog open={gmailDialogShouldOpen()} />
+      <GmailAuthorizationHandler/>
+      <Snackbar
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'left',
+        }}
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleSnackbarClose}
+        ContentProps={{
+          'aria-describedby': 'message-id',
+        }}
+        message={<span id="message-id">{addToCampaignStatus}</span>}
+        action={[
+          <IconButton
+            key="close"
+            aria-label="close"
+            color="inherit"
+            onClick={handleSnackbarClose}
+          >
+            <CloseIcon />
+          </IconButton>,
+        ]}
+      />
     </Fragment>
   )
 }

@@ -1,12 +1,10 @@
-import React, { useState, useEffect, Component, Fragment } from 'react'
+import React, { useState, Component, Fragment } from 'react'
 import {useDropzone} from 'react-dropzone';
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
-import Fab from '@material-ui/core/Fab';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
-import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import Modal from '@material-ui/core/Modal';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -17,6 +15,11 @@ import Snackbar from '@material-ui/core/Snackbar';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import Papa from 'papaparse';
+import Box from '@material-ui/core/Box';
+import OutlinedButton from '../features/OutlinedButton';
+import CustomizedButton from '../features/CustomizedButton';
+import TextField from '@material-ui/core/TextField';
+
 import { getJWT } from '../utils';
 
 const UPLOAD_URL = 'http://localhost:5000/prospects/upload';
@@ -30,6 +33,10 @@ const countColumns = (results) => {
 }
 
 const useStyles = makeStyles(theme => ({
+  textField: {
+    margin: "10px 0px",
+    width: 300,
+  },
   paper: {
     padding: "10px",
     margin: "10px",
@@ -45,17 +52,24 @@ const useStyles = makeStyles(theme => ({
   },
   modalPaper: {
     position: 'absolute',
-    width: 400,
+    width: 450,
     maxWidth: "90%",
     padding: "20px",
-    outline: 0
+    outline: 0,
+    overflow: "auto",
+    height: "500px",
   },
-  fab: {
-    float: "right"
+  importButton: {
+    backgroundColor: "#EDECF2",
+    width: 150,
+    height: 50,
   },
-  previewHeader: {
-    float: 'left'
-  }
+  uploadButton: {
+    float: "right",
+    width: 100,
+    height: 40,
+    padding: 10,
+  },
 }));
 
 class ColumnSelector extends Component {
@@ -71,7 +85,6 @@ class ColumnSelector extends Component {
     let values = [];
     for(let i=0; i<columns; i++) {
       if(i === 0) values.push('Name');
-      else if(i === 1) values.push('Email');
       else values.push('None');
     }
     return values;
@@ -83,9 +96,9 @@ class ColumnSelector extends Component {
         if(val === event.target.value) return 'None';
         return val;
       });
-      console.log(newValues); 
       newValues[column] = event.target.value;
       this.props.onChange(newValues);
+      console.log(newValues)
       return {
         values: newValues
       }
@@ -114,27 +127,30 @@ class ColumnSelector extends Component {
 
 }
 
-function ProspectsUpload(props) {
+function ProspectsUpload({ getAllProspects }) {
 
   const classes = useStyles();
 
   const [modalOpen, setModalOpen] = useState(false);
   const [modalContent, setModalContent] = useState("empty");
   const [prospects, setProspects] = useState([]);
-  const [nameColumn, setNameColumn] = useState(0);
+  const [NameColumn, setNameColumn] = useState(0); 
   const [emailColumn, setEmailColumn] = useState(1);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [ImportedFromField, handleImportedFromField] = useState('');
 
   const handleModalClose = () => {
     setModalOpen(false);
   }
 
-  const formatProspects = (prospects, nameColumn, emailColumn) => {
+  const formatProspects = (prospects, NameColumn, emailColumn) => {
     let data = [];
     for(let prospect of prospects) {
       data.push({
         'email': prospect[emailColumn],
-        'name': prospect[nameColumn]
+        'name': prospect[NameColumn],
+        'status': 'open',
+        'imported_from': ImportedFromField,
       });
     }
     console.log(JSON.stringify({
@@ -144,12 +160,13 @@ function ProspectsUpload(props) {
   }
 
   const uploadProspects = async () => {
-    console.log('prospects  :')
-    const prospectsToUpload = formatProspects(prospects, nameColumn, emailColumn);
-    console.log(JSON.stringify(prospectsToUpload));
-    console.log('name column: ' + nameColumn);
-    console.log('email column: ' + emailColumn);
-    console.log(getJWT());
+    // console.log('prospects  :')
+    const prospectsToUpload = formatProspects(prospects, NameColumn, emailColumn);
+    // console.log(JSON.stringify(prospectsToUpload));
+    // console.log('name column: ' + NameColumn);
+    // console.log('email column: ' + emailColumn);
+    // console.log(getJWT());
+
 
     try {
       const response = await fetch(UPLOAD_URL, {
@@ -164,7 +181,9 @@ function ProspectsUpload(props) {
       }); 
       if(response.ok) {
         console.log('Uploaded Prospects');
+        getAllProspects();
         handleModalClose();
+        handleImportedFromField('');
         setSnackbarOpen(true);
       }
     } catch (error) {
@@ -239,23 +258,44 @@ function ProspectsUpload(props) {
 
   return (
     <div>
-      <Paper {...getRootProps()} className={classes.paper}>
-        <input {...getInputProps()} />
-        <Typography component="p">
-          Upload CSV
-        </Typography>
-        <CloudUploadIcon />
-      </Paper>
+      <OutlinedButton
+        component="p"
+        className={classes.importButton}
+        {...getRootProps()}
+        >
+          <input {...getInputProps()} />
+          Imports 
+      </OutlinedButton>
       <Modal 
         open={modalOpen}
         onClose={handleModalClose}
         className={classes.modal}
-      >
+        > 
         <Paper className={classes.modalPaper}>
-          <Typography className={classes.previewHeader} variant="h5">Preview</Typography>
-          <Fab className={classes.fab} onClick={uploadProspects} color="primary" variant="extended" aria-label="upload">
-            Upload
-          </Fab>
+          <Box display="flex"  flexDirection="row"  justifyContent="space-between">
+            <Typography
+              variant="h5"
+              >
+              Preview
+            </Typography>
+            <CustomizedButton
+              className={classes.uploadButton}
+              onClick={uploadProspects}
+              variant="extended"
+              aria-label="upload"
+              >
+              Upload
+            </CustomizedButton>
+          </Box>
+            <TextField
+              className={classes.textField}
+              margin="normal"
+              variant="outlined"
+              text="text"
+              placeholder="Save as ..."
+              value={ImportedFromField}
+              onChange={e => handleImportedFromField(e.target.value)}
+            />
           <div>
             {modalContent}
           </div>
@@ -288,5 +328,3 @@ function ProspectsUpload(props) {
   );
 }
 export default ProspectsUpload;
-
-

@@ -1,5 +1,6 @@
 import React, { useState, Fragment }  from "react";
 import { Redirect } from "react-router-dom";
+
 import { makeStyles } from '@material-ui/core/styles';
 import { ValidatorForm } from 'react-material-ui-form-validator';
 import { Typography , Grid} from "@material-ui/core";
@@ -8,6 +9,8 @@ import TextField from '@material-ui/core/TextField';
 import CustomizedButton from '../features/CustomizedButton';
 import UserInputContainer from '../features/UserInputContainer';
 import NavBar from '../features/NavBar/MainBody'
+import ErrorSnackbar from '../features/ErrorSnackbar';
+import { apiRequest } from '../utils';
 
 const useStyles = makeStyles(theme => ({
   signUpText: {
@@ -45,6 +48,8 @@ const Register = () => {
   const [repeatPassword, handleRepeatPassword] = useState("");
   const [submit, didSubmit] = useState(false);
   const [signUp, handleSignUp] = useState(false);
+  const [error, setError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState();
 
   if (signUp) {
     return <Redirect to="/prospects?gmail_dialog=open" />
@@ -67,32 +72,24 @@ const Register = () => {
       last_name: lastName,
     };
 
-    fetch("http://localhost:5000/register", {
-      method: "POST",
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-      },
-      body: JSON.stringify(data)
+    apiRequest('POST', `/register`, data)
+    .then( data => {
+      localStorage.setItem("mailsender_token", data.access_token);
+      handleSignUp(true)
     })
-      
-    .then(res => res.json())
-      .then(data => {
-      if (!data.access_token) {
-        alert(data.message);
-      } else {
-        localStorage.setItem("mailsender_token", data.access_token);
-        handleSignUp(true)
-        alert(data.message);
-      }
-    })
-    .catch(err => {
-      console.log(err.message);
+    .catch( e => {
+      handleSnackBar(e.message.split('Message:')[1])
     });
+  }
+
+  const handleSnackBar = (message) => {
+    setErrorMessage(message);
+    setError(true);
   }
 
   return (
     <Fragment>
+      <ErrorSnackbar open={error} message={errorMessage}/>
       <NavBar />
       <UserInputContainer classes={{
         root: classes.container
@@ -103,48 +100,49 @@ const Register = () => {
           className={classes.form}
         > 
           <TextField
+            required
             error={!submit ? false : firstName.length > 0 ? false : true }
             label="First name"
             value={firstName}
             onChange={e => handleFirstName(e.target.value)}
-            helperText="*required"
             className={classes.nameField}
             margin="normal"
             variant="outlined"
           />
           <TextField
+            required
             error={!submit ? false : lastName.length > 0 ? false : true }
             label="Last name"
             value={lastName}
             onChange={e => handleLastName(e.target.value)}
-            helperText="*required"
             className={classes.nameField}
             margin="normal"
             variant="outlined"
           />
           <TextField
+            required
             error={!submit ? false : email.length > 0 ? false : true }
             type="email"
             label="Email"
             value={email}
             onChange={e => handleEmail(e.target.value)}
-            helperText="*required"
             className={classes.otherField}
             margin="normal"
             variant="outlined"
           />
         <TextField
+            required
             error={!submit ? false : password.length >= 6 ? false : true }
             type="password"
-            label="Password"
+            label="Password min. 6 characters"
             value={password}
             onChange={e => handlePassword(e.target.value)}
-            helperText="*min. 6 characters"
             className={classes.otherField}
             margin="normal"
             variant="outlined"
           />
           <TextField
+            required
             error={!submit ? false : password === repeatPassword && repeatPassword.length > 0 ? false : true }
             type="password"
             label="Repeat password"
