@@ -1,6 +1,5 @@
 from app import db
-from app import config
-from utils.ThreadHelper import update_threads
+from resources.GmailResources import get_stored_credentials
 
 
 class ThreadModel(db.Model):
@@ -9,10 +8,9 @@ class ThreadModel(db.Model):
     id = db.Column(db.String(16), primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     campaign_id = db.Column(db.Integer, db.ForeignKey('campaigns.id'))
-    replies = db.Column(db.Integer, default=0)
+    replied_to = db.Column(db.Boolean, default=False)
 
     @classmethod
-    def update_all_user_threads(cls, user_id):
+    def get_all_user_threads(cls, user_id):
         threads = cls.query.filter_by(user_id = user_id).all()
-        if len(threads) > 0:
-            update_threads(threads, config.SQLALCHEMY_DATABASE_URI)
+        return threads

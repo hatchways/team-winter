@@ -23,6 +23,7 @@ class Message(object):
         from_address,
         subject,
         body,
+        user_id,
         credentials,
         campaign_id,
         thread_id
@@ -31,39 +32,30 @@ class Message(object):
         self.from_address = from_address
         self.subject = subject
         self.body = body
+        self.user_id = user_id
         self.credentials = credentials
         self.campaign_id = campaign_id
         self.thread_id = thread_id
 
-class EmailJob(object):
-    def __init__(
-        id,
-        user_id,
-        step_id,
-        
-    ):
 
-
-
-def create_and_send_message(message):
+def send_message(message):
     msg = MIMEText(message.body)
     msg['to'] = message.to_address
     msg['from'] = message.from_address
     msg['subject'] = message.subject
+    if message.thread_id is not None:
+        msg['threadId'] = message.thread_id
     encoded_message= base64.urlsafe_b64encode(msg.as_bytes())
     raw_msg =  {'raw' : encoded_message.decode()}
 
     service = build(
         'gmail', 'v1', 
-        http=credentials.authorize(http = httplib2.Http())
+        http=message.credentials.authorize(http = httplib2.Http())
     )
 
     try:
-        message_body = {'raw': raw_msg}
-        if message.thread_id is not None:
-            message_body['threadId'] = message.thread_id
-        returned_message = service.users().messages().send(userId='me', body=message_body).execute()
-        add_thread_to_db(returned_message, message.campaign_id)
+        returned_message = service.users().messages().send(userId='me', body=raw_msg).execute()
+        add_thread_to_db(returned_message['threadId'], message.user_id, message.campaign_id)
         complete_email_job(get_current_job())
         print('Sent. Message Id: %s' % returned_message['id'])
     except (errors.HttpError, errors.Error) as e:
@@ -71,26 +63,38 @@ def create_and_send_message(message):
 
 def send_email(message):
     conn = redis.from_url(REDIS_URL)
-    q = Queue('create-task', connection=conn)
+    q = Queue(connection=conn)
     job = q.enqueue(
-        create_and_send_message,
+        send_message,
         message
     )
     return job
 
-def add_thread_to_db(message):
+def add_thread_to_db(thread_id, user_id, campaign_id):
+    """Add a ThreadModel to the db manually"""
+
     conn = psycopg2.connect(DATABASE_URL)
     cur = conn.cursor()
     cur.execute("""
-    INSERT INTO threads
+    INSERT INTO threads (id, user_id, campaign_id)
+    VALUES (%s, %s, %s)
     """,
-    ())
-    pass
+    (thread_id, user_id, campaign_id) )
+    conn.commit()
+    cur.close()
+    conn.close()
 
 def complete_email_job(job):
+    """Set an EmailTask object to complete manually"""
+
     conn = psycopg2.connect(DATABASE_URL)
     cur = conn.cursor()
     cur.execute("""
-    
+    UPDATE email_tasks
+    SET complete=true
+    WHERE id=%s
     """,
-    ())
+    (job.id,) )
+    conn.commit()
+    cur.close()
+    conn.close()

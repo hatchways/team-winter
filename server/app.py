@@ -24,7 +24,10 @@ from models import (
     TagModel, 
     CampaignModel, 
     StepModel, 
-    TemplateModel
+    TemplateModel,
+    ThreadModel,
+    EmailTaskModel,
+    ThreadTaskModel
 )
 from resources import (
     UserResources, 
@@ -35,11 +38,10 @@ from resources import (
     StepResources
 )
 
-from models.TaskModels import EmailTaskModel
 
 @app.before_first_request
-def restart_incomplete_tasks:
-    EmailTaskModel.restart_all_incomplete()
+def restart_incomplete_tasks():
+    EmailTaskModel.EmailTaskModel.restart_all_incomplete()
 
 
 api.add_resource(UserResources.UserRegister, '/register')

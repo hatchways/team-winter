@@ -15,6 +15,9 @@ class StepModel(db.Model, SerializerMixin):
     prospects = db.relationship(
         'ProspectModel', secondary=steps_prospects, backref='steps', lazy='select'
     )
+    email_tasks = db.relationship(
+        'EmailTaskModel', backref='step', lazy='select'
+    )
 
     def save_to_db(self):
         db.session.add(self)

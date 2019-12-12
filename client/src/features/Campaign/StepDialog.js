@@ -58,7 +58,7 @@ const StepDialog = (props) => {
   const variables = ['name', 'from_first_name'];
 
   useEffect( () => {
-    if(props.step !== undefined) getTemplate(props.step.templateId);
+    if(props.step !== undefined && props.open) getTemplate(props.step.templateId);
   }, [props.step, props.open]);
   
   const getTemplate = id => {
@@ -141,7 +141,6 @@ const StepDialog = (props) => {
               <Select labelId="template-select-label"
                       id="template-select"
                       value= {props.step ? props.step.templateId : null}
-                      onChange={e => props.step ? setTemplate(e) : props.setTemplateId(e.target.value)} 
                       onChange={handleChange}
                       className={classes.select} >
                 {

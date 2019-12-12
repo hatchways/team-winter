@@ -17,7 +17,7 @@ import SuccessSnackbar from '../features/SuccessSnackbar';
 import CampaignSidePanel from '../features/CampaignSidePanel';
 import CampaignHeader from '../features/Campaign/CampaignHeader';
 import StepsTabs from '../features/StepsTabs';
-import { apiRequest, getJWT } from '../utils';
+import { apiRequest } from '../utils';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -60,15 +60,16 @@ const Campaign = (props) => {
   const [newOpen, setNewOpen] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [templateId, setTemplateId] = useState(0);
-  const [emailTemplates, setEmailTemplates] = useState([{}]);
-  const [success, setSuccess] = useState(false);
+  const [templates, setTemplates] = useState([{}]);
+  const [importSuccess, setImportSuccess] = useState(false);
+  const [executeSuccess, setExecuteSuccess] = useState(false);
   const [currentView, setCurrentView] = useState('summary');
   const [selectedProspects, handleSelectedProspects] = useState([]);
   const [prospects, handleProspects] = useState([{}]);
 
   useEffect( () => {
     getCampaign();
-    getEmailTemplates();
+    getTemplates();
     getAllProspects();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -112,6 +113,13 @@ const Campaign = (props) => {
       if(template.id === id) return template;
     }
     return {};
+  }
+
+  const findTemplateIndex = (template) => {
+    for(let i=0; i<templates.length; i++) {
+      if(templates[i].id === template.id) return i;
+    }
+    return -1;
   }
 
   const createStepObject = stepData => {
@@ -182,6 +190,10 @@ const Campaign = (props) => {
     setTemplates(templates);
   }
 
+  const handleNewTemplate = template => {
+    setTemplates([...templates, template])
+  }
+
   const getTemplates = () => {
     apiRequest('GET', '/templates')
     .then(data => {
@@ -236,6 +248,12 @@ const Campaign = (props) => {
      * delete step with id=editStep.id
      */
   }
+  const updateTemplate = (oldTemplate, newTemplate) => {
+    const idx = findTemplateIndex(oldTemplate);
+    templates[idx] = newTemplate;
+    setTemplates(templates);
+  }
+
 //---------------Edit Step-----------------------//
   const handleEditOpen = (idx) => {
     setEditStep(campaign.steps[idx]);
@@ -251,9 +269,11 @@ const Campaign = (props) => {
     setEditOpen(false);
   }
 
+  /*
   const handleSetEditStep = (newStep) => {
     setEditStep(newStep);
   }
+  */
 //-----------------Create Step-----------------------//
   const handleNewOpen = () => {
     setNewOpen(true);
@@ -385,18 +405,25 @@ const Campaign = (props) => {
           onClose={handleEditClose}
           onSave={handleEditSave}
           step={editStep}
-          setStep={handleSetEditStep}
           delete={true}
+          findTemplate={findTemplate}
+          updateTemplate={updateTemplate}
           onDeleteClick={handleDelete}
-          templates={emailTemplates} />
+          setTemplateId={setTemplateId}
+          setTemplates={setTemplates}
+          templates={templates} />
         {/* New step dialog */}
         <StepDialog title="New Step"
           open={newOpen}
           onClose={handleNewClose}
           onSave={handleNewSave}
           delete={false}
+          findTemplate={findTemplate}
+          updateTemplate={updateTemplate}
           setTemplateId={setTemplateId}
-          templates={emailTemplates} />
+          setTemplates={setTemplates}
+          onNewTemplate={handleNewTemplate}
+          templates={templates} />
         <Button onClick={handleNewOpen} className={classes.mt1b3} variant="outlined">Add Step</Button>
         <SuccessSnackbar open={importSuccess} onClose={importSuccessClose} message={"Success"}/>
         <SuccessSnackbar open={executeSuccess} onClose={executeSuccessClose} message={"Executing step..."}/>

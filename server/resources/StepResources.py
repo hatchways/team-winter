@@ -1,12 +1,15 @@
 from flask_restful import Resource
 from models.UserModel import UserModel
 from models.StepModel import StepModel
-from models.TaskModels import EmailTaskModel
+from models.EmailTaskModel import EmailTaskModel
 from utils.RequestParserGenerator import RequestParserGenerator
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from .GmailResources import get_stored_credentials
-from utils.EmailSender import send_emails
-from utils.MessageConverter import convertAllMessages
+from utils.EmailSender import (
+    send_email,
+    Message
+)
+from utils.MessageConverter import replaceVariables
 
 reqParserGen = RequestParserGenerator()
 stepParser = reqParserGen.getParser('step_id')
@@ -20,21 +23,33 @@ class ExecuteStep(Resource):
         data = stepParser.parse_args()
         user = UserModel.find_by_id(get_jwt_identity())
         step = StepModel.find_by_id(data['step_id'])
+        if step.campaign.owner.id != user.id:
+            return {
+                'message': 'you can\'t execute that step'
+            }, 401
         campaign_id = step.campaign_id
         body = step.template.body
         credentials = get_stored_credentials(user.id)
         jobs = []
         for p in step.prospects:
             message = Message(
-                to_address   = prospect.email,
+                to_address   = p.email,
                 from_address = user.gmail_address,
-                subject      = template.subject,
+                subject      = step.template.subject,
                 body         = replaceVariables(user, p, body),
-                credentials  = credentials
+                credentials  = credentials,
                 campaign_id  = step.campaign_id,
-                thread       = None
+                user_id      = user.id,
+                thread_id    = None
             )
             job = send_email(message)
             jobs.append(job)
-        EmailTaskModel.add_jobs(jobs, user.id, prospect_emails, template.subject, template.body)
+        prospect_emails = [ p.email for p in step.prospects ]
+        EmailTaskModel.add_jobs(
+            jobs            = jobs,
+            user_id         = user.id,
+            step_id         = step.id, 
+            prospect_emails = prospect_emails, 
+            subject         = step.template.subject,
+            body            = step.template.body)
         return 200

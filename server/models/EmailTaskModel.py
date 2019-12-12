@@ -1,37 +1,41 @@
 from app import db
-from config.default import REDIS_URL
-from rq.job import Job
-import redis
-from utils.EmailHelper import send_email
-from models.UserModel import UserModel
+from utils.EmailSender import send_email
 from resources.GmailResources import get_stored_credentials
 from sqlalchemy import desc
+import redis
+import rq
+from config.default import REDIS_URL
+from .UserModel import UserModel
+from .StepModel import StepModel
+from utils.EmailSender import Message
 
 class EmailTaskModel(db.Model):
     __tablename__ = 'email_tasks'
     
     id = db.Column(db.String(36), primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    step_id = db.Column(db.Integer, db.ForeignKey('step.id'), nullable=False)
+    step_id = db.Column(db.Integer, db.ForeignKey('steps.id'), nullable=False)
     prospect_email = db.Column(db.String(120), nullable=False)
     subject = db.Column(db.String(120), nullable=False)
-    body = db.Column(db.VARCHAR(2000), nullable-False) 
+    body = db.Column(db.VARCHAR(2000), nullable=False) 
     complete = db.Column(db.Boolean, default=False, nullable=False)
 
     def get_rq_job(self):
+
         try:
             with redis.from_url(REDIS_URL) as conn:
-                rq_job = Job.fetch(self.id, connection=conn)
+                rq_job = rq.job.Job.fetch(self.id, connection=conn)
         except (redis.exceptions.RedisError, rq.exceptions.NoSuchJobError):
             return None
         return rq_job
 
     @classmethod
-    def add_jobs(cls, jobs, user_id, prospect_emails, subject, body):
+    def add_jobs(cls, jobs, user_id, step_id, prospect_emails, subject, body):
         for i in range(0, len(jobs)):
             task = cls(
                 id = jobs[i].id,
-                user_id = user_id
+                user_id = user_id,
+                step_id = step_id,
                 prospect_email = prospect_emails[i],
                 subject = subject,
                 body = body
@@ -51,37 +55,20 @@ class EmailTaskModel(db.Model):
         for task in incomplete_tasks:
             if task.get_rq_job() is None:
                 # job was lost, re-enqueue with send_email
+                user = UserModel.find_by_id(task.user_id)
                 credentials = get_stored_credentials(task.user_id)
-                send_email(
-                    user.gmail_address, 
-                    task.prospect_email,
-                    task.subject,
-                    task.body, 
-                    credentials
+                step = StepModel.find_by_id(task.step_id)
+                message = Message(
+                    to_address = task.prospect_email,
+                    from_address = user.gmail_address,
+                    subject = task.subject,
+                    body = task.body,
+                    user_id = task.user_id,
+                    credentials = credentials,
+                    campaign_id = step.campaign_id,
+                    thread_id = None
                 )
+                send_email(message)
                 num_restarted += 1
         print(f'Restarted {num_restarted} email tasks.')
 
-
-class ReplyTaskModel(db.Model):
-    __tablename__ = 'reply_tasks'
-
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    final_job_id = db.Column(db.String(36), nullable=False)
-    complete = db.Column(db.Boolean, default=False, nullable=False)
-
-    def get_rq_job(self):
-        try:
-            with redis.from_url(REDIS_URL) as conn:
-                rq_job = Job.fetch(self.final_job_id, connection=conn)
-        except (redis.exceptions.RedisError, rq.exceptions.NoSuchJobError):
-            return None
-        return rq_job
-
-    @classmethod
-    def replies_task_complete(cls, user_id):
-        task = cls.query.filter_by(user_id = user_id).order_by(desc(reply_tasks.id)).first()
-        return task.complete
-
-    

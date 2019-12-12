@@ -21,6 +21,9 @@ class UserModel(db.Model):
     templates = db.relationship(
         'TemplateModel', backref='owner', lazy='dynamic'
     )
+    threads = db.relationship(
+        'ThreadModel', backref='owner', lazy='dynamic'
+    )
 
     def save_to_db(self):
         db.session.add(self)

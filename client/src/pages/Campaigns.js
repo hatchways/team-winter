@@ -51,9 +51,15 @@ const Campaigns = () => {
 
   useEffect(() => {
     getUserCampaigns();
-  }, setCampaigns);
+  }, []);
 
-
+  const getUserCampaigns = () => {
+    apiRequest('GET', '/campaigns')
+    .then(data => handleCampaigns(data))
+    .catch(err => {
+      console.log(err.message);
+    });
+  }
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -81,17 +87,6 @@ const Campaigns = () => {
     }
     setCampaigns(campaigns);
   }
-
-  const getUserCampaigns = () => {
-    apiRequest('GET', '/campaigns')
-      .then(data => handleCampaigns(data))
-    .catch(err => {
-      console.log(err.message);
-    });
-  }
-
-
-
 
   return (
     <Fragment>
