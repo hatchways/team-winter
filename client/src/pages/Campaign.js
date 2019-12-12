@@ -7,17 +7,15 @@ import {
 import Grid from '@material-ui/core/Grid';
 import CloudIcon from '@material-ui/icons/Cloud';
 
+import CampaignProspectsView from '../features/CampaignProspectsView';
 import NavBar from '../features/NavBar/MainBody';
 import CampaignSummary from '../features/Campaign/CampaignSummary';
-import UserInputContainer from '../features/UserInputContainer';
-import DataTable from '../features/DataTable';
 import StepDialog from '../features/Campaign/StepDialog';
 import ConfirmationDialog from '../features/ConfirmationDialog';
 import SuccessSnackbar from '../features/SuccessSnackbar';
 import CampaignSidePanel from '../features/CampaignSidePanel';
 import CampaignHeader from '../features/Campaign/CampaignHeader';
-import StepsTabs from '../features/StepsTabs';
-import { apiRequest, getJWT } from '../utils';
+import { apiRequest } from '../utils';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -426,20 +424,17 @@ const Campaign = (props) => {
       </Fragment>
     )
   }
+  console.log('data', prospects)
 
   if (currentView === 'prospects') {
     display = (
-      <Fragment>
-        <StepsTabs steps={campaign.steps}/>
-        <UserInputContainer className={classes.prospectList}>
-          <DataTable
-            data={prospects}
-            handleClickOnAllRows={handleClickOnAllRows}
-            handleClickOnRow={handleClickOnRow}
-            selectedProspects={selectedProspects}
-            ></DataTable>
-        </UserInputContainer>
-      </Fragment>
+      <CampaignProspectsView
+      steps={campaign.steps}
+      data={prospects}
+      handleClickOnAllRows={handleClickOnAllRows}
+      handleClickOnRow={handleClickOnRow}
+      selectedProspects={selectedProspects}
+      />
     )
   }
 
@@ -447,7 +442,7 @@ const Campaign = (props) => {
     <Fragment>
       <NavBar userName={campaign.userName}/>
       <Grid container className={classes.sidePanelContainer}>
-        <Grid item lg={2} sm={12} xs={12} id='sidePanel' className="half_container">
+        <Grid item lg={2} sm={2} xs={12} id='sidePanel' className="half_container">
           <CampaignSidePanel
             currentView={currentView}
             setCurrentViewToSummary={setCurrentViewToSummary}
@@ -455,7 +450,7 @@ const Campaign = (props) => {
             >
           </CampaignSidePanel>
         </Grid>
-        <Grid item lg={10} sm={12} xs={12} className="half_container">
+        <Grid item lg={10} sm={10} xs={12} className="half_container">
           <Container className={classes.container}>
           <CampaignHeader title={campaign.title} userName={campaign.userName}/>
             {display}
