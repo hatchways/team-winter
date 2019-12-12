@@ -31,8 +31,6 @@ const CampaignProspectsView = (props) => {
   const { steps, data, handleClickOnAllRows, handleClickOnRow, selectedProspects } = props;
   const classes = useStyles();
 
-  console.log('selectedProspects', selectedProspects)
-  console.log('prospects', data)
   return (
     <Fragment>
       <StepsTabs steps={steps}/>
