@@ -18,6 +18,14 @@ db = SQLAlchemy(app)
 jwt = JWTManager(app)  
 
 
+from models import (
+    UserModel, 
+    ProspectModel,
+    TagModel, 
+    CampaignModel, 
+    StepModel, 
+    TemplateModel
+)
 from resources import (
     UserResources, 
     GmailResources, 

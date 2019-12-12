@@ -10,7 +10,7 @@ import NavBar from '../features/NavBar/MainBody';
 import UserInputContainer from '../features/UserInputContainer';
 import DataTable from '../features/DataTable';
 import CampaignDialog from '../features/CampaignDialog';
-import { getJWT } from '../utils';
+import { apiRequest } from '../utils';
 
 const useStyles = makeStyles((theme) => ({
   createCampaignButton: {
@@ -46,16 +46,14 @@ const useStyles = makeStyles((theme) => ({
 const Campaigns = () => {
   const classes = useStyles();
 
-  const [open, setOpen] = useState(false); 
+  const [open, setOpen] = useState(false);
   const [campaigns, setCampaigns] = useState([{}]);
 
   useEffect(() => {
     getUserCampaigns();
   }, setCampaigns);
 
-  const propsForDataTable = {
-    data: campaigns
-  }
+
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -76,23 +74,17 @@ const Campaigns = () => {
         Replies: "",
         Steps: each.steps,
         Due: "",
-        link: "/campaigns/" + each.id
+        link: "/campaigns/" + each.id,
+        arrow: 'arrow'
       }
       campaigns.push(campaign);
     }
     setCampaigns(campaigns);
   }
 
-  const getUserCampaigns = async () => {
-
-    await fetch('/campaigns', {
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${getJWT()}`
-      }
-    })
-    .then(res => res.json())
-      .then(data => {handleCampaigns(data)})
+  const getUserCampaigns = () => {
+    apiRequest('GET', '/campaigns')
+      .then(data => handleCampaigns(data))
     .catch(err => {
       console.log(err.message);
     });
@@ -116,7 +108,7 @@ const Campaigns = () => {
             <MailIcon fontSize="2px" style={{color: "grey"}} />
           </Box>
           <Box>
-            <CustomizedButton 
+            <CustomizedButton
               className={classes.createCampaignButton}
               onClick={handleClickOpen}>
               Create Campaign
@@ -128,7 +120,7 @@ const Campaigns = () => {
       <Box className="tagsContainer" display="flex" justifyContent="center">
       </Box>
       <UserInputContainer className={classes.campaignList}>
-        <DataTable props={propsForDataTable} ></DataTable>
+        <DataTable data={campaigns} ></DataTable>
       </UserInputContainer>
     </Fragment>
   )

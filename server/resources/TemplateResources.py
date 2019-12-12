@@ -1,6 +1,6 @@
 from flask_restful import Resource, reqparse
 from models.UserModel import UserModel
-from models.EmailTemplateModel import EmailTemplateModel
+from models.TemplateModel import TemplateModel
 from flask_jwt_extended import (jwt_required, get_jwt_identity)
 from sqlalchemy_serializer import SerializerMixin
 from sqlalchemy import exc
@@ -12,7 +12,7 @@ parser.add_argument('type', type=str, location='json', required=True)
 parser.add_argument('subject', type=str, location='json', required=True)
 parser.add_argument('body', type=str, location='json', required=True)
 
-class TemplatesById(Resource, SerializerMixin):
+class TemplatesById(Resource):
     @jwt_required
     def get(self, id):
         current_user = UserModel.find_by_id(get_jwt_identity())
@@ -61,7 +61,7 @@ class TemplatesById(Resource, SerializerMixin):
             }, 404
 
 
-class Templates(Resource, SerializerMixin):
+class Templates(Resource):
     @jwt_required
     def get(self):
         current_user = UserModel.find_by_id(get_jwt_identity())
@@ -74,7 +74,7 @@ class Templates(Resource, SerializerMixin):
         data = parser.parse_args()
         current_user = UserModel.find_by_id(get_jwt_identity())
         try:
-            template = EmailTemplateModel(
+            template = TemplateModel(
                 name=data['name'],
                 type=data['type'],
                 subject=data['subject'],
@@ -83,7 +83,7 @@ class Templates(Resource, SerializerMixin):
             )
             template.save_to_db()
             return {
-                'template':  template.to_dict(rules=('-steps.email_template', '-steps.campaign', '-owner',
+                'template':  template.to_dict(rules=('-steps.template', '-steps.campaign', '-owner',
                                             '-steps.prospects'))
             }, 200
         except ValueError as e:

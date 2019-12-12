@@ -16,6 +16,10 @@ const useStyles = makeStyles({
   imageContainer: {
     display: 'flex',
     justifyContent: 'center'
+  },
+  image: {
+    width: 200,
+    height: 50,
   }
 });
 
@@ -68,7 +72,7 @@ function GmailDialog(props) {
         </DialogContentText>
         <div className={classes.imageContainer}>
           <a onClick={(e) => !googleAuthURL ? e.preventDefault() : null} href={googleAuthURL}>
-            <img src={image} alt="sign in with Google" />
+            <img src={image} alt="sign in with Google" className={classes.image}/>
           </a>
         </div>
         <DialogActions>

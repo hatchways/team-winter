@@ -12,10 +12,6 @@ import {
 
 import MailIcon from '@material-ui/icons/Mail';
 
-import CustomizedButton from '../CustomizedButton';
-
-
-
 const useStyles = makeStyles( () => ({
   mt1: {
     marginTop: '1rem'
@@ -82,38 +78,6 @@ const VerticalDivider = (props) => {
 
 }
 
-const CampaignHeader = (props) => {
-
-  const classes = useStyles();
-
-  return (
-    <Grid container item
-          direction="row"
-          justify="space-between"
-          alignItems="center" >
-      <Grid container item
-            direction="column"
-            justify="center"
-            alignItems="flex-start"
-            xs={12}
-            sm={8} >
-        <Grid item>
-          <Typography variant="h4">{props.title}</Typography>
-        </Grid>
-        <Grid item>
-          <Typography component="p">by {props.userName}</Typography>
-        </Grid>
-      </Grid>
-      <Grid item
-            xs={12}
-            sm={4} >
-        <CustomizedButton className={classes.addProspectsButton}>Add Prospects</CustomizedButton>
-      </Grid>
-    </Grid>
-  )
-
-}
-
 const CampaignDataDisplay = (props) => {
 
   const classes = useStyles();
@@ -149,6 +113,7 @@ const StepsDisplay = (props) => {
   const classes = useStyles();
 
   return (
+    props.steps ? 
     props.steps.map( (step, idx) => {
       return (
         <Paper key={idx} className={classes.stepPaper} onClick={() => props.openEditStepDialog(idx)} >
@@ -162,10 +127,17 @@ const StepsDisplay = (props) => {
             <Grid item sm={1}>
               <MailIcon className={classes.mailIcon} />
             </Grid>
-            <Grid item sm={3}>
+            <Grid item sm={2}>
               <Typography>{step.templateName}</Typography>
             </Grid>
             <Grid item sm={2}>
+              <StatisticDisplay label="Prospects"
+                                value={step.prospects.length} />
+            </Grid>
+            <Grid item sm={1}>
+              <VerticalDivider step={true} />
+            </Grid>
+            <Grid item sm={1}>
               <StatisticDisplay label="Sent"
                                 value={step.sent} />
             </Grid>
@@ -176,7 +148,7 @@ const StepsDisplay = (props) => {
               <StatisticDisplay label="Replied"
                                 value={step.replied} />
             </Grid>
-            <Grid item sm={2}>
+            <Grid item sm={1}>
               <ButtonBox 
                 step={step} idx={idx} 
                 handleProspectsClick={props.handleProspectsClick}
@@ -187,7 +159,7 @@ const StepsDisplay = (props) => {
         </Paper>
       )
     })
-  )
+  : null)
 }
 
 const StatisticDisplay = (props) => {
@@ -231,9 +203,6 @@ const CampaignSummary = (props) => {
             direction="column"
             justify="flex-start"
             alignItems="stretch" >
-        {/* Campaign name and controls */}
-        <CampaignHeader title={props.title}
-                        userName={props.userName} />
         {/* Campaign Data */}
         <CampaignDataDisplay prospects={props.prospects} 
                              contacted={props.contacted}

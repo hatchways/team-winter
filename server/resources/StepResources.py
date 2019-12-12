@@ -5,8 +5,8 @@ from models.TaskModels import EmailTaskModel
 from utils.RequestParserGenerator import RequestParserGenerator
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from .GmailResources import get_stored_credentials
-from utils.EmailHelper import send_emails
-from utils.EmailHelper import Message
+from utils.EmailSender import send_emails
+from utils.MessageConverter import convertAllMessages
 
 reqParserGen = RequestParserGenerator()
 stepParser = reqParserGen.getParser('step_id')
@@ -21,16 +21,15 @@ class ExecuteStep(Resource):
         user = UserModel.find_by_id(get_jwt_identity())
         step = StepModel.find_by_id(data['step_id'])
         campaign_id = step.campaign_id
-        template = step.email_template
+        body = step.template.body
         credentials = get_stored_credentials(user.id)
-        prospect_emails = [prospect.email for prospect in step.prospects]
         jobs = []
-        for addr in prospect_emails:
+        for p in step.prospects:
             message = Message(
-                to_address   = addr,
+                to_address   = prospect.email,
                 from_address = user.gmail_address,
                 subject      = template.subject,
-                body         = template.body,
+                body         = replaceVariables(user, p, body),
                 credentials  = credentials
                 campaign_id  = step.campaign_id,
                 thread       = None
