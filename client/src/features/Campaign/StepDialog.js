@@ -55,7 +55,7 @@ const StepDialog = (props) => {
   const [editorTemplate, setEditorTemplate] = useState({});
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [onNew, setOnNew] = useState(false);
-  const [selectedId, setSelectedId] = useState(null);
+  const [selectedId, setSelectedId] = useState(0);
 
   const variables = ['name', 'from_first_name'];
 
@@ -107,7 +107,7 @@ const StepDialog = (props) => {
 
   const handleSave = () => {
     setEditorTemplate({});
-    setSelectedId(null);
+    setSelectedId(0);
     props.onSave();
   }
 

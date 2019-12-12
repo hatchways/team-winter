@@ -202,20 +202,17 @@ const Campaign = (props) => {
 
   const updateStep = () => {
     // update UI
-    editStep.templateId = templateId;
-    const newStep = Object.assign({}, editStep);
-    setEditStep(newStep);
+    console.log(campaign.steps);
+  
 
-    const idx = findStepIndex(editStep);
-    campaign.steps[idx].templateId = editStep.templateId;
-    campaign.steps[idx].templateName = findTemplate(editStep.templateId).name;
-    setCampaign(campaign);
-    
-    console.log(step);
-
-    apiRequest('PUT', `/steps/${step.id}`, {'template_id': step.templateId})
+    apiRequest('PUT', `/steps/${editStep.id}`, {'template_id': templateId})
     .then( json => {
       console.log(json);
+      const step = createStepObject(json.step);
+      const idx = findStepIndex(editStep);
+      campaign.steps[idx] = step;
+      const newCampaign = Object.assign({}, campaign);
+      setCampaign(newCampaign);
     })
     .catch( e => {
       console.log(e);
@@ -227,8 +224,8 @@ const Campaign = (props) => {
     .then( json => {
       console.log(json);
       const step = createStepObject(json.step);
+      campaign.steps.push(step);
       const newCampaign = Object.assign({}, campaign);
-      newCampaign.steps.push(step);
       setCampaign(newCampaign);
     })
     .catch( e => {
@@ -255,6 +252,8 @@ const Campaign = (props) => {
   }
   const updateTemplate = (oldTemplate, newTemplate) => {
     const idx = findTemplateIndex(oldTemplate); 
+    // templates[idx].id = newTemplate.id;
+    // templates[idx].name = newTemplate.name;
     templates[idx] = newTemplate;
     setTemplates(templates);
   }
@@ -274,9 +273,6 @@ const Campaign = (props) => {
     setEditOpen(false);
   }
 
-  // const handleSetEditStep = (newStep) => {
-  //   setEditStep(newStep);
-  // }
 //-----------------Create Step-----------------------//
   const handleNewOpen = () => {
     setNewOpen(true);

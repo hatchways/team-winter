@@ -1,7 +1,7 @@
 from flask_restful import Resource
 from models.UserModel import UserModel
 from models.StepModel import StepModel
-from models.EmailTemplateModel import EmailTemplateModel
+from models.TemplateModel import TemplateModel
 from models.CampaignModel import CampaignModel
 from utils.RequestParserGenerator import RequestParserGenerator
 from flask_jwt_extended import jwt_required, get_jwt_identity
@@ -20,7 +20,7 @@ class Step(Resource):
         data = create_parser.parse_args()
         campaign = CampaignModel.find_by_id(id)
         template_id = data['template_id']
-        template = EmailTemplateModel.find_by_id(template_id)
+        template = TemplateModel.find_by_id(template_id)
         if template.owner_id != get_jwt_identity():
             return {'message': 'You don\'t have permission to do that.'}, 403
         if not campaign:
@@ -29,13 +29,13 @@ class Step(Resource):
             return {'message': 'You don\'t have permission to do that.'}, 403
         new_step = StepModel(
             campaign_id = id,
-            email_template_id = template_id 
+            template_id = template_id 
         )
         try:
             new_step.save_to_db()
             return {
                 'step' : new_step.to_dict(rules = 
-                    ('-email_template.steps', '-email_template.owner', '-prospects.campaigns',
+                    ('-template.steps', '-template.owner', '-prospects.campaigns',
                     '-prospects.tags', '-prospects.steps', '-campaign'))
             }, 201
         except:
@@ -51,14 +51,15 @@ class Step(Resource):
             return {
                 'message': 'You don\'t own that step'
             }, 401
-        template = EmailTemplateModel.find_by_id(new_template_id)
+        template = TemplateModel.find_by_id(new_template_id)
         if template.owner_id != get_jwt_identity():
             return {'message': 'You don\'t have permission to do that.'}, 403
-        step.email_template_id = template.id
+        step.template_id = template.id
+        step.template = template
         step.update()
         return {
             'step': step.to_dict(rules = 
-                    ('-email_template.steps', '-email_template.owner', '-prospects.campaigns',
+                    ('-template.steps', '-template.owner', '-prospects.campaigns',
                     '-prospects.tags', '-prospects.steps', '-campaign'))
         }, 200
 
