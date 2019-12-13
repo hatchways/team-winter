@@ -201,13 +201,8 @@ const Campaign = (props) => {
   }
 
   const updateStep = () => {
-    // update UI
-    console.log(campaign.steps);
-  
-
     apiRequest('PUT', `/steps/${editStep.id}`, {'template_id': templateId})
     .then( json => {
-      console.log(json);
       const step = createStepObject(json.step);
       const idx = findStepIndex(editStep);
       campaign.steps[idx] = step;
@@ -250,7 +245,18 @@ const Campaign = (props) => {
       console.log(e);
     });
   }
+
+  const updateAllSteps = (oldTemplate, newTemplate) => {
+    for(let step of campaign.steps) {
+      if (step.templateId === oldTemplate.id) {
+        step.templateId = newTemplate.id;
+        step.templateName = newTemplate.name;
+      }
+    }
+  }
+
   const updateTemplate = (oldTemplate, newTemplate) => {
+    updateAllSteps(oldTemplate, newTemplate);
     const idx = findTemplateIndex(oldTemplate); 
     templates[idx] = newTemplate;
   }
