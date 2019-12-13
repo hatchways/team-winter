@@ -15,7 +15,7 @@ app.config.from_pyfile('config.py')
 CORS(app)
 api = Api(app)
 db = SQLAlchemy(app) 
-jwt = JWTManager(app)
+jwt = JWTManager(app)  
 
 
 from models import (
@@ -24,7 +24,10 @@ from models import (
     TagModel, 
     CampaignModel, 
     StepModel, 
-    TemplateModel
+    TemplateModel,
+    ThreadModel,
+    EmailTaskModel,
+    ThreadTaskModel
 )
 from resources import (
     UserResources, 
@@ -32,9 +35,14 @@ from resources import (
     CampaignResources, 
     ProspectsResources,
     TemplateResources,
-    StepResources
+    StepResources,
+    ThreadResources
 )
 
+
+@app.before_first_request
+def restart_incomplete_tasks():
+    EmailTaskModel.EmailTaskModel.restart_all_incomplete()
 
 
 api.add_resource(UserResources.UserRegister, '/register')
@@ -51,9 +59,15 @@ api.add_resource(ProspectsResources.UploadProspects, '/prospects/upload')
 api.add_resource(ProspectsResources.InheritPreviousStepProspects, '/steps/prospects')
 api.add_resource(CampaignResources.GetCampaign, '/campaigns/<int:id>')
 api.add_resource(CampaignResources.CampaignProspects, '/campaign/<int:id>/prospects')
-api.add_resource(StepResources.ExecuteStep, '/gmail/send')
+api.add_resource(CampaignResources.CreateStepToCampaign, '/campaign/<int:id>/steps')
+api.add_resource(CampaignResources.CampaignSent, '/campaign/<int:id>/sent')
+api.add_resource(CampaignResources.CampaignReplies, '/campaign/<int:id>/replied')
+api.add_resource(StepResources.ExecuteStep, '/steps/<int:id>/send')
+api.add_resource(StepResources.Sent, '/steps/<int:id>/sent')
 api.add_resource(StepResources.Step, '/campaigns/<int:id>/steps', endpoint='steps')
 api.add_resource(StepResources.Step, '/steps/<int:id>', endpoint='step')
+api.add_resource(ThreadResources.Update, '/threads/update')
+api.add_resource(ThreadResources.Status, '/threads/status')
 
 
 app.register_blueprint(home_handler)

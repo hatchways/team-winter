@@ -16,9 +16,9 @@ function GmailAuthorizationHandler(props) {
   const [gmailAddress, setGmailAddress] = useState('');
   const [authStage, setAuthStage] = useState('progress');
 
-  const qs = queryString.parse(window.location.search);
-
   useEffect( () => {
+
+    const qs = queryString.parse(window.location.search);
 
     if(qs.code && qs.state) {
       setOpen(true);

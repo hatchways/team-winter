@@ -3,6 +3,8 @@ from models.StepModel import StepModel
 from models.CampaignModel import CampaignModel
 from models.ProspectModel import ProspectModel
 from models.TemplateModel import TemplateModel
+from models.ThreadModel import ThreadModel
+from models.EmailTaskModel import EmailTaskModel
 from utils.RequestParserGenerator import RequestParserGenerator
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
@@ -103,7 +105,7 @@ class GetCampaign(Resource):
                     'steps' : [
                         step.to_dict(rules = 
                             ('-template.steps', '-template.owner', '-prospects.campaigns',
-                            '-prospects.tags', '-prospects.steps', '-prospects.owner', '-campaign')) 
+                            '-prospects.tags', '-prospects.steps', '-prospects.owner', '-campaign', '-email_tasks')) 
                         for step in campaign.steps
                     ]
                 }
@@ -111,3 +113,34 @@ class GetCampaign(Resource):
         except:
             return {'message': 'Something went wrong'}, 500
 
+
+class CampaignSent(Resource):
+    @jwt_required
+    def get(self, id):
+        """Return the number of emails that have been sent for this campaign"""
+        user_id = get_jwt_identity()
+        campaign = CampaignModel.find_by_id(id)
+        if campaign.owner.id != user_id:
+            return {
+                'message': 'you don\'t own this campaign'
+            }, 401
+        sent = EmailTaskModel.count_sent_in_campaign(id)
+        return {
+            'sent': sent
+        }, 200
+
+
+class CampaignReplies(Resource):
+    @jwt_required
+    def get(self, id):
+        """Return the number of emails that have been replied to for this campaign"""
+        user_id = get_jwt_identity()
+        campaign = CampaignModel.query.filter_by(id=id).first()
+        if campaign.owner.id != user_id:
+            return {
+                'message': 'you don\'t own that campaign'
+            }, 401
+        replied = ThreadModel.query.filter_by(campaign_id=id).filter_by(replied_to=True).count()
+        return {
+            'replied': replied
+        }, 200

@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import { 
   makeStyles,
   Grid,
@@ -9,6 +9,7 @@ import {
   Button,
   Tooltip
 } from '@material-ui/core';
+import { apiRequest } from '../../utils';
 
 import MailIcon from '@material-ui/icons/Mail';
 
@@ -82,6 +83,35 @@ const CampaignDataDisplay = (props) => {
 
   const classes = useStyles();
 
+  const [sent, setSent] = useState('-');
+  const [replied, setReplied] = useState('-');
+
+  useEffect( () => {
+
+    if(props.campaignId !== undefined) {
+
+      // get sent for this campaign
+      apiRequest('GET', `/campaign/${props.campaignId}/sent`)
+      .then( json => {
+        setSent(json.sent);
+      })
+      .catch( e => {
+        console.log(e);
+      });
+
+      // get replies for this campaign
+      apiRequest('GET', `/campaign/${props.campaignId}/replied`)
+      .then( json => {
+        setReplied(json.replied);
+      })
+      .catch( e => {
+        console.log(e);
+      });
+
+    }
+
+  }, [props.campaignId]);
+
   return (
     <Paper className={classes.mt2b1}>
       <Grid container item
@@ -95,12 +125,12 @@ const CampaignDataDisplay = (props) => {
         <VerticalDivider />
         <Grid item>
           <StatisticDisplay label="Contacted"
-                            value={props.contacted} />
+                            value={sent} />
         </Grid>
         <VerticalDivider />
         <Grid item>
           <StatisticDisplay label="Replied"
-                            value={props.replied} />
+                            value={replied} />
         </Grid>
       </Grid>
     </Paper>
@@ -137,18 +167,11 @@ const StepsDisplay = (props) => {
             <Grid item sm={1}>
               <VerticalDivider step={true} />
             </Grid>
-            <Grid item sm={1}>
+            <Grid item sm={2}>
               <StatisticDisplay label="Sent"
                                 value={step.sent} />
             </Grid>
-            <Grid item sm={1}>
-              <VerticalDivider step={true} />
-            </Grid>
-            <Grid item sm={1}>
-              <StatisticDisplay label="Replied"
-                                value={step.replied} />
-            </Grid>
-            <Grid item sm={1}>
+            <Grid item sm={2}>
               <ButtonBox 
                 step={step} idx={idx} 
                 handleProspectsClick={props.handleProspectsClick}
@@ -196,6 +219,32 @@ const ButtonBox = (props) => {
 
 const CampaignSummary = (props) => {
 
+  const [steps, setSteps] = useState([]);
+
+  useEffect( () => {
+    if(props.steps !== undefined) {
+      getStepsSent(props.steps)
+    }
+  }, [props.steps])
+
+  const getStepsSent = async (steps) => {
+
+    const newSteps = [...steps];
+    for(let [i, s] of steps.entries()) {
+      const numSent = await apiRequest('GET', `/steps/${s.id}/sent`)
+      .then( json => {
+        return json.sent;
+      })
+      .catch( e => {
+        console.log(e);
+      });
+      newSteps[i].sent = numSent;
+    }
+    
+    setSteps(newSteps);
+
+  }
+
   return (
     <Fragment>
       <Grid container
@@ -204,10 +253,9 @@ const CampaignSummary = (props) => {
             alignItems="stretch" >
         {/* Campaign Data */}
         <CampaignDataDisplay prospects={props.prospects} 
-                             contacted={props.contacted}
-                             replied={props.replied} />
+                             campaignId={props.campaignId} />
         {/* Steps */}
-        <StepsDisplay steps={props.steps}
+        <StepsDisplay steps={steps}
                       openEditStepDialog={props.openEditStepDialog} 
                       handleProspectsClick={props.handleProspectsClick}
                       handleExecuteClick={props.handleExecuteClick}/>

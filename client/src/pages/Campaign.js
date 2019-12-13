@@ -15,6 +15,7 @@ import ConfirmationDialog from '../features/ConfirmationDialog';
 import SuccessSnackbar from '../features/SuccessSnackbar';
 import CampaignSidePanel from '../features/CampaignSidePanel';
 import CampaignHeader from '../features/Campaign/CampaignHeader';
+import StepsTabs from '../features/StepsTabs';
 import { apiRequest } from '../utils';
 
 const useStyles = makeStyles((theme) => ({
@@ -144,17 +145,17 @@ const Campaign = (props) => {
       prospects.push(
         {
           id : prospect.id,
-        email : prospect.email,
-        owner : prospect.name,
-        status : prospect.status,
+          email : prospect.email,
+          owner : prospect.name,
+          status : prospect.status,
       })
     }
     return {
       id : stepData.id,
       templateId : stepData.template.id,
       templateName : stepData.template.name,
-      sent : 100,
-      replied : 25,
+      sent : 0,
+      replied : 0,
       prospects : prospects
     }
   }
@@ -207,6 +208,10 @@ const Campaign = (props) => {
     setTemplates(templates);
   }
 
+  const handleNewTemplate = template => {
+    setTemplates([...templates, template])
+  }
+
   const getTemplates = () => {
     apiRequest('GET', '/templates')
     .then(data => {
@@ -224,6 +229,7 @@ const Campaign = (props) => {
       const idx = findStepIndex(editStep);
       campaign.steps[idx] = step;
       const newCampaign = Object.assign({}, campaign);
+      newCampaign.steps = [...newCampaign.steps];
       setCampaign(newCampaign);
     })
     .catch( e => {
@@ -236,8 +242,9 @@ const Campaign = (props) => {
     .then( json => {
       console.log(json);
       const step = createStepObject(json.step);
-      campaign.steps.push(step);
       const newCampaign = Object.assign({}, campaign);
+      console.log(newCampaign);
+      newCampaign.steps = [ ...newCampaign.steps, step];
       setCampaign(newCampaign);
     })
     .catch( e => {
@@ -249,10 +256,13 @@ const Campaign = (props) => {
     console.log('Delete: ' + JSON.stringify(editStep));
     setConfirmOpen(false);
     setEditOpen(false);
+
     // update UI
     const idx = findStepIndex(editStep);
-    campaign.steps.splice(idx, 1);
-    setCampaign(campaign);
+    const newCampaign = { ...campaign };
+    newCampaign.steps = [...campaign.steps];
+    newCampaign.steps.splice(idx, 1);
+    setCampaign(newCampaign);
 
     apiRequest('DELETE', `/steps/${editStep.id}`)
     .then( json => {
@@ -344,7 +354,7 @@ const Campaign = (props) => {
   }
 
   const handleExecuteStep = (event, step) => {
-    apiRequest('POST', '/gmail/send', {'step_id': step.id})
+    apiRequest('POST', `/steps/${step.id}/send`)
     .then((json) => {
       setExecuteSuccess(true);
     })
@@ -399,6 +409,7 @@ const Campaign = (props) => {
       <Fragment>
         {/* Page headings, campaign summary, and steps display */}
         <CampaignSummary title={campaign.title}
+          campaignId={campaign.id}
           userName={campaign.userName}
           prospects={campaign.prospectsTotal}
           contacted={campaign.prospectsContacted}
@@ -430,6 +441,7 @@ const Campaign = (props) => {
           updateTemplate={updateTemplate}
           setTemplateId={setTemplateId}
           setTemplates={setTemplates}
+          onNewTemplate={handleNewTemplate}
           templates={templates} />
         <Button onClick={handleNewOpen} className={classes.mt1b3} variant="outlined">Add Step</Button>
         <SuccessSnackbar open={importSuccess} onClose={importSuccessClose} message={"Success"}/>

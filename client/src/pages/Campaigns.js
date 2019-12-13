@@ -55,7 +55,27 @@ const Campaigns = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const getUserCampaigns = () => {
+    apiRequest('GET', '/campaigns')
+    .then(data => handleCampaigns(data))
+    .catch(err => {
+      console.log(err.message);
+    });
+  }
 
+  const getCampaignsReplied = (campaigns) => {
+    for(let [i, c] of campaigns.entries()){
+      apiRequest('GET', `/campaign/${c.id}/replied`)
+      .then( json => {
+        const new_campaigns = [ ...campaigns ];
+        new_campaigns[i].Replies = json.replied;
+        setCampaigns(new_campaigns);
+      })
+      .catch( e => {
+        console.log(e);
+      })
+    }
+  }
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -73,24 +93,15 @@ const Campaigns = () => {
         Name: each.name,
         Created: each.creation_date,
         Prospects: each.prospects,
-        Replies: "",
+        Replies: "-",
         Steps: each.steps,
-        Due: "",
         link: "/campaigns/" + each.id
       }
       campaigns.push(campaign);
     }
     setCampaigns(campaigns);
+    getCampaignsReplied(campaigns);
   }
-
-  const getUserCampaigns = () => {
-    apiRequest('GET', '/campaigns')
-      .then(data => handleCampaigns(data))
-    .catch(err => {
-      console.log(err.message);
-    });
-  }
-
 
   return (
     <Fragment>
