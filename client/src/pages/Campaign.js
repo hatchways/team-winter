@@ -175,8 +175,6 @@ const Campaign = (props) => {
         title : campaign.name,
         userName : campaign.owner_name,
         prospectsTotal : campaign.prospects,
-        prospectsContacted : 20,
-        prospectsReplied : 10,
         steps : steps
     })
   }
@@ -482,7 +480,7 @@ const Campaign = (props) => {
         </Grid>
         <Grid item md={10} sm={12} xs={12} className="half_container">
           <Container className={classes.container}>
-          <CampaignHeader title={campaign.title} userName={campaign.userName}/>
+          <CampaignHeader title={campaign.title} userName={campaign.userName} onThreadUpdate={getCampaign}/>
             {display}
           </Container>
         </Grid>
