@@ -7,10 +7,16 @@ import LensIcon from '@material-ui/icons/FiberManualRecord';
 
 import CustomizedButton from './CustomizedButton';
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   root: {
-    height: 685,
-    paddingTop: 200,
+    paddingTop: "100px",
+    [theme.breakpoints.down("md")]: {
+      height: "10vh",
+    },
+    [theme.breakpoints.up("md")]: {
+      minHeight: "78vh",
+      height: "90%",
+    }
   },
   lensIcon: {
     color: "#a5d6a7",

@@ -19,7 +19,10 @@ import { apiRequest } from '../utils';
 
 const useStyles = makeStyles((theme) => ({
   container: {
-    marginTop: '100px'
+    marginTop: '100px',
+    [theme.breakpoints.down("md")]: {
+      marginTop: '50px'
+    },
   },
   mt1b3: {
     marginTop: '1rem',
@@ -44,7 +47,7 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.down("sm")]: {
       paddingLeft: 5,
       paddingRight: 5,
-    }
+    },
   },
 }));
 
@@ -456,7 +459,7 @@ const Campaign = (props) => {
     <Fragment>
       <NavBar userName={campaign.userName}/>
       <Grid container className={classes.sidePanelContainer}>
-        <Grid item lg={2} sm={2} xs={12} id='sidePanel' className="half_container">
+        <Grid item md={2} sm={12} xs={12} id='sidePanel' className="half_container">
           <CampaignSidePanel
             currentView={currentView}
             setCurrentViewToSummary={setCurrentViewToSummary}
@@ -464,7 +467,7 @@ const Campaign = (props) => {
             >
           </CampaignSidePanel>
         </Grid>
-        <Grid item lg={10} sm={10} xs={12} className="half_container">
+        <Grid item md={10} sm={12} xs={12} className="half_container">
           <Container className={classes.container}>
           <CampaignHeader title={campaign.title} userName={campaign.userName}/>
             {display}

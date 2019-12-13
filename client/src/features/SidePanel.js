@@ -6,10 +6,15 @@ import ExpandPanel from './ExpandPanel';
 
 import { getAllImportedFrom } from '../utils';
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   root: {
-    height: "900px",
-    paddingTop: "200px",
+    paddingTop: "100px",
+    [theme.breakpoints.down("md")]: {
+      height: "35vh",
+    },
+    [theme.breakpoints.up("md")]: {
+      height: "90vh",
+    }
   },
 }));
 
