@@ -169,7 +169,7 @@ const StepsDisplay = (props) => {
             </Grid>
             <Grid item sm={2}>
               <StatisticDisplay label="Sent"
-                                value={props.sent[idx] ? props.sent[idx] : 0} />
+                                value={step.sent} />
             </Grid>
             <Grid item sm={2}>
               <ButtonBox 
@@ -220,7 +220,7 @@ const ButtonBox = (props) => {
 
 const CampaignSummary = (props) => {
 
-  const [sent, setSent] = useState(Array(100).fill('-'));
+  const [steps, setSteps] = useState([]);
 
   useEffect( () => {
     if(props.steps !== undefined) {
@@ -230,8 +230,8 @@ const CampaignSummary = (props) => {
 
   const getStepsSent = async (steps) => {
 
-    const newSent = [];
-    for(let s of steps) {
+    const newSteps = [...steps];
+    for(let [i, s] of steps.entries()) {
       const numSent = await apiRequest('GET', `/steps/${s.id}/sent`)
       .then( json => {
         return json.sent;
@@ -239,10 +239,10 @@ const CampaignSummary = (props) => {
       .catch( e => {
         console.log(e);
       });
-      newSent.push(numSent);
+      newSteps[i].sent = numSent;
     }
     
-    setSent(newSent);
+    setSteps(newSteps);
 
   }
 
@@ -256,8 +256,7 @@ const CampaignSummary = (props) => {
         <CampaignDataDisplay prospects={props.prospects} 
                              campaignId={props.campaignId} />
         {/* Steps */}
-        <StepsDisplay steps={props.steps}
-                      sent={sent}
+        <StepsDisplay steps={steps}
                       openEditStepDialog={props.openEditStepDialog} 
                       handleProspectsClick={props.handleProspectsClick}
                       handleExecuteClick={props.handleExecuteClick}/>
