@@ -25,7 +25,7 @@ const useStyles = makeStyles((theme) => ({
   },
   activeButton: {
     margin: "10px 20px",
-    width: 170,
+    width: 'calc(100% - 40px)',
     height: 40,
     justifyContent: "flex-start",
     borderRadius: 10,

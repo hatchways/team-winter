@@ -1,5 +1,6 @@
 import React from 'react';
 import { makeStyles, Grid, Typography } from '@material-ui/core';
+import ThreadUpdateButton from '../Demo/ThreadUpdateButton';
 
 const useStyles = makeStyles(({
   addProspectsButton: {
@@ -40,6 +41,7 @@ const CampaignHeader = (props) => {
       <Grid item
             xs={12}
             sm={4}>
+        <ThreadUpdateButton />
       </Grid>
     </Grid>
   )
