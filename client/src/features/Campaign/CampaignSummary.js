@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import { 
   makeStyles,
   Grid,
@@ -9,6 +9,7 @@ import {
   Button,
   Tooltip
 } from '@material-ui/core';
+import { apiRequest } from '../../utils';
 
 import MailIcon from '@material-ui/icons/Mail';
 
@@ -82,6 +83,35 @@ const CampaignDataDisplay = (props) => {
 
   const classes = useStyles();
 
+  const [sent, setSent] = useState('-');
+  const [replied, setReplied] = useState('-');
+
+  useEffect( () => {
+
+    if(props.campaignId !== undefined) {
+
+      // get sent for this campaign
+      apiRequest('GET', `/campaign/${props.campaignId}/sent`)
+      .then( json => {
+        setSent(json.sent);
+      })
+      .catch( e => {
+        console.log(e);
+      });
+
+      // get replies for this campaign
+      apiRequest('GET', `/campaign/${props.campaignId}/replies`)
+      .then( json => {
+        setReplied(json.replied);
+      })
+      .catch( e => {
+        console.log(e);
+      });
+
+    }
+
+  }, [props.campaignId]);
+
   return (
     <Paper className={classes.mt2b1}>
       <Grid container item
@@ -95,12 +125,12 @@ const CampaignDataDisplay = (props) => {
         <VerticalDivider />
         <Grid item>
           <StatisticDisplay label="Contacted"
-                            value={props.contacted} />
+                            value={sent} />
         </Grid>
         <VerticalDivider />
         <Grid item>
           <StatisticDisplay label="Replied"
-                            value={props.replied} />
+                            value={replied} />
         </Grid>
       </Grid>
     </Paper>
@@ -205,8 +235,7 @@ const CampaignSummary = (props) => {
             alignItems="stretch" >
         {/* Campaign Data */}
         <CampaignDataDisplay prospects={props.prospects} 
-                             contacted={props.contacted}
-                             replied={props.replied} />
+                             campaignId={props.campaignId} />
         {/* Steps */}
         <StepsDisplay steps={props.steps}
                       openEditStepDialog={props.openEditStepDialog} 

@@ -7,6 +7,7 @@ import rq
 from config.default import REDIS_URL
 from .UserModel import UserModel
 from .StepModel import StepModel
+from .CampaignModel import CampaignModel
 from utils.EmailSender import Message
 
 class EmailTaskModel(db.Model):
@@ -75,3 +76,11 @@ class EmailTaskModel(db.Model):
     @classmethod
     def count_sent_in_step(cls, step_id):
         return cls.query.filter_by(step_id=step_id).filter_by(complete=True).count()
+
+    @classmethod
+    def count_sent_in_campaign(cls, campaign_id):
+        steps = CampaignModel.query.filter_by(id=campaign_id).first().steps
+        count = 0
+        for step in steps:
+            count += cls.count_sent_in_step(step.id)
+        return count

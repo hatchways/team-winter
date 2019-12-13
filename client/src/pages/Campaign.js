@@ -391,6 +391,7 @@ const Campaign = (props) => {
       <Fragment>
         {/* Page headings, campaign summary, and steps display */}
         <CampaignSummary title={campaign.title}
+          campaignId={campaign.id}
           userName={campaign.userName}
           prospects={campaign.prospectsTotal}
           contacted={campaign.prospectsContacted}
