@@ -180,6 +180,7 @@ const Campaign = (props) => {
     })
   }
 
+  
   const getCampaign =  () => {
     const id = props.match.params.id;
     apiRequest('GET', `/campaigns/${id}`)
@@ -457,7 +458,7 @@ const Campaign = (props) => {
 
   return (
     <Fragment>
-      <NavBar userName={campaign.userName}/>
+      <NavBar/>
       <Grid container className={classes.sidePanelContainer}>
         <Grid item md={2} sm={12} xs={12} id='sidePanel' className="half_container">
           <CampaignSidePanel

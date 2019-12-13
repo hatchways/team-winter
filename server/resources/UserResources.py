@@ -54,6 +54,14 @@ class UserLogin(Resource):
         else:
             return {'message': 'Wrong credentials'}, 400
 
+class UserOwnerName(Resource):
+    @jwt_required
+    def get(self):
+        current_user = UserModel.find_by_id(get_jwt_identity())
+        return {
+            'owner_name': current_user.first_name + " "  + current_user.last_name,
+        }, 200
+
 class UserCampaigns(Resource):
     @jwt_required
     def get(self):
