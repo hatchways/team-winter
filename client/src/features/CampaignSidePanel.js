@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme) => ({
       height: "10vh",
     },
     [theme.breakpoints.up("md")]: {
-      minHeight: "78vh",
+      minHeight: "88vh",
       height: "90%",
     }
   },

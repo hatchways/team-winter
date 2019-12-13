@@ -12,7 +12,7 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.background.paper,
     color: theme.palette.text.secondary,
     height: 64,
-    margin: "30px 0px",
+    margin: "10px 0px 30px",
 
   },
   tab: {
