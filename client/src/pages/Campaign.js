@@ -200,19 +200,14 @@ const Campaign = (props) => {
     });
   }
 
-  const updateStep = (step) => {
-    console.log('Update: ' + JSON.stringify(step));
-    // update UI
-    const idx = findStepIndex(step);
-    campaign.steps[idx].templateId = step.templateId;
-    campaign.steps[idx].templateName = findTemplate(step.templateId).name;
-    setCampaign(campaign);
-    
-    console.log(step);
-
-    apiRequest('PUT', `/steps/${step.id}`, {'template_id': step.templateId})
+  const updateStep = () => {
+    apiRequest('PUT', `/steps/${editStep.id}`, {'template_id': templateId})
     .then( json => {
-      console.log(json);
+      const step = createStepObject(json.step);
+      const idx = findStepIndex(editStep);
+      campaign.steps[idx] = step;
+      const newCampaign = Object.assign({}, campaign);
+      setCampaign(newCampaign);
     })
     .catch( e => {
       console.log(e);
@@ -224,8 +219,8 @@ const Campaign = (props) => {
     .then( json => {
       console.log(json);
       const step = createStepObject(json.step);
+      campaign.steps.push(step);
       const newCampaign = Object.assign({}, campaign);
-      newCampaign.steps.push(step);
       setCampaign(newCampaign);
     })
     .catch( e => {
@@ -250,10 +245,20 @@ const Campaign = (props) => {
       console.log(e);
     });
   }
+
+  const updateAllSteps = (oldTemplate, newTemplate) => {
+    for(let step of campaign.steps) {
+      if (step.templateId === oldTemplate.id) {
+        step.templateId = newTemplate.id;
+        step.templateName = newTemplate.name;
+      }
+    }
+  }
+
   const updateTemplate = (oldTemplate, newTemplate) => {
-    const idx = findTemplateIndex(oldTemplate);
+    updateAllSteps(oldTemplate, newTemplate);
+    const idx = findTemplateIndex(oldTemplate); 
     templates[idx] = newTemplate;
-    setTemplates(templates);
   }
 
 //---------------Edit Step-----------------------//
@@ -267,13 +272,10 @@ const Campaign = (props) => {
   }
 
   const handleEditSave = () => {
-    updateStep(editStep);
+    updateStep();
     setEditOpen(false);
   }
 
-  const handleSetEditStep = (newStep) => {
-    setEditStep(newStep);
-  }
 //-----------------Create Step-----------------------//
   const handleNewOpen = () => {
     setNewOpen(true);
@@ -304,29 +306,17 @@ const Campaign = (props) => {
     setExecuteSuccess(false)
   }
 
-  const mergeStepProspects = (prevStep, currStep) => {
-    const prevProspects = prevStep.prospects;
-    const currProspects = currStep.prospects;
-    const combineProspects = [...prevProspects, ...currProspects];
-    console.log(combineProspects)
-    const uniqueProspects = combineProspects.filter(
-      (prospect, idx) => combineProspects.map(obj => obj.id).indexOf(prospect.id) === idx);
-    console.log(uniqueProspects)
-    currStep.prospects = uniqueProspects;
-  }
-
   const handleImportProspects = (event, currStep, idx) => {
-    const prevStep = campaign.steps[idx-1];
+    const prevStep = idx ? campaign.steps[idx-1] : campaign;
     const data = {
-      'prev_step_id' : prevStep.id,
+      'prev_step_id' : idx ? prevStep.id : 0,
       'curr_step_id' : currStep.id
     }
     apiRequest('POST', `/steps/prospects`, data)
     .then(res => {
-      if(res) {
-        mergeStepProspects(prevStep, currStep);
+        const step = createStepObject(res.step);
+        campaign.steps[idx] = step;
         setImportSuccess(true);
-      }
     })
     .catch(err => {
       console.log(err.message);

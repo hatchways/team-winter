@@ -51,7 +51,8 @@ const Campaigns = () => {
 
   useEffect(() => {
     getUserCampaigns();
-  }, [getUserCampaigns]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
 
 
@@ -74,8 +75,7 @@ const Campaigns = () => {
         Replies: "",
         Steps: each.steps,
         Due: "",
-        link: "/campaigns/" + each.id,
-        arrow: 'arrow'
+        link: "/campaigns/" + each.id
       }
       campaigns.push(campaign);
     }

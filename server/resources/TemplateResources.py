@@ -33,7 +33,7 @@ class TemplatesById(Resource):
         try:
             template.update()
             return {
-                'template': template.to_dict(rules=('-owner', '-campaign', '-steps'))
+                'template': template.to_dict(only=('id', 'name', 'subject', 'type', 'body'))
             }, 200
         except ValueError as e:
             return {

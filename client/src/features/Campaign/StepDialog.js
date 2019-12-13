@@ -54,46 +54,44 @@ const StepDialog = (props) => {
 
   const [editorTemplate, setEditorTemplate] = useState({});
   const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [onNew, setOnNew] = useState(false);
+  const [selectedId, setSelectedId] = useState(0);
 
   const variables = ['name', 'from_first_name'];
 
   useEffect( () => {
-    if(props.step !== undefined) getTemplate(props.step.templateId);
+    if(props.step !== undefined) setTemplate(props.step.templateId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.step, props.open]);
   
-  const getTemplate = id => {
-    apiRequest('GET', `/templates/${id}`)
-    .then( json => {
-      setEditorTemplate(json.template);
-    })
-    .catch( e => {
-      console.log(e);
-    })
-  }
-
-  const setTemplate = (event) => {
-    const newId = event.target.value;
-    const newStep = Object.assign({}, props.step);
-    newStep.templateId = newId;
-    props.setStep(newStep);
+  const setTemplate = id => {
+    const template = props.findTemplate(id);
+    setSelectedId(id);
+    setEditorTemplate(template);
   }
 
   const handleChange = (event) => {
-    if(props.step) setTemplate(event);
-    else props.setTemplateId(event.target.value);
-    apiRequest('GET', `/templates/${event.target.value}`)
-    .then( json => {
-      setEditorTemplate(json['template']);
-    });
+    props.setTemplateId(event.target.value);
+    setTemplate(event.target.value);
   }
 
   const handleSaveTemplate = (template) => {
-    apiRequest('PUT', `/templates/${template.id}`, template)
-    .then( json => {
-      console.log(json);
+    (onNew ? 
+    apiRequest('POST', '/templates', template) :
+    apiRequest('PUT', `/templates/${template.id}`, template))
+    .then(json => {
       setSnackbarOpen(true);
+      if(!onNew) {
+        props.updateTemplate(template, json.template);
+      }
+      else {
+        props.templates.push(json.template);
+        setOnNew(false);
+      };
+      props.setTemplateId(json.template.id);
+      setTemplate(json.template.id);
     })
-    .catch( e => {
+    .catch( (e) => {
       console.log(e);
     });
   }
@@ -109,18 +107,13 @@ const StepDialog = (props) => {
 
   const handleSave = () => {
     setEditorTemplate({});
+    setSelectedId(0);
     props.onSave();
   }
 
   const newTemplate = () => {
-    apiRequest('POST', '/templates', emptyTemplate)
-    .then( json => {
-      setEditorTemplate(json.template);
-      props.onNewTemplate(json.template);
-    })
-    .catch( e => {
-      console.log(e);
-    });
+      setEditorTemplate(emptyTemplate);
+      setOnNew(true);
   }
 
   return (
@@ -140,8 +133,7 @@ const StepDialog = (props) => {
               <InputLabel id="template-select-label">Template</InputLabel>
               <Select labelId="template-select-label"
                       id="template-select"
-                      value= {props.step ? props.step.templateId : null}
-                      onChange={e => props.step ? setTemplate(e) : props.setTemplateId(e.target.value)} 
+                      value={selectedId}
                       onChange={handleChange}
                       className={classes.select} >
                 {
