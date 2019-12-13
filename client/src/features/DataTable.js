@@ -10,6 +10,7 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Checkbox from '@material-ui/core/Checkbox';
 import CloudIcon from '@material-ui/icons/Cloud';
+import Grid from '@material-ui/core/Grid';
 
 
 const useStyles = makeStyles(theme => ({
@@ -38,6 +39,10 @@ const useStyles = makeStyles(theme => ({
     top: 20,
     width: 1,
   },
+  emailCell: {
+    padding: "0px 0px 0px 70px",
+    width: 280,
+  }
 }));
 
 
@@ -97,12 +102,16 @@ const DataTable = (props) => {
     <Box
       display="flex"
       justifyContent="center"
-        >
-      <img
-        alt="empty state"
-        src="https://assets.materialup.com/uploads/77a5d214-0a8a-4444-a523-db0c4e97b9c0/preview.jpg"
-        >
-      </img>
+      alignContent="center"
+      p={4}
+      >
+      <Box>
+        <img
+          alt="empty state"
+          src="https://assets.materialup.com/uploads/77a5d214-0a8a-4444-a523-db0c4e97b9c0/preview.jpg"
+          >
+        </img>
+      </Box>
     </Box> 
   )
 
@@ -152,7 +161,15 @@ const DataTable = (props) => {
                         />
                       </TableCell>
                       } else if (eachCell[0] === "Email") {
-                        return <TableCell key={idx} component="th" id={labelId} scope="row" p={1}> {eachCell[1]}</TableCell>
+                        return <TableCell
+                                  key={idx}
+                                  component="th"
+                                  id={labelId}
+                                  scope="row"
+                                  className={classes.emailCell}
+                                  >
+                                  {eachCell[1]}
+                                </TableCell>
                       } else if (eachCell[0] === "id" || eachCell[0] === 'link' || eachCell[0] === 'steps') {
                         return null;
                       } else {

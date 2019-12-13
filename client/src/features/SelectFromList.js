@@ -42,7 +42,16 @@ const SelectFromList = (props) => {
           value={currentValue}
           onChange={e => setValue(e.target.value)}
           input={<Input />}
-          MenuProps={MenuProps}
+          MenuProps={{anchorOrigin: {
+            vertical: "bottom",
+            horizontal: "left"
+          },
+          transformOrigin: {
+            vertical: "top",
+            horizontal: "left"
+          },
+          getContentAnchorEl: null
+        }}
           >
           <MenuItem disabled value="">
             {actionType[0]}

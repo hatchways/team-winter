@@ -50,7 +50,7 @@ const useStyles = makeStyles((theme) => ({
   prospectList: {
     overflow: "auto",
     width: "100%",
-    height: 665,
+    height: 660,
     marginTop: 0,
     [theme.breakpoints.down("lg")]: {
       paddingLeft: 12,

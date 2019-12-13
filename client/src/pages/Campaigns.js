@@ -16,6 +16,7 @@ const useStyles = makeStyles((theme) => ({
   createCampaignButton: {
     width: 210,
     fontSize: 14,
+    marginLeft: 20,
   },
   icon: {
     margin: "16px 17px 0px 14px",
@@ -26,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
   campaignList: {
     overflow: "auto",
     width: "100%",
-    height: 600,
+    height: 670,
     marginTop: 0,
     [theme.breakpoints.down("lg")]: {
       paddingLeft: 12,
@@ -104,7 +105,7 @@ const Campaigns = () => {
             <FlashOnIcon fontSize="small" style={{color: "grey"}} />
           </Box>
           <Box className={classes.icon}>
-            <MailIcon fontSize="2px" style={{color: "grey"}} />
+            <MailIcon fontSize="small" style={{color: "grey"}} />
           </Box>
           <Box>
             <CustomizedButton
