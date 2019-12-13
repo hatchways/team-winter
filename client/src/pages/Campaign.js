@@ -82,7 +82,7 @@ const Campaign = (props) => {
       return listOfSteps;
     } else {
       for (let i = 0; i < prospect.steps.length; i += 1) {
-        listOfSteps[prospect.steps[0].id] = true;
+        listOfSteps[prospect.steps[i].id] = true;
       }
     }
     return listOfSteps;
@@ -334,6 +334,7 @@ const Campaign = (props) => {
         const step = createStepObject(res.step);
         campaign.steps[idx] = step;
         setImportSuccess(true);
+        getAllProspects();
     })
     .catch(err => {
       console.log(err.message);
