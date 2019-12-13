@@ -103,7 +103,7 @@ class GetCampaign(Resource):
                     'steps' : [
                         step.to_dict(rules = 
                             ('-template.steps', '-template.owner', '-prospects.campaigns',
-                            '-prospects.tags', '-prospects.steps', '-prospects.owner', '-campaign')) 
+                            '-prospects.tags', '-prospects.steps', '-prospects.owner', '-campaign', '-email_tasks')) 
                         for step in campaign.steps
                     ]
                 }

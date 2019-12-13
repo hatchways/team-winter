@@ -137,8 +137,8 @@ const Campaign = (props) => {
       id : stepData.id,
       templateId : stepData.template.id,
       templateName : stepData.template.name,
-      sent : 100,
-      replied : 25,
+      sent : 0,
+      replied : 0,
       prospects : prospects
     }
   }

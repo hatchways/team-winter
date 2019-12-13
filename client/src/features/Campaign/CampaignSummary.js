@@ -142,29 +142,6 @@ const StepsDisplay = (props) => {
 
   const classes = useStyles();
 
-  const [sent, setSent] = useState({});
-
-  useEffect( () => {
-
-    if(props.steps !== undefined){
-      for(let s of props.steps) {
-
-        // get sent for this step
-        apiRequest('GET', `/steps/${s.id}/sent`)
-        .then( json => { 
-          let new_sent = { ...sent };
-          new_sent[s.id] = json.sent;
-          setSent(new_sent);
-        })
-        .catch( e => {
-          console.log(e);
-        });
-  
-      }
-    }
-
-  }, [props.steps])
-
   return (
     props.steps ? 
     props.steps.map( (step, idx) => {
@@ -192,7 +169,7 @@ const StepsDisplay = (props) => {
             </Grid>
             <Grid item sm={2}>
               <StatisticDisplay label="Sent"
-                                value={sent[step.id]} />
+                                value={props.sent[idx] ? props.sent[idx] : 0} />
             </Grid>
             <Grid item sm={2}>
               <ButtonBox 
@@ -243,6 +220,32 @@ const ButtonBox = (props) => {
 
 const CampaignSummary = (props) => {
 
+  const [sent, setSent] = useState(Array(100).fill('-'));
+
+  useEffect( () => {
+    if(props.steps !== undefined) {
+      getStepsSent(props.steps)
+    }
+  }, [props.steps])
+
+  const getStepsSent = async (steps) => {
+
+    const newSent = [];
+    for(let s of steps) {
+      const numSent = await apiRequest('GET', `/steps/${s.id}/sent`)
+      .then( json => {
+        return json.sent;
+      })
+      .catch( e => {
+        console.log(e);
+      });
+      newSent.push(numSent);
+    }
+    
+    setSent(newSent);
+
+  }
+
   return (
     <Fragment>
       <Grid container
@@ -254,6 +257,7 @@ const CampaignSummary = (props) => {
                              campaignId={props.campaignId} />
         {/* Steps */}
         <StepsDisplay steps={props.steps}
+                      sent={sent}
                       openEditStepDialog={props.openEditStepDialog} 
                       handleProspectsClick={props.handleProspectsClick}
                       handleExecuteClick={props.handleExecuteClick}/>
