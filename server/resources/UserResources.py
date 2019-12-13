@@ -110,6 +110,6 @@ class UserProspects(Resource):
                 'campaigns': len(prospect.campaigns),
                 })
         return {
-            'Prospects': prospects
+            'prospects': prospects,
             }, 200 
 

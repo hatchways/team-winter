@@ -125,7 +125,7 @@ const Prospects = () => {
       const listOfProspects = [];
       const cloudIcon = <CloudIcon className="fas fa-cloud" style={{color: "grey"}} />
 
-      result.Prospects.map(prospect => {
+      result.prospects.map(prospect => {
         const prospectObj = {
           'id': prospect.id,
           'check': 'check',

@@ -39,9 +39,9 @@ class CampaignProspects(Resource):
         for step in current_campaign.steps:
             steps.append({'id' : step.id, 'template_id' : step.template.id})
         return {
-            'Campaign' : current_campaign.name,
-            'Prospects' : prospects,
-            'Steps' : steps
+            'campaign' : current_campaign.name,
+            'prospects' : prospects,
+            'steps' : steps
             }, 200 
 
     @jwt_required

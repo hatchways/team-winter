@@ -20,7 +20,7 @@ import { apiRequest } from '../utils';
 const useStyles = makeStyles((theme) => ({
   container: {
     marginTop: '100px',
-    [theme.breakpoints.down("md")]: {
+    [theme.breakpoints.down("sm")]: {
       marginTop: '50px'
     },
   },
@@ -74,7 +74,7 @@ const Campaign = (props) => {
     getAllProspects();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
+  
   const getSteps = (prospect) => {
     const listOfSteps = {0: true};
 
@@ -95,7 +95,7 @@ const Campaign = (props) => {
       const listOfProspects = [];
       const cloudIcon = <CloudIcon className="fas fa-cloud" style={{color: "grey"}} />
 
-      result.Prospects.map(prospect => {
+      result.prospects.map(prospect => {
         const steps = getSteps(prospect)
         const prospectObj = {
           'id': prospect.id,
