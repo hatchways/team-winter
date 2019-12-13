@@ -343,6 +343,7 @@ const Campaign = (props) => {
     .then(res => {
         const step = createStepObject(res.step);
         campaign.steps[idx] = step;
+        campaign.steps = [...campaign.steps]
         setImportSuccess(true);
         getAllProspects();
     })
