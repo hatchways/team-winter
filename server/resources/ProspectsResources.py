@@ -42,7 +42,7 @@ class InheritPreviousStepProspects(Resource):
       curr_step.add_prospects(prev_step.prospects) 
       
       return {
-        'curr_step' : curr_step.to_dict(rules = 
+        'step' : curr_step.to_dict(rules = 
                             ('-template.steps', '-template.owner', '-prospects.campaigns',
                             '-prospects.tags', '-prospects.steps', '-prospects.owner', '-campaign'))
       }, 200

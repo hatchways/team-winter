@@ -306,15 +306,6 @@ const Campaign = (props) => {
     setExecuteSuccess(false)
   }
 
-  const mergeStepProspects = (prevStep, currStep, idx) => {
-    const prevProspects = prevStep.prospects;
-    const currProspects = currStep.prospects;
-    const combineProspects = [...prevProspects, ...currProspects];
-    const uniqueProspects = combineProspects.filter(
-      (prospect, idx) => combineProspects.map(obj => obj.id).indexOf(prospect.id) === idx);
-    currStep.prospects = uniqueProspects;
-  }
-
   const handleImportProspects = (event, currStep, idx) => {
     const prevStep = idx ? campaign.steps[idx-1] : campaign;
     const data = {
@@ -323,7 +314,8 @@ const Campaign = (props) => {
     }
     apiRequest('POST', `/steps/prospects`, data)
     .then(res => {
-        mergeStepProspects(prevStep, currStep, idx);
+        const step = createStepObject(res.step);
+        campaign.steps[idx] = step;
         setImportSuccess(true);
     })
     .catch(err => {
