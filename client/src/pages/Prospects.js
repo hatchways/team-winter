@@ -50,7 +50,7 @@ const useStyles = makeStyles((theme) => ({
   prospectList: {
     overflow: "auto",
     width: "100%",
-    height: 665,
+    height: 660,
     marginTop: 0,
     [theme.breakpoints.down("lg")]: {
       paddingLeft: 12,
@@ -84,11 +84,34 @@ const Prospects = () => {
   const [emailTerm, handleSearchEmail] = useState('');
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [addToCampaignStatus, setAddToCampaignStatus] = useState('');
+  const [filteredData, setFilteredData] = useState(data)
+
+
+
+  // Filter inported_from's option
+  const filteredImportedFrom = importedFromTerm.name === ''
+  ? data
+  : data.filter(prospect => prospect['Imported_from'] === importedFromTerm.name)
+
+  // Filter status's option
+  const filteredStatus = statusTerm.name === ''
+  ? filteredImportedFrom
+  : filteredImportedFrom.filter(prospect => prospect['Status'] === statusTerm.name);
+
+   // Filter email's option
+  const filteredEmail = emailTerm === ''
+  ? filteredStatus
+  : filteredStatus.filter(prospect => {
+    const queryEmail = emailTerm.toLowerCase();
+    return prospect['Email'].toLowerCase().includes(queryEmail);
+  })
 
   useEffect(() => {
     getAllCampaigns();
     getAllProspects();
-  },[])
+    setFilteredData(filteredEmail)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[importedFromTerm, statusTerm, emailTerm])
 
   const gmailDialogShouldOpen = () => {
     const qs = queryString.parse(window.location.search);
@@ -102,7 +125,7 @@ const Prospects = () => {
       const listOfProspects = [];
       const cloudIcon = <CloudIcon className="fas fa-cloud" style={{color: "grey"}} />
 
-      result.Prospects.map(prospect => {
+      result.prospects.map(prospect => {
         const prospectObj = {
           'id': prospect.id,
           'check': 'check',
@@ -143,9 +166,9 @@ const Prospects = () => {
     };
 
     apiRequest('POST', `/campaign/${campaignId}/prospects`, data)
-    .then( data => {
+    .then( result => {
       setSnackbarOpen(true);
-      setAddToCampaignStatus(data.message);
+      setAddToCampaignStatus(result.message);
     })
     .catch( e => {
       console.log(e.message);
@@ -155,9 +178,15 @@ const Prospects = () => {
   //handle select all row on DataTable.js
   const handleClickOnAllRows = event => {
     if (event.target.checked) {
-      const newSelecteds = data.map(n => n.id);
-      handleSelectedProspects(newSelecteds);
-      return;
+      if (filteredData[0].id) {
+        const newSelecteds = filteredData.map(n => n.id);
+        handleSelectedProspects(newSelecteds);
+        return;
+      } else {
+        const newSelecteds = data.map(n => n.id);
+        handleSelectedProspects(newSelecteds);
+        return;
+      }
     }
     handleSelectedProspects([]);
   };
@@ -190,29 +219,12 @@ const Prospects = () => {
     setSnackbarOpen(false);
   };
 
-  // Filter inported_from's option
-  const filteredImportedFrom = importedFromTerm.name === ''
-  ? data
-  : data.filter(data => data['Imported_from'] === importedFromTerm.name)
-
-  // Filter status's option
-  const filteredStatus = statusTerm.name === ''
-  ? filteredImportedFrom
-  : filteredImportedFrom.filter(data => data['Status'] === statusTerm.name);
-
-   // Filter email's option
-  const filteredEmail = emailTerm === ''
-  ? filteredStatus
-  : filteredStatus.filter(data => {
-    const queryEmail = emailTerm.toLowerCase();
-    return data['Email'].toLowerCase().includes(queryEmail);
-  })
 
   return (
     <Fragment>
       <NavBar />
       <Grid container id="container">
-        <Grid item lg={2} sm={2} xs={12} id='sidePanel' className="half_container">
+        <Grid item md={2} sm={12} xs={12} id='sidePanel' className="half_container">
           <Box>
           <SidePanel
           getAllProspects={getAllProspects}
@@ -225,7 +237,7 @@ const Prospects = () => {
           > </SidePanel>
           </Box>
         </Grid>
-        <Grid item lg={10} sm={10} xs={12} className="half_container">
+        <Grid item md={10} sm={12} xs={12} className="half_container">
           <Box id='ContainerWrapper' display="flex" flexDirection="row" justifyContent="center">
             <Box id="FeatureContainerAndDataTable" display="flex" flexDirection="column" width='100%'>
               <Box id="FeaturesContainer">

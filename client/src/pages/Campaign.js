@@ -7,21 +7,22 @@ import {
 import Grid from '@material-ui/core/Grid';
 import CloudIcon from '@material-ui/icons/Cloud';
 
+import CampaignProspectsView from '../features/CampaignProspectsView';
 import NavBar from '../features/NavBar/MainBody';
 import CampaignSummary from '../features/Campaign/CampaignSummary';
-import UserInputContainer from '../features/UserInputContainer';
-import DataTable from '../features/DataTable';
 import StepDialog from '../features/Campaign/StepDialog';
 import ConfirmationDialog from '../features/ConfirmationDialog';
 import SuccessSnackbar from '../features/SuccessSnackbar';
 import CampaignSidePanel from '../features/CampaignSidePanel';
 import CampaignHeader from '../features/Campaign/CampaignHeader';
-import StepsTabs from '../features/StepsTabs';
-import { apiRequest, getJWT } from '../utils';
+import { apiRequest } from '../utils';
 
 const useStyles = makeStyles((theme) => ({
   container: {
-    marginTop: '100px'
+    marginTop: '100px',
+    [theme.breakpoints.down("sm")]: {
+      marginTop: '50px'
+    },
   },
   mt1b3: {
     marginTop: '1rem',
@@ -46,7 +47,7 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.down("sm")]: {
       paddingLeft: 5,
       paddingRight: 5,
-    }
+    },
   },
 }));
 
@@ -74,6 +75,19 @@ const Campaign = (props) => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const getSteps = (prospect) => {
+    const listOfSteps = {0: true};
+
+    if (prospect.steps.length === 0) {
+      return listOfSteps;
+    } else {
+      for (let i = 0; i < prospect.steps.length; i += 1) {
+        listOfSteps[prospect.steps[0].id] = true;
+      }
+    }
+    return listOfSteps;
+  }
+
   const getAllProspects = () => {
     const campaignId = props.match.params.id;
     apiRequest('GET', `/campaign/${campaignId}/prospects`)
@@ -81,7 +95,8 @@ const Campaign = (props) => {
       const listOfProspects = [];
       const cloudIcon = <CloudIcon className="fas fa-cloud" style={{color: "grey"}} />
 
-      result.Prospects.map(prospect => {
+      result.prospects.map(prospect => {
+        const steps = getSteps(prospect)
         const prospectObj = {
           'id': prospect.id,
           'check': 'check',
@@ -90,7 +105,8 @@ const Campaign = (props) => {
           'Status': prospect.status,
           'Owner': prospect.name,
           'Campaigns': prospect.campaigns,
-          'Imported_from': prospect.imported_from
+          'Imported_from': prospect.imported_from,
+          'steps': steps
         }
         return listOfProspects.push(prospectObj)
       })
@@ -163,6 +179,7 @@ const Campaign = (props) => {
         steps : steps
     })
   }
+
 
   const getCampaign =  () => {
     const id = props.match.params.id;
@@ -257,7 +274,7 @@ const Campaign = (props) => {
 
   const updateTemplate = (oldTemplate, newTemplate) => {
     updateAllSteps(oldTemplate, newTemplate);
-    const idx = findTemplateIndex(oldTemplate); 
+    const idx = findTemplateIndex(oldTemplate);
     templates[idx] = newTemplate;
   }
 
@@ -425,25 +442,21 @@ const Campaign = (props) => {
 
   if (currentView === 'prospects') {
     display = (
-      <Fragment>
-        <StepsTabs steps={campaign.steps}/>
-        <UserInputContainer className={classes.prospectList}>
-          <DataTable
-            data={prospects}
-            handleClickOnAllRows={handleClickOnAllRows}
-            handleClickOnRow={handleClickOnRow}
-            selectedProspects={selectedProspects}
-            ></DataTable>
-        </UserInputContainer>
-      </Fragment>
+      <CampaignProspectsView
+      steps={campaign.steps}
+      data={prospects}
+      handleClickOnAllRows={handleClickOnAllRows}
+      handleClickOnRow={handleClickOnRow}
+      selectedProspects={selectedProspects}
+      />
     )
   }
 
   return (
     <Fragment>
-      <NavBar userName={campaign.userName}/>
+      <NavBar/>
       <Grid container className={classes.sidePanelContainer}>
-        <Grid item lg={2} sm={12} xs={12} id='sidePanel' className="half_container">
+        <Grid item md={2} sm={12} xs={12} id='sidePanel' className="half_container">
           <CampaignSidePanel
             currentView={currentView}
             setCurrentViewToSummary={setCurrentViewToSummary}
@@ -451,7 +464,7 @@ const Campaign = (props) => {
             >
           </CampaignSidePanel>
         </Grid>
-        <Grid item lg={10} sm={12} xs={12} className="half_container">
+        <Grid item md={10} sm={12} xs={12} className="half_container">
           <Container className={classes.container}>
           <CampaignHeader title={campaign.title} userName={campaign.userName}/>
             {display}

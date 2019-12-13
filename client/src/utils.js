@@ -21,7 +21,7 @@ const getAllImportedFrom = (type) => {
     const queryObj = {};
     let idx = 0;
 
-    result.Prospects.map((prospect) => {
+    result.prospects.map((prospect) => {
 
       if (!queryObj[prospect[type]]) { 
         queryObj[prospect[type]] = {'name': prospect[type], 'id': idx};

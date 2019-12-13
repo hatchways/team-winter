@@ -39,6 +39,7 @@ from resources import (
 
 api.add_resource(UserResources.UserRegister, '/register')
 api.add_resource(UserResources.UserLogin, '/login')
+api.add_resource(UserResources.UserOwnerName, '/ownername')
 api.add_resource(UserResources.UserProspects, '/prospects')
 api.add_resource(TemplateResources.Templates, '/templates', endpoint='templates')
 api.add_resource(TemplateResources.TemplatesById, '/templates/<int:id>', endpoint='template')
