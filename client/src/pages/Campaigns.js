@@ -50,7 +50,7 @@ const Campaigns = () => {
   const [campaigns, setCampaigns] = useState([{}]);
 
   useEffect(() => {
-    getUserCampaigns();
+    getUserCampaigns()
   }, []);
 
   const getUserCampaigns = () => {
@@ -59,6 +59,20 @@ const Campaigns = () => {
     .catch(err => {
       console.log(err.message);
     });
+  }
+
+  const getCampaignsReplied = (campaigns) => {
+    for(let [i, c] of campaigns.entries()){
+      apiRequest('GET', `/campaign/${c.id}/replied`)
+      .then( json => {
+        const new_campaigns = [ ...campaigns ];
+        new_campaigns[i].Replies = json.replied;
+        setCampaigns(new_campaigns);
+      })
+      .catch( e => {
+        console.log(e);
+      })
+    }
   }
 
   const handleClickOpen = () => {
@@ -77,15 +91,14 @@ const Campaigns = () => {
         Name: each.name,
         Created: each.creation_date,
         Prospects: each.prospects,
-        Replies: "",
+        Replies: "-",
         Steps: each.steps,
-        Due: "",
-        link: "/campaigns/" + each.id,
-        arrow: 'arrow'
+        link: "/campaigns/" + each.id
       }
       campaigns.push(campaign);
     }
     setCampaigns(campaigns);
+    getCampaignsReplied(campaigns);
   }
 
   return (
