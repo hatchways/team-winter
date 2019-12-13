@@ -10,6 +10,77 @@ from utils.EmailSender import (
     Message
 )
 from utils.MessageConverter import replaceVariables
+from models.TemplateModel import TemplateModel
+from models.CampaignModel import CampaignModel
+
+reqParserGen = RequestParserGenerator()
+execute_parser = reqParserGen.getParser('step_id')
+create_parser = reqParserGen.getParser('template_id')
+update_parser = reqParserGen.getParser('template_id')
+step_parser = reqParserGen.getParser('step_id')
+
+class Step(Resource):
+    @jwt_required 
+    def post(self, id):
+        data = create_parser.parse_args()
+        campaign = CampaignModel.find_by_id(id)
+        template_id = data['template_id']
+        template = TemplateModel.find_by_id(template_id)
+        if template.owner_id != get_jwt_identity():
+            return {'message': 'You don\'t have permission to do that.'}, 403
+        if not campaign:
+            return {'message': 'Campaign {} doesn\'t exist'.format(id)}, 400
+        if campaign.owner_id != get_jwt_identity():
+            return {'message': 'You don\'t have permission to do that.'}, 403
+        new_step = StepModel(
+            campaign_id = id,
+            template_id = template_id 
+        )
+        try:
+            new_step.save_to_db()
+            return {
+                'step' : new_step.to_dict(rules = 
+                    ('-template.steps', '-template.owner', '-prospects.campaigns',
+                    '-prospects.tags', '-prospects.steps', '-prospects.owner', '-campaign', '-email_tasks'))
+            }, 201
+        except:
+            return {'message': 'Something went wrong'}, 500
+
+    @jwt_required
+    def put(self, id):
+        """Update a step"""
+        data = update_parser.parse_args()
+        new_template_id = data['template_id']
+        step = StepModel.find_by_id(id)
+        if step.campaign.owner_id != get_jwt_identity():
+            return {
+                'message': 'You don\'t own that step'
+            }, 401
+        template = TemplateModel.find_by_id(new_template_id)
+        if template.owner_id != get_jwt_identity():
+            return {'message': 'You don\'t have permission to do that.'}, 403
+        step.template_id = template.id
+        step.template = template
+        step.update()
+        return {
+            'step': step.to_dict(rules = 
+                    ('-template.steps', '-template.owner', '-prospects.campaigns',
+                    '-prospects.tags', '-prospects.steps', '-prospects.owner', '-campaign', '-email_tasks'))
+        }, 200
+
+    @jwt_required
+    def delete(self, id):
+        """Delete a step"""
+        current_user = UserModel.find_by_id(get_jwt_identity())
+        step = StepModel.find_by_id(id)
+        if step.campaign.owner_id != current_user.id:
+            return {
+                'message': 'You don\'t own that step'
+            }, 401
+        step.delete()
+        return {
+            'message': f'Step {id} deleted'
+        }, 200
 
 
 class ExecuteStep(Resource):

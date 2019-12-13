@@ -63,7 +63,10 @@ api.add_resource(CampaignResources.CampaignSent, '/campaign/<int:id>/sent')
 api.add_resource(CampaignResources.CampaignReplies, '/campaign/<int:id>/replied')
 api.add_resource(StepResources.ExecuteStep, '/steps/<int:id>/send')
 api.add_resource(StepResources.Sent, '/steps/<int:id>/sent')
+api.add_resource(StepResources.Step, '/campaigns/<int:id>/steps', endpoint='steps')
+api.add_resource(StepResources.Step, '/steps/<int:id>', endpoint='step')
 api.add_resource(ThreadResources.Update, '/threads/update')
 api.add_resource(ThreadResources.Status, '/threads/status')
+
 
 app.register_blueprint(home_handler)

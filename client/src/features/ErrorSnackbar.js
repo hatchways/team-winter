@@ -18,7 +18,8 @@ const useStyles = makeStyles(() => ({
   }
 }));
 
-const ErrorSnackbar = ({message, open}) => {
+const ErrorSnackbar = (props) => {
+  const {message, open} = props;
   const classes = useStyles();
 
   return (

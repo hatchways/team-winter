@@ -23,6 +23,13 @@ class StepModel(db.Model, SerializerMixin):
         db.session.add(self)
         db.session.commit()
 
+    def update(self):
+        db.session.commit()
+
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
+
     def add_prospects(self, prospects):
         self.prospects.extend(prospects)
         db.session.commit()

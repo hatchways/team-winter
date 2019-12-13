@@ -24,7 +24,8 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-const StepsTabs = ({ steps }) => {
+const StepsTabs = (props) => {
+  const { steps } = props;
   const classes = useStyles();
   const [selected, setSelected] = useState(0);
   const [value, setValue] = useState(0);

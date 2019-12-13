@@ -50,7 +50,8 @@ const Campaigns = () => {
   const [campaigns, setCampaigns] = useState([{}]);
 
   useEffect(() => {
-    getUserCampaigns()
+    getUserCampaigns();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const getUserCampaigns = () => {

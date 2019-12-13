@@ -24,7 +24,8 @@ const useStyles = makeStyles(({
   },
 }));
 
-const NavBar = ({userName}) => {
+const NavBar = (props) => {
+  const { userName } = props;
   const classes = useStyles();
 
   const path = window.location.pathname.toLowerCase();

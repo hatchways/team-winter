@@ -160,7 +160,7 @@ const StepsDisplay = (props) => {
             <Grid item sm={2}>
               <Typography>{step.templateName}</Typography>
             </Grid>
-            <Grid item sm={2}>
+            <Grid item sm={1}>
               <StatisticDisplay label="Prospects"
                                 value={step.prospects.length} />
             </Grid>
@@ -202,13 +202,12 @@ const ButtonBox = (props) => {
 
   return (
     <Box className={classes.buttonBox}>
-      {props.idx ? 
       <Tooltip title="Import previous step prospects" placement="top-start">
         <Button 
         className={classes.actionButton}
         onClick={event => props.handleProspectsClick(event, props.step, props.idx)}
         >Prospects</Button> 
-      </Tooltip> : null}
+      </Tooltip>
       <Tooltip title="Execute the step" placement="bottom-start">
         <Button className={classes.actionButton} 
         onClick={event => props.handleExecuteClick(event, props.step)}
