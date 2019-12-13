@@ -100,7 +100,7 @@ const CampaignDataDisplay = (props) => {
       });
 
       // get replies for this campaign
-      apiRequest('GET', `/campaign/${props.campaignId}/replies`)
+      apiRequest('GET', `/campaign/${props.campaignId}/replied`)
       .then( json => {
         setReplied(json.replied);
       })
@@ -142,6 +142,29 @@ const StepsDisplay = (props) => {
 
   const classes = useStyles();
 
+  const [sent, setSent] = useState({});
+
+  useEffect( () => {
+
+    if(props.steps !== undefined){
+      for(let s of props.steps) {
+
+        // get sent for this step
+        apiRequest('GET', `/steps/${s.id}/sent`)
+        .then( json => { 
+          let new_sent = { ...sent };
+          new_sent[s.id] = json.sent;
+          setSent(new_sent);
+        })
+        .catch( e => {
+          console.log(e);
+        });
+  
+      }
+    }
+
+  }, [props.steps])
+
   return (
     props.steps ? 
     props.steps.map( (step, idx) => {
@@ -167,18 +190,11 @@ const StepsDisplay = (props) => {
             <Grid item sm={1}>
               <VerticalDivider step={true} />
             </Grid>
-            <Grid item sm={1}>
+            <Grid item sm={2}>
               <StatisticDisplay label="Sent"
-                                value={step.sent} />
-            </Grid>
-            <Grid item sm={1}>
-              <VerticalDivider step={true} />
+                                value={sent[step.id]} />
             </Grid>
             <Grid item sm={2}>
-              <StatisticDisplay label="Replied"
-                                value={step.replied} />
-            </Grid>
-            <Grid item sm={1}>
               <ButtonBox 
                 step={step} idx={idx} 
                 handleProspectsClick={props.handleProspectsClick}

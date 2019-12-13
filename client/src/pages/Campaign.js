@@ -128,9 +128,9 @@ const Campaign = (props) => {
       prospects.push(
         {
           id : prospect.id,
-        email : prospect.email,
-        owner : prospect.name,
-        status : prospect.status,
+          email : prospect.email,
+          owner : prospect.name,
+          status : prospect.status,
       })
     }
     return {
