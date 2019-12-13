@@ -3,10 +3,10 @@ import { createMuiTheme } from "@material-ui/core";
 export const theme = createMuiTheme({
   palette: {
     primary: {
-      main: "#2AA897",
+      main: "#4FBE75",
     },
     secondary: {
-      main: "#4FBE75",
+      main: "#2AA897",
     },
   },
   typography: {
@@ -106,8 +106,13 @@ export const theme = createMuiTheme({
     MuiSelect: {
       select: {
         "&:focus": {
-          background: "none"
+          background: "none",
         }
+      }
+    },
+    MuiTableCell: {
+      root: {
+        borderBottom: 'none',
       }
     }
   }

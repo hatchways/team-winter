@@ -68,7 +68,7 @@ const useStyles = makeStyles(theme => ({
     float: "right",
     width: 100,
     height: 40,
-    padding: 10,
+    padding: 5,
   },
 }));
 
@@ -124,7 +124,6 @@ class ColumnSelector extends Component {
       </Fragment>
     );  
   }
-
 }
 
 function ProspectsUpload({ getAllProspects }) {

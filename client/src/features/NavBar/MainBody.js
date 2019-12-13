@@ -40,7 +40,7 @@ const NavBar = (props) => {
   }
 
   return (
-    <Grid xs={12}>
+    <Grid sm={12}>
       <AppBar className={classes.root} position="fixed">
         <Toolbar>
           <Typography variant="h6" className={classes.mail}>

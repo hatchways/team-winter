@@ -10,6 +10,8 @@ import Avatar from '@material-ui/core/Avatar';
 import Typography from '@material-ui/core/Typography';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 
+import { apiRequest } from '../../utils';
+
 const useStyles = makeStyles(({
   username: {
     color: "black",
@@ -73,12 +75,24 @@ const ItemTab = withStyles(theme => ({
 }))(props => <Tab disableRipple {...props} />);
 
 const LoggedInFeatures = (props) => {
-  const { userName } = props;
   const classes = useStyles();
   const [value, setValue] = useState(0);
   const [toggle, handleToggle] = useState(null);
+  const [ownerName, setOwnerName] = useState('')
 
   const path = window.location.pathname.toLowerCase();
+
+  useEffect(() => {
+    getOwnerName();
+  }, [])
+
+  const getOwnerName = () => {
+    apiRequest('GET', `/ownername`)
+    .then( result => setOwnerName(result.owner_name))
+    .catch( e => {
+      console.log(e);
+    })
+  }
 
   useEffect(() => {
     if ( path === '/campaigns' ) {
@@ -120,7 +134,7 @@ const LoggedInFeatures = (props) => {
     </div>
     <Avatar src="https://ph-files.imgix.net/84451835-127d-469b-87f0-049c838b69a3?auto=format" />
     <Typography  className={classes.username} >
-      {userName ? userName: 'Hatchways'}
+      {ownerName}
     </Typography>
     <Button className={classes.toggleButton} onClick={handleClick}>
     <ArrowDropDownIcon fontSize="small" style={{color: "grey"}} pt={3} />

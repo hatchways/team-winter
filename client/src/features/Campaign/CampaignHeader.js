@@ -1,12 +1,13 @@
 import React from 'react';
 import { makeStyles, Grid, Typography } from '@material-ui/core';
 
-import CustomizedButton from '../CustomizedButton';
-
-const useStyles = makeStyles( () => ({
+const useStyles = makeStyles(({
   addProspectsButton: {
     float: 'right'
   },
+  userName: {
+    padding: "10px 0px",
+  }
 }));
 
 const CampaignHeader = (props) => {
@@ -23,20 +24,25 @@ const CampaignHeader = (props) => {
             justify="center"
             alignItems="flex-start"
             xs={12}
-            sm={8} >
+            sm={8}>
         <Grid item>
           <Typography variant="h4">{props.title}</Typography>
         </Grid>
         <Grid item>
-          <Typography component="p">by {props.userName}</Typography>
+          <Typography
+            className={classes.userName}
+            component="p"
+            >
+            by {props.userName}
+          </Typography>
         </Grid>
       </Grid>
       <Grid item
             xs={12}
-            sm={4} >
-        <CustomizedButton className={classes.addProspectsButton}>Add Prospects</CustomizedButton>
+            sm={4}>
       </Grid>
     </Grid>
   )
 }
 export default CampaignHeader;
+
