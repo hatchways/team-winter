@@ -1,5 +1,7 @@
 import React from 'react';
 import { makeStyles, Grid, Typography } from '@material-ui/core';
+import { Link} from "react-router-dom";
+import CustomizedButton from '../CustomizedButton';
 
 const useStyles = makeStyles(({
   addProspectsButton: {
@@ -7,6 +9,10 @@ const useStyles = makeStyles(({
   },
   userName: {
     padding: "10px 0px",
+  },
+  buttonText: {
+    color: "white",
+    textDecoration: "none",
   }
 }));
 
@@ -40,6 +46,11 @@ const CampaignHeader = (props) => {
       <Grid item
             xs={12}
             sm={4}>
+            <CustomizedButton
+              className={classes.addProspectsButton}
+              >
+              <Link className={classes.buttonText} to="/prospects">Add Prospects</Link>
+            </CustomizedButton>
       </Grid>
     </Grid>
   )
