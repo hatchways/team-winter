@@ -72,3 +72,6 @@ class EmailTaskModel(db.Model):
                 num_restarted += 1
         print(f'Restarted {num_restarted} email tasks.')
 
+    @classmethod
+    def count_sent_in_step(cls, step_id):
+        return cls.query.filter_by(step_id=step_id).filter_by(complete=True).count()

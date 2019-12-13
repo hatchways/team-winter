@@ -35,7 +35,8 @@ from resources import (
     CampaignResources, 
     ProspectsResources,
     TemplateResources,
-    StepResources
+    StepResources,
+    ThreadResources
 )
 
 
@@ -61,5 +62,7 @@ api.add_resource(CampaignResources.CreateStepToCampaign, '/campaign/<int:id>/ste
 api.add_resource(CampaignResources.CampaignReplies, '/campaign/<int:id>/replies')
 api.add_resource(StepResources.ExecuteStep, '/steps/<int:id>/send')
 api.add_resource(StepResources.Sent, '/steps/<int:id>/sent')
+api.add_resource(ThreadResources.Update, '/threads/update')
+api.add_resource(ThreadResources.Status, '/threads/status')
 
 app.register_blueprint(home_handler)

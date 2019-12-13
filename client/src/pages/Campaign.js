@@ -336,7 +336,7 @@ const Campaign = (props) => {
   }
 
   const handleExecuteStep = (event, step) => {
-    apiRequest('POST', '/gmail/send', {'step_id': step.id})
+    apiRequest('POST', `/steps/${step.id}/send`)
     .then((json) => {
       setExecuteSuccess(true);
     })

@@ -116,12 +116,12 @@ class CampaignReplies(Resource):
     def get(self, id):
         """Return the number of emails that have been replied to for this campaign"""
         user_id = get_jwt_identity()
-        campaign = CampaignModel.filter_by(id=id)
-        if campaign.owner != user_id:
+        campaign = CampaignModel.query.filter_by(id=id).first()
+        if campaign.owner.id != user_id:
             return {
                 'message': 'you don\'t own that campaign'
             }, 401
-        replied = ThreadModel.filter_by(campaign_id=id).filter_by(replied_to=True).count()
+        replied = ThreadModel.query.filter_by(campaign_id=id).filter_by(replied_to=True).count()
         return {
             'replied': replied
         }, 200

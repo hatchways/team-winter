@@ -14,7 +14,7 @@ from utils.MessageConverter import replaceVariables
 
 class ExecuteStep(Resource):
     @jwt_required
-    def post(self):
+    def post(self, id):
         """Sending email using Gmail API"""
         user = UserModel.find_by_id(get_jwt_identity())
         step = StepModel.find_by_id(id)
@@ -56,11 +56,11 @@ class Sent(Resource):
         """Return the number of emails sent in this step"""
         user_id = get_jwt_identity()
         step = StepModel.find_by_id(id)
-        if step.campaign.owner.id != user.id:
+        if step.campaign.owner.id != user_id:
             return {
                 'message': 'you don\'t own that step'
             }, 401
-        num_sent = EmailTaskModel.filter_by(step_id=id).count()
+        num_sent = EmailTaskModel.count_sent_in_step(step.id)
         return {
             'sent': num_sent
         }, 200

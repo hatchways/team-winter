@@ -15,5 +15,5 @@ class ThreadTaskModel(db.Model):
 
     @classmethod
     def replies_task_complete(cls, user_id):
-        task = cls.query.filter_by(user_id = user_id).order_by(desc(reply_tasks.id)).first()
+        task = cls.query.filter_by(user_id = user_id).order_by(desc(ThreadTaskModel.id)).first()
         return task.complete
