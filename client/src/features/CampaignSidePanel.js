@@ -11,7 +11,7 @@ const useStyles = makeStyles((theme) => ({
   root: {
     paddingTop: "100px",
     [theme.breakpoints.down("md")]: {
-      height: "10vh",
+      height: "15vh",
     },
     [theme.breakpoints.up("md")]: {
       minHeight: "88vh",
