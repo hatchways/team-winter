@@ -39,7 +39,7 @@ class Message(object):
 
 
 def send_message(message):
-    msg = MIMEText(message.body)
+    msg = MIMEText(message.body, 'html')
     msg['to'] = message.to_address
     msg['from'] = message.from_address
     msg['subject'] = message.subject

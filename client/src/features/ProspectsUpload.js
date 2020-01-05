@@ -263,7 +263,7 @@ function ProspectsUpload({ getAllProspects }) {
         {...getRootProps()}
         >
           <input {...getInputProps()} />
-          Imports 
+          Import
       </OutlinedButton>
       <Modal 
         open={modalOpen}
