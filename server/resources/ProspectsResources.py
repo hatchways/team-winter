@@ -43,7 +43,7 @@ class InheritPreviousStepProspects(Resource):
       
       return {
         'step' : curr_step.to_dict(rules = 
-                            ('-template.steps', '-template.owner', '-prospects.campaigns',
+                            ('-template.steps', '-template.owner', '-prospects.campaigns', '-email_tasks',
                             '-prospects.tags', '-prospects.steps', '-prospects.owner', '-campaign'))
       }, 200
     except:

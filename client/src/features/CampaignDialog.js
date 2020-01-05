@@ -53,7 +53,7 @@ export default function CampaignDialog(props) {
             variant="outlined"
           />
         <DialogActions>
-          <Button onClick={handleCreate} color="primary">
+          <Button onClick={handleCreate} variant="outlined" color="primary">
             Create
           </Button>
         </DialogActions>

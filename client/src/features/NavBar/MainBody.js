@@ -25,7 +25,6 @@ const useStyles = makeStyles(({
 }));
 
 const NavBar = (props) => {
-  const { userName } = props;
   const classes = useStyles();
 
   const path = window.location.pathname.toLowerCase();
@@ -36,7 +35,7 @@ const NavBar = (props) => {
   } else if ( path === '/signup' ) {
     features = <SignUpFeatures />
   } else {
-    features = <LoggedInFeatures userName={userName}/>
+    features = <LoggedInFeatures/>
   }
 
   return (

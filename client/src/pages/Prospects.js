@@ -22,6 +22,7 @@ import GmailDialog from '../features/GmailDialog';
 import GmailAuthorizationHandler from '../features/GmailAuthorizationHandler';
 import SidePanel from '../features/SidePanel';
 import ProspectsUpload from '../features/ProspectsUpload';
+import ProspectDialog from '../features/ProspectDialog';
 import { apiRequest } from '../utils';
 
 const useStyles = makeStyles((theme) => ({
@@ -85,6 +86,7 @@ const Prospects = () => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [addToCampaignStatus, setAddToCampaignStatus] = useState('');
   const [filteredData, setFilteredData] = useState(data)
+  const [open, setOpen] = useState(false);
 
 
 
@@ -219,6 +221,9 @@ const Prospects = () => {
     setSnackbarOpen(false);
   };
 
+  const handleOnClose = () => {
+    setOpen(false);
+  }
 
   return (
     <Fragment>
@@ -274,6 +279,17 @@ const Prospects = () => {
                   </Box>
                   <Box pl={2}>
                     <ProspectsUpload  getAllProspects={getAllProspects}/>
+                  </Box>
+                  <Box pl={1}>
+                    <CustomizedButton onClick={() => setOpen(true)}
+                      className={classes.newProspectButton}>
+                      Add New Prospect
+                      <div className={classes.seperationLine}></div>
+                      <div className={classes.arrow} >
+                        <ArrowDropDownIcon fontSize="small" style={{color: "white"}} pt={3} />
+                      </div>
+                    </CustomizedButton>
+                    <ProspectDialog prospects={data} open={open} onClose={handleOnClose}/>
                   </Box>
                 </Box>
               </Box>

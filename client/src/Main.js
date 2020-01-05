@@ -10,6 +10,7 @@ import Campaign from './pages/Campaign';
 import Prospects from './pages/Prospects';
 import Templates from './pages/Templates';
 import Reporting from './pages/Reporting';
+import Profile from './pages/Profile';
 
 import "./Main.css";
 
@@ -30,6 +31,7 @@ const Main = () => {
         <Route path="/prospects" component={Prospects} />
         <Route path="/templates" component={Templates} />
         <Route path="/reporting" component={Reporting} />
+        <Route path="/profile" component={Profile} />
       </Switch>
       </BrowserRouter>
     </MuiThemeProvider>

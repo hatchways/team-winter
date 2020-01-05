@@ -340,10 +340,8 @@ const Campaign = (props) => {
     apiRequest('POST', `/steps/prospects`, data)
     .then(res => {
         const step = createStepObject(res.step);
-        const newSteps = [...campaign.steps];
-        newSteps[idx] = step;
-        campaign.steps = newSteps;
-        setCampaign(campaign);
+        campaign.steps[idx] = step;
+        campaign.steps = [...campaign.steps]
         setImportSuccess(true);
         getAllProspects();
     })

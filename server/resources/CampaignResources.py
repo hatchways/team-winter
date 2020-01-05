@@ -33,7 +33,7 @@ class CampaignProspects(Resource):
                 'campaigns': len(prospect.campaigns),
                 'steps' : [
                         step.to_dict(rules = 
-                            ('-template', '-prospects', '-campaign'))
+                            ('-template', '-prospects', '-campaign', '-email_tasks'))
                             for step in prospect.steps
                     ]
                 })
@@ -80,7 +80,7 @@ class CreateStepToCampaign(Resource):
             return {
                 'step' : new_step.to_dict(rules = 
                     ('-template.steps', '-template.owner', '-prospects.campaigns',
-                    '-prospects.tags', '-prospects.steps', '-campaign'))
+                    '-prospects.tags', '-prospects.steps', '-campaign', '-email_tasks'))
             }, 201
         except:
             return {'message': 'Something went wrong'}, 500
@@ -104,7 +104,7 @@ class GetCampaign(Resource):
                     'prospects' : len(campaign.prospects),
                     'steps' : [
                         step.to_dict(rules = 
-                            ('-template.steps', '-template.owner', '-prospects.campaigns',
+                            ('-template.steps', '-template.owner', '-prospects.campaigns', '-email_tasks',
                             '-prospects.tags', '-prospects.steps', '-prospects.owner', '-campaign', '-email_tasks')) 
                         for step in campaign.steps
                     ]

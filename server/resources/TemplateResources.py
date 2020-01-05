@@ -84,7 +84,7 @@ class Templates(Resource):
             template.save_to_db()
             return {
                 'template':  template.to_dict(rules=('-steps.template', '-steps.campaign', '-owner',
-                                            '-steps.prospects'))
+                                            '-steps.prospects', '-steps.email_tasks'))
             }, 200
         except ValueError as e:
             return {
