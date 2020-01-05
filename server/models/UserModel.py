@@ -29,6 +29,9 @@ class UserModel(db.Model):
         db.session.add(self)
         db.session.commit()
 
+    def update(self):
+        db.session.commit()
+
     @classmethod
     def find_by_id(cls, id):
         return cls.query.get(id)  

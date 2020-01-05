@@ -1,6 +1,7 @@
 from flask_restful import Resource
 from utils.RequestParserGenerator import RequestParserGenerator
 from models.UserModel import UserModel
+from models.ProspectModel import ProspectModel
 from models.CampaignModel import CampaignModel
 from flask_jwt_extended import (create_access_token, jwt_required, get_jwt_identity)
 from utils.ValidationDecorator import validate_args
@@ -8,7 +9,9 @@ from utils.ValidationDecorator import validate_args
 reqParserGen = RequestParserGenerator()
 registerParser = reqParserGen.getParser("email", "password", "first_name", "last_name", "confirm_pass")
 loginParser = reqParserGen.getParser("email", "password")
+userParser = reqParserGen.getParser("first_name", "last_name", "email")
 campaignParser = reqParserGen.getParser("name")
+prospectParser = reqParserGen.getParser("email", "name")
 
 class UserRegister(Resource):
     def post(self):
@@ -48,19 +51,41 @@ class UserLogin(Resource):
         if UserModel.verify_hash(data['password'], current_user.password):
             access_token = create_access_token(identity = current_user.id)
             return {
-                'message': 'Logged in as {}'.format(current_user.email),
                 'access_token': access_token
             }, 202
         else:
             return {'message': 'Wrong credentials'}, 400
 
-class UserOwnerName(Resource):
+class User(Resource):
     @jwt_required
     def get(self):
         current_user = UserModel.find_by_id(get_jwt_identity())
         return {
-            'owner_name': current_user.first_name + " "  + current_user.last_name,
+            'user': {
+                'first_name' : current_user.first_name,
+                'last_name' : current_user.last_name, 
+                'email' : current_user.email
+            },
         }, 200
+
+    @jwt_required
+    def put(self):
+        data = userParser.parse_args()
+        current_user = UserModel.find_by_id(get_jwt_identity())
+        try:
+            current_user.first_name = data['first_name']
+            current_user.last_name = data['last_name']
+            current_user.email = data['email']
+            current_user.update()
+            return {
+            'user': {
+                'first_name' : current_user.first_name,
+                'last_name' : current_user.last_name, 
+                'email' : current_user.email
+            },
+        }, 200
+        except:
+            return {'message': 'Something went wrong'}, 500
 
 class UserCampaigns(Resource):
     @jwt_required
@@ -121,3 +146,28 @@ class UserProspects(Resource):
             'prospects': prospects,
             }, 200 
 
+    @jwt_required
+    def post(self):
+        data = prospectParser.parse_args()
+        prospect = ProspectModel(
+            email = data['email'],
+            name = data['name'],
+            status = 'Open',
+            owner_id = get_jwt_identity()
+        )
+
+        try:
+            prospect.save_to_db()
+            return {
+                'prospect' : {
+                    'id' : prospect.id,
+                    'email': prospect.email,
+                    'name' : prospect.name,
+                    'status' : prospect.status,
+                    'imported_from': prospect.imported_from,
+                    'campaigns': len(prospect.campaigns),
+                    }
+            }, 201 
+        except:
+            return {'message': 'Something went wrong'}, 500
+            

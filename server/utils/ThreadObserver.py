@@ -77,8 +77,21 @@ def complete_thread_job(job):
     conn.close()
 
 def is_replied_to(thread):
-    """Return true if a thread has more than 1 message in it"""
-    if len(thread['messages']) > 1:
-        return True
+    """Return true if a thread has email messages from different senders"""
+    messages = thread['messages']
+    if len(messages) < 2:
+        return False
+    user_email = get_sender_email(messages[0])
+    for i in range(1, len(messages)):
+        sender_email = get_sender_email(messages[i])
+        if user_email != sender_email:
+            return True
     return False
+
+def get_sender_email(message):
+    """Get the sender's email"""
+    message_headers = message['payload']['headers']
+    for header in message_headers:
+        if header['name'] == 'From':
+            return header['value']
 

@@ -40,7 +40,7 @@ class Step(Resource):
             new_step.save_to_db()
             return {
                 'step' : new_step.to_dict(rules = 
-                    ('-template.steps', '-template.owner', '-prospects.campaigns',
+                    ('-template.steps', '-template.owner', '-prospects.campaigns', '-email_tasks',
                     '-prospects.tags', '-prospects.steps', '-prospects.owner', '-campaign', '-email_tasks'))
             }, 201
         except:
@@ -64,7 +64,7 @@ class Step(Resource):
         step.update()
         return {
             'step': step.to_dict(rules = 
-                    ('-template.steps', '-template.owner', '-prospects.campaigns',
+                    ('-template.steps', '-template.owner', '-prospects.campaigns', '-email_tasks',
                     '-prospects.tags', '-prospects.steps', '-prospects.owner', '-campaign', '-email_tasks'))
         }, 200
 

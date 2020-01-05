@@ -78,17 +78,17 @@ const LoggedInFeatures = (props) => {
   const classes = useStyles();
   const [value, setValue] = useState(0);
   const [toggle, handleToggle] = useState(null);
-  const [ownerName, setOwnerName] = useState('')
+  const [username, setUsername] = useState('')
 
   const path = window.location.pathname.toLowerCase();
 
   useEffect(() => {
-    getOwnerName();
+    getUsername();
   }, [])
 
-  const getOwnerName = () => {
-    apiRequest('GET', `/ownername`)
-    .then( result => setOwnerName(result.owner_name))
+  const getUsername = () => {
+    apiRequest('GET', `/user`)
+    .then( data => setUsername(data.user.first_name + " " + data.user.last_name))
     .catch( e => {
       console.log(e);
     })
@@ -134,7 +134,7 @@ const LoggedInFeatures = (props) => {
     </div>
     <Avatar src="https://ph-files.imgix.net/84451835-127d-469b-87f0-049c838b69a3?auto=format" />
     <Typography  className={classes.username} >
-      {ownerName}
+      {username}
     </Typography>
     <Button className={classes.toggleButton} onClick={handleClick}>
     <ArrowDropDownIcon fontSize="small" style={{color: "grey"}} pt={3} />
@@ -146,7 +146,7 @@ const LoggedInFeatures = (props) => {
       open={Boolean(toggle)}
       onClose={handleClose}
     >
-      <MenuItem onClick={handleClose}>Profile</MenuItem>
+      <MenuItem><Link  className={classes.text} to="/profile">Profile</Link></MenuItem>
       <MenuItem onClick={handleLogOut}><Link  className={classes.text} to="/login">Logout</Link></MenuItem>
     </Menu>
     </Fragment>
