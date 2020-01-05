@@ -80,7 +80,7 @@ const AccountTabs = (props) => {
 
 const Profile = () => {
     const classes = useStyles();
-    const [tab, setTab] = useState('');
+    const [tab, setTab] = useState("Account");
 
     let display = null;
 

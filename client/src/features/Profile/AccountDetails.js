@@ -8,6 +8,7 @@ import {
     Grid,
   } from '@material-ui/core';
 import { apiRequest } from '../../utils';
+import SuccessSnackbar from '../SuccessSnackbar';
 
 const useStyles = makeStyles((theme) => ({
     container: {
@@ -75,6 +76,7 @@ const AccountDetails = () => {
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [email, setEmail] = useState('');
+    const [open, setOpen] = useState(false);
 
     useEffect(() => {
       setUser();
@@ -116,10 +118,15 @@ const AccountDetails = () => {
         setFirstName(data.user.first_name);
         setLastName(data.user.last_name);
         setEmail(data.user.email);
+        setOpen(true);
       })
       .catch( e => {
         console.log(e);
       })
+    }
+
+    const handleClose = () => {
+      setOpen(false);
     }
 
     return (
@@ -139,8 +146,10 @@ const AccountDetails = () => {
                         Update
             </Button>
           </Grid>
+          <SuccessSnackbar open={open} onClose={handleClose} message="Successfully updated!"/>
         </Grid>
       </Paper>
+      
     )
 
   }
