@@ -275,16 +275,6 @@ const Prospects = () => {
                   <Box pl={2}>
                     <ProspectsUpload  getAllProspects={getAllProspects}/>
                   </Box>
-                  <Box pl={1}>
-                    <CustomizedButton
-                      className={classes.newProspectButton}>
-                      Add New Prospect
-                      <div className={classes.seperationLine}></div>
-                      <div className={classes.arrow} >
-                        <ArrowDropDownIcon fontSize="small" style={{color: "white"}} pt={3} />
-                      </div>
-                    </CustomizedButton>
-                  </Box>
                 </Box>
               </Box>
               <Box display="flex" justifyContent="center" id="DataTable" >

@@ -1,5 +1,6 @@
 import React from 'react';
 import { makeStyles, Grid, Typography } from '@material-ui/core';
+import ThreadUpdateButton from '../Demo/ThreadUpdateButton';
 import { Link} from "react-router-dom";
 import CustomizedButton from '../CustomizedButton';
 
@@ -30,7 +31,7 @@ const CampaignHeader = (props) => {
             justify="center"
             alignItems="flex-start"
             xs={12}
-            sm={8}>
+            sm={6}>
         <Grid item>
           <Typography variant="h4">{props.title}</Typography>
         </Grid>
@@ -45,12 +46,19 @@ const CampaignHeader = (props) => {
       </Grid>
       <Grid item
             xs={12}
-            sm={4}>
-            <CustomizedButton
-              className={classes.addProspectsButton}
-              >
-              <Link className={classes.buttonText} to="/prospects">Add Prospects</Link>
-            </CustomizedButton>
+            sm={2}>
+        <ThreadUpdateButton 
+          onThreadUpdate={props.onThreadUpdate}
+        />
+      </Grid>
+      <Grid item
+            xs={12}
+            sm={2}>
+          <CustomizedButton
+            className={classes.addProspectsButton}
+            >
+            <Link className={classes.buttonText} to="/prospects">Add Prospects</Link>
+          </CustomizedButton>
       </Grid>
     </Grid>
   )

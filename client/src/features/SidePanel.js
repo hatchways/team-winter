@@ -13,7 +13,7 @@ const useStyles = makeStyles((theme) => ({
       height: "35vh",
     },
     [theme.breakpoints.up("md")]: {
-      height: "90vh",
+      height: "100vh",
     }
   },
 }));

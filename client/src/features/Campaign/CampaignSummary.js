@@ -93,6 +93,7 @@ const CampaignDataDisplay = (props) => {
       // get sent for this campaign
       apiRequest('GET', `/campaign/${props.campaignId}/sent`)
       .then( json => {
+        console.log(json);
         setSent(json.sent);
       })
       .catch( e => {
@@ -102,6 +103,7 @@ const CampaignDataDisplay = (props) => {
       // get replies for this campaign
       apiRequest('GET', `/campaign/${props.campaignId}/replied`)
       .then( json => {
+        console.log(json);
         setReplied(json.replied);
       })
       .catch( e => {
@@ -110,7 +112,7 @@ const CampaignDataDisplay = (props) => {
 
     }
 
-  }, [props.campaignId]);
+  }, [props.campaignId, props.steps]);
 
   return (
     <Paper className={classes.mt2b1}>
@@ -253,6 +255,7 @@ const CampaignSummary = (props) => {
             alignItems="stretch" >
         {/* Campaign Data */}
         <CampaignDataDisplay prospects={props.prospects} 
+                             steps={props.steps}
                              campaignId={props.campaignId} />
         {/* Steps */}
         <StepsDisplay steps={steps}
