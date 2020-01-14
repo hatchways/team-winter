@@ -45,6 +45,7 @@ from resources import (
 
 @app.before_first_request
 def restart_incomplete_tasks():
+    db.create_all()
     EmailTaskModel.EmailTaskModel.restart_all_incomplete()
 
 
