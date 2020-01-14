@@ -12,7 +12,7 @@ app = Flask(
     instance_relative_config=True
 )
 app.config.from_object('config.default')
-app.config.from_pyfile('config.py')
+app.config.from_pyfile('config.py', silent=True)
 
 if os.getenv('FLASK_ENV') == 'development':
     CORS(app) 
