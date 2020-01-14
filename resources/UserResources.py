@@ -4,7 +4,6 @@ from models.UserModel import UserModel
 from models.ProspectModel import ProspectModel
 from models.CampaignModel import CampaignModel
 from flask_jwt_extended import (create_access_token, jwt_required, get_jwt_identity)
-from utils.ValidationDecorator import validate_args
 
 reqParserGen = RequestParserGenerator()
 registerParser = reqParserGen.getParser("email", "password", "first_name", "last_name", "confirm_pass")

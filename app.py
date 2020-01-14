@@ -43,9 +43,9 @@ from resources import (
 )
 
 
-# @app.before_first_request
-# def restart_incomplete_tasks():
-#     EmailTaskModel.EmailTaskModel.restart_all_incomplete()
+@app.before_first_request
+def restart_incomplete_tasks():
+    EmailTaskModel.EmailTaskModel.restart_all_incomplete()
 
 
 api.add_resource(UserResources.UserRegister, '/register')
@@ -71,6 +71,3 @@ api.add_resource(StepResources.Step, '/campaigns/<int:id>/steps', endpoint='step
 api.add_resource(StepResources.Step, '/steps/<int:id>', endpoint='step')
 api.add_resource(ThreadResources.Update, '/threads/update')
 api.add_resource(ThreadResources.Status, '/threads/status')
-
-
-app.register_blueprint(home_handler)
