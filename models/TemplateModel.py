@@ -22,10 +22,10 @@ class TemplateModel(db.Model, SerializerMixin):
         'StepModel', backref='template', lazy = 'select'
     )
 
-    __table_args__ = (
-        CheckConstraint('char_length(name) > 0', name='name_min_length'),
-        CheckConstraint('char_length(subject) > 0', name='subject_min_length')
-    )
+    # __table_args__ = (
+    #     CheckConstraint('char_length(name) > 0', name='name_min_length'),
+    #     CheckConstraint('char_length(subject) > 0', name='subject_min_length')
+    # )
 
     @validates('name')
     def validate_name(self, key, name) -> str:
