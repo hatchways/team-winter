@@ -7,7 +7,6 @@ import os
 
 app = Flask(
     __name__, 
-    static_url_path='',
     static_folder='client/build',
     instance_relative_config=True
 )
@@ -19,6 +18,15 @@ if os.getenv('FLASK_ENV') == 'development':
 api = Api(app)
 db = SQLAlchemy(app) 
 jwt = JWTManager(app)  
+
+
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def serve(path):
+    if path != "" and os.path.exists(app.static_folder + '/' + path):
+        return send_from_directory(app.static_folder, path)
+    else:
+        return send_from_directory(app.static_folder, 'index.html')
 
 
 from models import (
