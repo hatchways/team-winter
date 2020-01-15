@@ -1,4 +1,4 @@
-from flask import Flask, send_from_directory
+from flask import Flask, send_from_directory, jsonify
 from flask_jwt_extended import JWTManager
 from flask_sqlalchemy import SQLAlchemy
 from flask_restful import Api
@@ -20,13 +20,32 @@ db = SQLAlchemy(app)
 jwt = JWTManager(app)  
 
 
-@app.route('/', defaults={'path': ''})
-@app.route('/<path:path>')
-def serve(path):
-    if path != "" and os.path.exists(app.static_folder + '/' + path):
-        return send_from_directory(app.static_folder, path)
-    else:
-        return send_from_directory(app.static_folder, 'index.html')
+@app.route("/")
+def serve():
+    """serves React App"""
+    return send_from_directory(app.static_folder, "index.html")
+
+
+@app.route("/<path:path>")
+def static_proxy(path):
+    """static folder serve"""
+    file_name = path.split("/")[-1]
+    dir_name = os.path.join(app.static_folder, "/".join(path.split("/")[:-1]))
+    return send_from_directory(dir_name, file_name)
+
+
+@app.errorhandler(404)
+def handle_404(e):
+    if request.path.startswith("/api/"):
+        return jsonify(message="Resource not found"), 404
+    return send_from_directory(app.static_folder, "index.html")
+
+
+@app.errorhandler(405)
+def handle_405(e):
+    if request.path.startswith("/api/"):
+        return jsonify(message="Mehtod not allowed"), 405
+    return e
 
 
 from models import (
@@ -57,26 +76,26 @@ def restart_incomplete_tasks():
     # EmailTaskModel.EmailTaskModel.restart_all_incomplete()
 
 
-api.add_resource(UserResources.UserRegister, '/register')
-api.add_resource(UserResources.UserLogin, '/login')
-api.add_resource(UserResources.User, '/user')
-api.add_resource(UserResources.UserProspects, '/prospects')
-api.add_resource(TemplateResources.Templates, '/templates', endpoint='templates')
-api.add_resource(TemplateResources.TemplatesById, '/templates/<int:id>', endpoint='template')
-api.add_resource(UserResources.UserCampaigns, '/campaigns')
-api.add_resource(GmailResources.GetAuthURL, '/gmail/get_auth_url')
-api.add_resource(GmailResources.Authorize, '/gmail/authorize')
-api.add_resource(GmailResources.GetGmailAddress, '/gmail/get_address')
-api.add_resource(ProspectsResources.UploadProspects, '/prospects/upload')
-api.add_resource(ProspectsResources.InheritPreviousStepProspects, '/steps/prospects')
-api.add_resource(CampaignResources.GetCampaign, '/campaigns/<int:id>')
-api.add_resource(CampaignResources.CampaignProspects, '/campaign/<int:id>/prospects')
-api.add_resource(CampaignResources.CreateStepToCampaign, '/campaign/<int:id>/steps')
-api.add_resource(CampaignResources.CampaignSent, '/campaign/<int:id>/sent')
-api.add_resource(CampaignResources.CampaignReplies, '/campaign/<int:id>/replied')
-api.add_resource(StepResources.ExecuteStep, '/steps/<int:id>/send')
-api.add_resource(StepResources.Sent, '/steps/<int:id>/sent')
-api.add_resource(StepResources.Step, '/campaigns/<int:id>/steps', endpoint='steps')
-api.add_resource(StepResources.Step, '/steps/<int:id>', endpoint='step')
-api.add_resource(ThreadResources.Update, '/threads/update')
-api.add_resource(ThreadResources.Status, '/threads/status')
+api.add_resource(UserResources.UserRegister, '/api/register')
+api.add_resource(UserResources.UserLogin, '/api/login')
+api.add_resource(UserResources.User, '/api/user')
+api.add_resource(UserResources.UserProspects, '/api/prospects')
+api.add_resource(TemplateResources.Templates, '/api/templates', endpoint='templates')
+api.add_resource(TemplateResources.TemplatesById, '/api/templates/<int:id>', endpoint='template')
+api.add_resource(UserResources.UserCampaigns, '/api/campaigns')
+api.add_resource(GmailResources.GetAuthURL, '/api/gmail/get_auth_url')
+api.add_resource(GmailResources.Authorize, '/api/gmail/authorize')
+api.add_resource(GmailResources.GetGmailAddress, '/api/gmail/get_address')
+api.add_resource(ProspectsResources.UploadProspects, '/api/prospects/upload')
+api.add_resource(ProspectsResources.InheritPreviousStepProspects, '/api/steps/prospects')
+api.add_resource(CampaignResources.GetCampaign, '/api/campaigns/<int:id>')
+api.add_resource(CampaignResources.CampaignProspects, '/api/campaign/<int:id>/prospects')
+api.add_resource(CampaignResources.CreateStepToCampaign, '/api/campaign/<int:id>/steps')
+api.add_resource(CampaignResources.CampaignSent, '/api/campaign/<int:id>/sent')
+api.add_resource(CampaignResources.CampaignReplies, '/api/campaign/<int:id>/replied')
+api.add_resource(StepResources.ExecuteStep, '/api/steps/<int:id>/send')
+api.add_resource(StepResources.Sent, '/api/steps/<int:id>/sent')
+api.add_resource(StepResources.Step, '/api/campaigns/<int:id>/steps', endpoint='steps')
+api.add_resource(StepResources.Step, '/api/steps/<int:id>', endpoint='step')
+api.add_resource(ThreadResources.Update, '/api/threads/update')
+api.add_resource(ThreadResources.Status, '/api/threads/status')

@@ -71,7 +71,7 @@ class APIError extends Error {
  * @throws {APIError} - Thrown if the response status code is not 2xx
  */
 const apiRequest = async (method, path, data=null) => {
-  const response = await fetch(path, {
+  const response = await fetch('/api'+path, {
     method: method,
     headers: {
       'Content-Type': 'application/json',
