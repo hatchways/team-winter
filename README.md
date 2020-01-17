@@ -112,19 +112,3 @@ $ python manage.py db upgrade   # to apply the latest migration to your database
 -  [Benjamin Jenkins](https://github.com/benjaminjenkins1)
 
   
-
-## Acknowledgements
-
-  
-
-- App design mock-ups by [Hatchways](https://hatchways.io)' project-based career accelerator program.
-
-- Guidance from [Shums Kassam](https://github.com/skassam21)
-
-  
-
-## License
-
-  
-
-This app is available under [MIT](https://choosealicense.com/licenses/mit/) license.
