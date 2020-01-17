@@ -53,8 +53,7 @@ Go to config file and set SQLALCHEMY_DATABASE_URI environment variable in the fo
 
 'postgresql://username:password@localhost/db_name'
 
-Next, create database 'db_name' in your localhost
-You can do so in the following commands:
+Next, create database 'db_name' in your localhost. You can do so in the following commands:
 ```
 $ psql   # or
 $ sudo -u postgres psql -p 5432 -h 127.0.0.1
