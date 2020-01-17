@@ -1,12 +1,59 @@
 [[source]]
 name = "pypi"
-url = "https://pypi.org/simple"
 verify_ssl = true
-
-[dev-packages]
-
-[packages]
-flask = "*"
+url = "https://pypi.org/simple"
 
 [requires]
 python_version = "3.7"
+
+[packages]
+alembic = "*"
+"aniso8601" = "*"
+cachetools = "*"
+certifi = "*"
+chardet = "*"
+click = "*"
+dataclasses = "*"
+google-api-python-client = "*"
+google-auth = "*"
+"google-auth-httplib2" = "*"
+"httplib2" = "*"
+idna = "*"
+itsdangerous = "*"
+"oauth2client" = "*"
+oauthlib = "*"
+passlib = "*"
+"psycopg2" = "*"
+"pyasn1" = "*"
+"pyasn1-modules" = "*"
+python-dateutil = "*"
+python-dotenv = "*"
+python-editor = "*"
+pytz = "*"
+redis = "*"
+requests = "*"
+requests-oauthlib = "*"
+rq = "*"
+rsa = "*"
+six = "*"
+text-unidecode = "*"
+uritemplate = "*"
+"urllib3" = "*"
+Faker = "*"
+Flask = "*"
+Flask-Cors = "*"
+Flask-JWT-Extended = "*"
+Flask-Migrate = "*"
+Flask-RESTful = "*"
+Flask-Script = "*"
+Flask-SQLAlchemy = "*"
+"Jinja2" = "*"
+Mako = "*"
+MarkupSafe = "*"
+pyCLI = "*"
+PyJWT = "*"
+SQLAlchemy = "*"
+SQLAlchemy-serializer = "*"
+Werkzeug = "*"
+
+[dev-packages]
