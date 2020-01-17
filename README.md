@@ -2,7 +2,7 @@
 
   
 
-A website application that allows you to automate your sales emails! Upload a list of leads and select a template, and automatically send off emails from a connected account!
+A web application that allows you to automate your sales emails! Upload a list of leads and select a template, and automatically send off emails from a connected account!
 
   
 
