@@ -7,6 +7,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity, get_raw_jwt
 import logging
 import httplib2
 import uuid
+import os
 
 from models.UserModel import UserModel
 
@@ -14,8 +15,8 @@ authorize_parser = reqparse.RequestParser()
 authorize_parser.add_argument('code', location='json', required=True)
 authorize_parser.add_argument('state', location='json', required=True)
 
-CLIENTSECRETS_LOCATION = 'instance/client_secrets.json'
-REDIRECT_URI = 'http://localhost:3000/prospects'
+CLIENTSECRETS_LOCATION = os.getenv('GOOGLE_APPLICATION_CREDENTIALS','instance/client_secrets.json')
+REDIRECT_URI = os.getenv('REDIRECT_URI','http://localhost:3000/prospects')
 SCOPES = [
     'https://www.googleapis.com/auth/gmail.readonly',
     'https://www.googleapis.com/auth/userinfo.email',
