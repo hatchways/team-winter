@@ -50,6 +50,7 @@ def send_message(message):
 
     service = build(
         'gmail', 'v1', 
+        cache_discovery=False,
         http=message.credentials.authorize(http = httplib2.Http())
     )
 

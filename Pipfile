@@ -56,6 +56,5 @@ PyJWT = "*"
 SQLAlchemy = "*"
 SQLAlchemy-serializer = "*"
 Werkzeug = "*"
-googleapis-common-protos = "*"
 
 [dev-packages]
