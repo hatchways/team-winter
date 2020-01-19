@@ -22,8 +22,6 @@ import TextField from '@material-ui/core/TextField';
 
 import { getJWT } from '../utils';
 
-const UPLOAD_URL = 'http://localhost:5000/prospects/upload';
-
 const countColumns = (results) => {
   let columns = 0;
   results.data.forEach( (row) => {
@@ -168,7 +166,7 @@ function ProspectsUpload({ getAllProspects }) {
 
 
     try {
-      const response = await fetch(UPLOAD_URL, {
+      const response = await fetch('/api/prospects/upload', {
         method: 'POST', 
         body: JSON.stringify({
           'prospects': prospectsToUpload  
