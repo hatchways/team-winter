@@ -21,6 +21,7 @@ def update_thread(thread_id, credentials, is_final_job):
     # get number of replies for this thread
     service = build(
         'gmail', 'v1', 
+        cache_discovery=False,
         http=credentials.authorize(http = httplib2.Http())
     )
     try:
