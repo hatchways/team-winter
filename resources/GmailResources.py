@@ -15,7 +15,7 @@ authorize_parser = reqparse.RequestParser()
 authorize_parser.add_argument('code', location='json', required=True)
 authorize_parser.add_argument('state', location='json', required=True)
 
-CLIENTSECRETS_LOCATION = os.getenv('GOOGLE_APPLICATION_CREDENTIALS','instance/client_secrets.json')
+CLIENTSECRETS_LOCATION = os.getenv('GOOGLE_CREDENTIALS','instance/client_secrets.json')
 REDIRECT_URI = os.getenv('REDIRECT_URI','http://localhost:3000/prospects')
 SCOPES = [
     'https://www.googleapis.com/auth/gmail.readonly',
