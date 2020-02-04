@@ -1,6 +1,7 @@
 from apiclient.discovery import build
 from oauth2client.client import FlowExchangeError
 from oauth2client.client import OAuth2Credentials
+from oauth2client.client import OAuth2WebServerFlow
 from oauth2client.client import flow_from_clientsecrets
 from flask_restful import Resource, reqparse
 from flask_jwt_extended import jwt_required, get_jwt_identity, get_raw_jwt
@@ -15,8 +16,12 @@ authorize_parser = reqparse.RequestParser()
 authorize_parser.add_argument('code', location='json', required=True)
 authorize_parser.add_argument('state', location='json', required=True)
 
-CLIENTSECRETS_LOCATION = os.getenv('GOOGLE_APPLICATION_CREDENTIALS','instance/client_secrets.json')
+# CLIENTSECRETS_LOCATION = os.getenv('GOOGLE_APPLICATION_CREDENTIALS','instance/client_secrets.json')
+CLIENT_ID = os.getenv('CLIENT_ID')
+CLIENT_SECRET = os.getenv('CLIENT_SECRET')
 REDIRECT_URI = os.getenv('REDIRECT_URI','http://localhost:3000/prospects')
+GOOGLE_AUTH_URI = 'https://accounts.google.com/o/oauth2/auth'
+GOOGLE_TOKEN_URI = 'https://oauth2.googleapis.com/token'
 SCOPES = [
     'https://www.googleapis.com/auth/gmail.readonly',
     'https://www.googleapis.com/auth/userinfo.email',
@@ -91,8 +96,15 @@ def exchange_code(authorization_code):
     Raises:
       CodeExchangeException: an error occurred.
     """
-    flow = flow_from_clientsecrets(CLIENTSECRETS_LOCATION, ' '.join(SCOPES))
-    flow.redirect_uri = REDIRECT_URI
+    # flow = flow_from_clientsecrets(CLIENTSECRETS_LOCATION, ' '.join(SCOPES))
+    flow = OAuth2WebServerFlow(
+        client_id=CLIENT_ID,
+        client_secret=CLIENT_SECRET,
+        token_uri=GOOGLE_TOKEN_URI,
+        auth_uri=GOOGLE_AUTH_URI,
+        redirect_uri=REDIRECT_URI,
+        scope=SCOPES)
+    # flow.redirect_uri = REDIRECT_URI
     try:
         credentials = flow.step2_exchange(authorization_code)
         return credentials
@@ -132,7 +144,14 @@ def get_authorization_url(state):
     Returns:
       Authorization URL to redirect the user to.
     """
-    flow = flow_from_clientsecrets(CLIENTSECRETS_LOCATION, SCOPES, redirect_uri=REDIRECT_URI)
+    # flow = flow_from_clientsecrets(CLIENTSECRETS_LOCATION, SCOPES, redirect_uri=REDIRECT_URI)
+    flow = OAuth2WebServerFlow(
+        client_id=CLIENT_ID,
+        client_secret=CLIENT_SECRET,
+        token_uri=GOOGLE_TOKEN_URI,
+        auth_uri=GOOGLE_AUTH_URI,
+        redirect_uri=REDIRECT_URI,
+        scope=SCOPES)
     flow.params['access_type'] = 'offline'
     flow.params['approval_prompt'] = 'force'
     flow.params['state'] = state
